@@ -11,6 +11,7 @@ import ChapterScreen from "./screens/ChapterScreen";
 import VerseScreen from "./screens/VerseScreen";
 import ChurchScreen from "./screens/ChurchScreen";
 import SendNotificationScreen from "./screens/SendNotificationScreen";
+import UsuariosScreen from "@screens/UsuariosScreen";
 import LoginScreen from "./screens/LoginScreen";
 import FavoritosScreen from "./screens/FavoritosScreen";
 import BibleAssistant from "./screens/BibleAssistant";
@@ -185,7 +186,8 @@ const AppNavigator = () => {
             <Stack.Screen name="Versiculos" component={ChapterScreen} options={({ route }) => ({ title: route.params.bookName })} />
             <Stack.Screen name="Versiculo" component={VerseScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
             <Stack.Screen name="Igreja" component={ChurchScreen} options={{ title: "Nossa Igreja" }} />
-            <Stack.Screen name="SendNotification" options={{ title: "Enviar Notificação", headerLeft: () => null }}>
+            <Stack.Screen name="Usuarios" component={UsuariosScreen} />
+            <Stack.Screen name="SendNotification" options={{ title: "ADMINISTRAÇÃO", headerLeft: () => null }}>
               {() => (
                 <ProtectedRoute>
                   <SendNotificationScreen />

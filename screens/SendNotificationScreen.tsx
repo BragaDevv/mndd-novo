@@ -235,59 +235,59 @@ const SendNotificationScreen = () => {
     }
   };
 
-const sendNotification = async () => {
-  if (!title || !message) {
-    Alert.alert("Erro", "Título e mensagem são obrigatórios.");
-    return;
-  }
-
-  try {
-    const response = await fetch("https://mndd-backend.onrender.com/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, body: message }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      Alert.alert("Sucesso", "Notificações enviadas com sucesso!");
-      setTitle("");
-      setMessage("");
-    } else {
-      console.error("[APP] Erro:", data.error);
-      Alert.alert("Erro", "Falha ao enviar notificação.");
+  const sendNotification = async () => {
+    if (!title || !message) {
+      Alert.alert("Erro", "Título e mensagem são obrigatórios.");
+      return;
     }
-  } catch (error) {
-    console.error("[APP] Erro na requisição:", error);
-    Alert.alert("Erro", "Falha ao conectar com o servidor.");
-  }
-};
 
+    try {
+      const response = await fetch("https://mndd-backend.onrender.com/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, body: message }),
+      });
 
-const handleSendDailyVerse = async () => {
-  try {
-    const response = await fetch("https://mndd-backend.onrender.com/versiculo", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+      const data = await response.json();
 
-
-    const data = await response.json();
-
-    if (response.ok) {
-      Alert.alert("Sucesso", "Versículo do dia enviado!");
-    } else {
-      console.error("[APP] Erro ao enviar versículo:", data.error);
-      Alert.alert("Erro", "Falha ao enviar versículo");
+      if (response.ok) {
+        Alert.alert("Sucesso", "Notificações enviadas com sucesso!");
+        setTitle("");
+        setMessage("");
+      } else {
+        console.error("[APP] Erro:", data.error);
+        Alert.alert("Erro", "Falha ao enviar notificação.");
+      }
+    } catch (error) {
+      console.error("[APP] Erro na requisição:", error);
+      Alert.alert("Erro", "Falha ao conectar com o servidor.");
     }
-  } catch (error) {
-    console.error("[APP] Erro na requisição:", error);
-    Alert.alert("Erro", "Falha ao conectar com o servidor.");
-  }
-};
+  };
+
+
+  const handleSendDailyVerse = async () => {
+    try {
+      const response = await fetch("https://mndd-backend.onrender.com/versiculo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Sucesso", "Versículo do dia enviado!");
+      } else {
+        console.error("[APP] Erro ao enviar versículo:", data.error);
+        Alert.alert("Erro", "Falha ao enviar versículo");
+      }
+    } catch (error) {
+      console.error("[APP] Erro na requisição:", error);
+      Alert.alert("Erro", "Falha ao conectar com o servidor.");
+    }
+  };
 
 
   const adicionarCulto = async () => {
@@ -410,6 +410,14 @@ const handleSendDailyVerse = async () => {
                 >
                   <Text style={styles.buttonText}>📖 Versículo do Dia</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => navigation.navigate("Usuarios")}
+                >
+                  <Text style={styles.buttonText}>Usuários</Text>
+                </TouchableOpacity>
+
               </>
             ) : activeTab === "cultos" ? (
               <>
@@ -681,7 +689,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
   },
   tabButton: {
-    padding: 15,
+    padding: 5,
     alignItems: "center",
     flex: 1,
   },
