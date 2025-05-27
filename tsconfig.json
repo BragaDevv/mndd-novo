@@ -1,0 +1,19 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "jsx": "react-native",
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@assets/*": ["assets/*"],
+      "@screens/*": ["screens/*"],
+      "@components/*": ["components/*"],
+      "@context/*": ["context/*"],
+      "@services/*": ["services/*"]
+    }
+  }
+}

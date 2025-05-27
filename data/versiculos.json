@@ -1,0 +1,182 @@
+[
+  {
+    "livro": "Josué",
+    "capitulo": 1,
+    "versiculo": 9,
+    "texto": "Não to mandei eu? Esforça-te, e tem bom ânimo; não temas, nem te espantes; porque o Senhor teu Deus é contigo, por onde quer que andares."
+  },
+  {
+    "livro": "Salmos",
+    "capitulo": 23,
+    "versiculo": 4,
+    "texto": "Ainda que eu andasse pelo vale da sombra da morte, não temeria mal algum, porque tu estás comigo; a tua vara e o teu cajado me consolam."
+  },
+  {
+    "livro": "Salmos",
+    "capitulo": 27,
+    "versiculo": 1,
+    "texto": "O Senhor é a minha luz e a minha salvação; a quem temerei?"
+  },
+  {
+    "livro": "Salmos",
+    "capitulo": 34,
+    "versiculo": 18,
+    "texto": "Perto está o Senhor dos que têm o coração quebrantado, e salva os contritos de espírito."
+  },
+  {
+    "livro": "Salmos",
+    "capitulo": 46,
+    "versiculo": 1,
+    "texto": "Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia."
+  },
+  {
+    "livro": "Salmos",
+    "capitulo": 55,
+    "versiculo": 22,
+    "texto": "Lança o teu cuidado sobre o Senhor, e ele te susterá; nunca permitirá que o justo seja abalado."
+  },
+  {
+    "livro": "Provérbios",
+    "capitulo": 3,
+    "versiculo": 5,
+    "texto": "Confia no Senhor de todo o teu coração, e não te estribes no teu próprio entendimento."
+  },
+  {
+    "livro": "Provérbios",
+    "capitulo": 18,
+    "versiculo": 10,
+    "texto": "Torre forte é o nome do Senhor; para ela correrá o justo, e estará em alto refúgio."
+  },
+  {
+    "livro": "Isaías",
+    "capitulo": 40,
+    "versiculo": 31,
+    "texto": "Mas os que esperam no Senhor renovarão as forças, subirão com asas como águias; correrão, e não se cansarão; caminharão, e não se fatigarão."
+  },
+  {
+    "livro": "Isaías",
+    "capitulo": 41,
+    "versiculo": 10,
+    "texto": "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destra da minha justiça."
+  },
+  {
+    "livro": "Jeremias",
+    "capitulo": 29,
+    "versiculo": 11,
+    "texto": "Porque eu bem sei os pensamentos que penso de vós, diz o Senhor; pensamentos de paz, e não de mal, para vos dar um futuro e uma esperança."
+  },
+  {
+    "livro": "Mateus",
+    "capitulo": 11,
+    "versiculo": 28,
+    "texto": "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei."
+  },
+  {
+    "livro": "Mateus",
+    "capitulo": 19,
+    "versiculo": 26,
+    "texto": "Jesus, olhando para eles, disse-lhes: Aos homens é isso impossível, mas a Deus tudo é possível."
+  },
+  {
+    "livro": "João",
+    "capitulo": 14,
+    "versiculo": 27,
+    "texto": "Deixo-vos a paz, a minha paz vos dou; não vo-la dou como o mundo a dá. Não se turbe o vosso coração, nem se atemorize."
+  },
+  {
+    "livro": "Romanos",
+    "capitulo": 8,
+    "versiculo": 28,
+    "texto": "E sabemos que todas as coisas contribuem juntamente para o bem daqueles que amam a Deus."
+  },
+  {
+    "livro": "Romanos",
+    "capitulo": 8,
+    "versiculo": 31,
+    "texto": "Se Deus é por nós, quem será contra nós?"
+  },
+  {
+    "livro": "Romanos",
+    "capitulo": 12,
+    "versiculo": 12,
+    "texto": "Alegrai-vos na esperança, sede pacientes na tribulação, perseverai na oração."
+  },
+  {
+    "livro": "1 Coríntios",
+    "capitulo": 16,
+    "versiculo": 13,
+    "texto": "Vigiai, estai firmes na fé; portai-vos varonilmente, e fortalecei-vos."
+  },
+  {
+    "livro": "2 Coríntios",
+    "capitulo": 12,
+    "versiculo": 9,
+    "texto": "A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza."
+  },
+  {
+    "livro": "Filipenses",
+    "capitulo": 4,
+    "versiculo": 6,
+    "texto": "Não estejais inquietos por coisa alguma; antes, as vossas petições sejam em tudo conhecidas diante de Deus pela oração e súplica."
+  },
+  {
+    "livro": "Filipenses",
+    "capitulo": 4,
+    "versiculo": 7,
+    "texto": "E a paz de Deus, que excede todo o entendimento, guardará os vossos corações e os vossos sentimentos em Cristo Jesus."
+  },
+  {
+    "livro": "Filipenses",
+    "capitulo": 4,
+    "versiculo": 13,
+    "texto": "Posso todas as coisas naquele que me fortalece."
+  },
+  {
+    "livro": "Colossenses",
+    "capitulo": 3,
+    "versiculo": 2,
+    "texto": "Pensai nas coisas que são de cima, e não nas que são da terra."
+  },
+  {
+    "livro": "2 Timóteo",
+    "capitulo": 1,
+    "versiculo": 7,
+    "texto": "Porque Deus não nos deu o espírito de temor, mas de fortaleza, e de amor, e de moderação."
+  },
+  {
+    "livro": "Hebreus",
+    "capitulo": 10,
+    "versiculo": 23,
+    "texto": "Retenhamos firmes a confissão da nossa esperança, porque fiel é o que prometeu."
+  },
+  {
+    "livro": "Hebreus",
+    "capitulo": 13,
+    "versiculo": 6,
+    "texto": "O Senhor é o meu ajudador, e não temerei o que me possa fazer o homem."
+  },
+  {
+    "livro": "Tiago",
+    "capitulo": 1,
+    "versiculo": 12,
+    "texto": "Bem-aventurado o homem que suporta a tentação; porque, quando for provado, receberá a coroa da vida."
+  },
+  {
+    "livro": "1 Pedro",
+    "capitulo": 5,
+    "versiculo": 7,
+    "texto": "Lançando sobre ele toda a vossa ansiedade, porque ele tem cuidado de vós."
+  },
+  {
+    "livro": "Apocalipse",
+    "capitulo": 3,
+    "versiculo": 11,
+    "texto": "Eis que venho sem demora; guarda o que tens, para que ninguém tome a tua coroa."
+  },
+  {
+    "livro": "Apocalipse",
+    "capitulo": 21,
+    "versiculo": 4,
+    "texto": "E Deus limpará de seus olhos toda a lágrima; e não haverá mais morte, nem pranto, nem clamor, nem dor."
+  }
+]
