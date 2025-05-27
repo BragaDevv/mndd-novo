@@ -167,40 +167,44 @@ const AppNavigator = () => {
     <AppLoadProvider>
       <AuthProvider>
         <NavigationContainer ref={navigationRef}>
-          <Stack.Navigator
-            initialRouteName={showQuestionario ? "Questionario" : "MNDD"}
-            screenOptions={{
-              headerTitleAlign: "center",
-              headerTintColor: "#000",
-              headerStyle: { backgroundColor: "#fff" },
-            }}
-          >
-            <Stack.Screen
-              name="Questionario"
-              children={() => <QuestionarioScreen onComplete={handleQuestionarioComplete} />}
-              options={{ title: "Bem vindo ao App MNDD" }}
-            />
-            <Stack.Screen name="MNDD" component={MNDDScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Livros" component={HomeScreen} options={{ title: "Livros da Bíblia" }} />
-            <Stack.Screen name="Capitulos" component={BookScreen} options={({ route }) => ({ title: route.params.bookName })} />
-            <Stack.Screen name="Versiculos" component={ChapterScreen} options={({ route }) => ({ title: route.params.bookName })} />
-            <Stack.Screen name="Versiculo" component={VerseScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
-            <Stack.Screen name="Igreja" component={ChurchScreen} options={{ title: "Nossa Igreja" }} />
-            <Stack.Screen name="Usuarios" component={UsuariosScreen} />
-            <Stack.Screen name="SendNotification" options={{ title: "ADMINISTRAÇÃO", headerLeft: () => null }}>
-              {() => (
-                <ProtectedRoute>
-                  <SendNotificationScreen />
-                </ProtectedRoute>
-              )}
-            </Stack.Screen>
-            <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Acesso Administrativo" }} />
-            <Stack.Screen name="Favoritos" component={FavoritosScreen} options={{ title: "Versículos Favoritos" }} />
-            <Stack.Screen name="BibleAssistant" component={BibleAssistant} options={{ title: "Assistente Bíblico" }} />
-            <Stack.Screen name="EstudosScreen" component={EstudosScreen} options={{ title: "Devocionais" }} />
-            <Stack.Screen name="HarpaScreen" component={HarpaScreen} options={{ title: "" }} />
-          </Stack.Navigator>
-        </NavigationContainer>
+  <Stack.Navigator
+    screenOptions={{
+      headerTitleAlign: "center",
+      headerTintColor: "#000",
+      headerStyle: { backgroundColor: "#fff" },
+    }}
+  >
+    {showQuestionario ? (
+      <Stack.Screen
+        name="Questionario"
+        children={() => <QuestionarioScreen onComplete={handleQuestionarioComplete} />}
+        options={{ title: "Bem vindo ao App MNDD" }}
+      />
+    ) : (
+      <>
+        <Stack.Screen name="MNDD" component={MNDDScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Livros" component={HomeScreen} options={{ title: "Livros da Bíblia" }} />
+        <Stack.Screen name="Capitulos" component={BookScreen} options={({ route }) => ({ title: route.params.bookName })} />
+        <Stack.Screen name="Versiculos" component={ChapterScreen} options={({ route }) => ({ title: route.params.bookName })} />
+        <Stack.Screen name="Versiculo" component={VerseScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
+        <Stack.Screen name="Igreja" component={ChurchScreen} options={{ title: "Nossa Igreja" }} />
+        <Stack.Screen name="Usuarios" component={UsuariosScreen} />
+        <Stack.Screen name="SendNotification" options={{ title: "ADMINISTRAÇÃO", headerLeft: () => null }}>
+          {() => (
+            <ProtectedRoute>
+              <SendNotificationScreen />
+            </ProtectedRoute>
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Acesso Administrativo" }} />
+        <Stack.Screen name="Favoritos" component={FavoritosScreen} options={{ title: "Versículos Favoritos" }} />
+        <Stack.Screen name="BibleAssistant" component={BibleAssistant} options={{ title: "Assistente Bíblico" }} />
+        <Stack.Screen name="EstudosScreen" component={EstudosScreen} options={{ title: "Devocionais" }} />
+        <Stack.Screen name="HarpaScreen" component={HarpaScreen} options={{ title: "" }} />
+      </>
+    )}
+  </Stack.Navigator>
+</NavigationContainer>
         <Toast config={toastConfig} />
       </AuthProvider>
     </AppLoadProvider>
