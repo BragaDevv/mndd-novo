@@ -268,11 +268,12 @@ const sendNotification = async () => {
 const handleSendDailyVerse = async () => {
   try {
     const response = await fetch("https://mndd-backend.onrender.com/versiculo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 
     const data = await response.json();
 

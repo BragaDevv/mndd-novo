@@ -1,4 +1,6 @@
 export type RootStackParamList = {
+
+  Questionario: undefined | { onComplete: (dados: any) => void };
   MNDD: undefined;
   Igreja: undefined;
   SendNotification: undefined;
