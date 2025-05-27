@@ -235,42 +235,7 @@ const SendNotificationScreen = () => {
     }
   };
 
-  const sendNotification = async () => {
-    if (!title.trim() || !message.trim()) {
-      Alert.alert("Erro", "Preencha todos os campos");
-      return;
-    }
-
-    try {
-      const success = await sendNotificationToAll(title, message);
-      if (success) {
-        Alert.alert("Sucesso", "Notificação enviada!");
-        setTitle("");
-        setMessage("");
-      } else {
-        Alert.alert("Erro", "Falha ao enviar notificação");
-      }
-    } catch (error) {
-      console.error("Erro:", error);
-      Alert.alert("Erro", "Ocorreu um erro inesperado");
-    }
-  };
-
-  const handleSendDailyVerse = async () => {
-    try {
-      const success = await sendDailyVerseNotification();
-      if (success) {
-        Alert.alert("Sucesso", "Versículo do dia enviado!");
-      } else {
-        Alert.alert("Erro", "Falha ao enviar versículo");
-      }
-    } catch (error) {
-      console.error("Erro:", error);
-      Alert.alert("Erro", "Falha ao enviar versículo");
-    }
-  };
-
-const sendNotificationFromBackend = async () => {
+const sendNotification = async () => {
   if (!title || !message) {
     Alert.alert("Erro", "Título e mensagem são obrigatórios.");
     return;
@@ -279,9 +244,7 @@ const sendNotificationFromBackend = async () => {
   try {
     const response = await fetch("https://mndd-backend.onrender.com/send", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, body: message }),
     });
 
@@ -300,6 +263,31 @@ const sendNotificationFromBackend = async () => {
     Alert.alert("Erro", "Falha ao conectar com o servidor.");
   }
 };
+
+
+const handleSendDailyVerse = async () => {
+  try {
+    const response = await fetch("https://mndd-backend.onrender.com/versiculo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      Alert.alert("Sucesso", "Versículo do dia enviado!");
+    } else {
+      console.error("[APP] Erro ao enviar versículo:", data.error);
+      Alert.alert("Erro", "Falha ao enviar versículo");
+    }
+  } catch (error) {
+    console.error("[APP] Erro na requisição:", error);
+    Alert.alert("Erro", "Falha ao conectar com o servidor.");
+  }
+};
+
 
   const adicionarCulto = async () => {
     if (!novoCulto.data || !novoCulto.horario || !novoCulto.tipo) {
@@ -413,13 +401,6 @@ const sendNotificationFromBackend = async () => {
                   onPress={sendNotification}
                 >
                   <Text style={styles.buttonText}>Enviar Notificação</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={sendNotificationFromBackend}
-                >
-                  <Text style={styles.buttonText}>Enviar Notificação BACK</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
