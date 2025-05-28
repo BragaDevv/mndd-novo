@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Linking, 
-  Image, 
-  ScrollView, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+  Image,
+  ScrollView,
   Dimensions,
   ActivityIndicator
 } from 'react-native';
@@ -17,6 +17,7 @@ import { collection, onSnapshot, query, orderBy, where, Timestamp } from 'fireba
 import { db } from '../firebaseConfig';
 
 type Culto = {
+  local: string;
   id: string;
   data: string;
   horario: string;
@@ -43,6 +44,7 @@ const ChurchScreen = () => {
   // Carrega os cultos programados e imagens do carrossel
   useEffect(() => {
     const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0); // zera horas, minutos, segundos e milissegundos
     const fimDaSemana = new Date();
     fimDaSemana.setDate(hoje.getDate() + 7);
 
@@ -60,12 +62,12 @@ const ChurchScreen = () => {
 
     const unsubscribeCultos = onSnapshot(cultosQuery, (querySnapshot) => {
       const cultos: Culto[] = [];
-      
+
       querySnapshot.forEach((doc) => {
         const cultoData = doc.data();
         const [dia, mes, ano] = cultoData.data.split('/');
         const dataCulto = new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia));
-        
+
         if (dataCulto >= hoje && dataCulto <= fimDaSemana) {
           cultos.push({
             id: doc.id,
@@ -141,7 +143,7 @@ const ChurchScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView 
+      <ScrollView
         ref={mainScrollRef}
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
@@ -168,11 +170,11 @@ const ChurchScreen = () => {
                 }}
               >
                 {carrosselImages.map((image, index) => (
-                  <Image 
-                    key={image.id} 
-                    source={{ uri: image.imageBase64 }} 
-                    style={styles.slide} 
-                    resizeMode="cover" 
+                  <Image
+                    key={image.id}
+                    source={{ uri: image.imageBase64 }}
+                    style={styles.slide}
+                    resizeMode="cover"
                   />
                 ))}
               </ScrollView>
@@ -200,19 +202,18 @@ const ChurchScreen = () => {
         <View style={styles.content}>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>EVENTOS DESTA SEMANA</Text>
-            
+
             {loading ? (
               <ActivityIndicator color="#075E54" />
             ) : cultosDaSemana.length > 0 ? (
               cultosDaSemana.map((culto) => (
                 <View key={culto.id} style={styles.eventoCard}>
                   <View style={styles.eventoIcon}>
-                    <MaterialIcons name="event" size={24} color="#075E54" />
+                    <MaterialIcons name="event" size={24} color="#000" />
                   </View>
                   <View style={styles.eventoInfo}>
                     <Text style={styles.eventoTitulo}>{culto.tipo}</Text>
-                    <Text style={styles.eventoData}>
-                      {formatarData(culto.data)} • {culto.horario}
+                    <Text style={styles.eventoData}><MaterialIcons name="calendar-month" size={14} color="#000" />  {formatarData(culto.data)} • {culto.horario} | <MaterialIcons name="location-on" size={14} color="#f50202" />  {culto.local}
                     </Text>
                     {culto.descricao && (
                       <Text style={styles.eventoDescricao}>{culto.descricao}</Text>
@@ -227,7 +228,7 @@ const ChurchScreen = () => {
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>NOS ACOMPANHE</Text>
-            
+
             {Object.entries(socialLinks).map(([key, value]) => (
               <TouchableOpacity
                 key={key}
@@ -269,7 +270,8 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f5f5f5',
+    marginBottom: 20
   },
   loadingContainer: {
     flex: 1,
@@ -320,13 +322,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 15,
     color: '#333',
-    fontFamily: 'Montserrat_600SemiBold'
+    fontFamily: 'Montserrat_600SemiBold',
+    textAlign: 'center'
   },
   eventoCard: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 15,
+    padding: 10,
     marginBottom: 12,
     elevation: 2,
     shadowColor: '#000',
@@ -342,22 +345,22 @@ const styles = StyleSheet.create({
     flex: 1
   },
   eventoTitulo: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#075E54',
     marginBottom: 4,
     fontFamily: 'Montserrat_600SemiBold'
   },
   eventoData: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
     marginBottom: 6,
     fontFamily: 'Montserrat_500Medium'
   },
   eventoDescricao: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#444',
-    fontFamily: 'Montserrat_400Regular'
+    fontFamily: 'Montserrat_500Medium'
   },
   emptyText: {
     textAlign: 'center',
@@ -381,6 +384,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat_500Medium'
   },
   footer: {
+    width: '100%',
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: '#ddd',

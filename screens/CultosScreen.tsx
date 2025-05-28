@@ -1,5 +1,3 @@
-// ✅ Tela 'Cultos' separada mantendo os estilos originais de calendário e seletor de horário
-
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -10,7 +8,6 @@ import {
   Alert,
   ScrollView,
   Platform,
-  Image,
   Dimensions,
 } from "react-native";
 import { useFonts, Montserrat_500Medium } from "@expo-google-fonts/montserrat";
@@ -26,9 +23,9 @@ import {
   orderBy,
   query,
   serverTimestamp,
-  DocumentData,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import { Picker } from "@react-native-picker/picker";
 
 const { width } = Dimensions.get("window");
 
@@ -38,15 +35,18 @@ type Culto = {
   horario: string;
   tipo: string;
   descricao?: string;
+  local?: string;
 };
 
 const CultosScreen = () => {
   const [cultos, setCultos] = useState<Culto[]>([]);
+  const [mostrarPickerLocal, setMostrarPickerLocal] = useState(false);
   const [novoCulto, setNovoCulto] = useState<Omit<Culto, "id">>({
     data: "",
     horario: "",
     tipo: "Culto de Celebração",
     descricao: "",
+    local: "",
   });
   const [showCalendar, setShowCalendar] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -109,7 +109,7 @@ const CultosScreen = () => {
   };
 
   const adicionarCulto = async () => {
-    if (!novoCulto.data || !novoCulto.horario || !novoCulto.tipo) {
+    if (!novoCulto.data || !novoCulto.horario || !novoCulto.tipo || !novoCulto.local) {
       Alert.alert("Erro", "Preencha todos os campos do culto");
       return;
     }
@@ -124,6 +124,7 @@ const CultosScreen = () => {
         horario: "",
         tipo: "Culto de Celebração",
         descricao: "",
+        local: "",
       });
       Alert.alert("Sucesso", "Culto adicionado");
     } catch (error) {
@@ -146,6 +147,7 @@ const CultosScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Adicionar Cultos</Text>
 
+      {/* Data */}
       <TouchableOpacity
         style={styles.dateInputContainer}
         onPress={() => setShowCalendar(!showCalendar)}
@@ -164,28 +166,15 @@ const CultosScreen = () => {
           minDate={new Date()}
           weekdays={["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]}
           months={[
-            "Janeiro",
-            "Fevereiro",
-            "Março",
-            "Abril",
-            "Maio",
-            "Junho",
-            "Julho",
-            "Agosto",
-            "Setembro",
-            "Outubro",
-            "Novembro",
-            "Dezembro",
+            "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+            "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
           ]}
-          previousComponent={
-            <MaterialIcons name="chevron-left" size={24} color="#075E54" />
-          }
-          nextComponent={
-            <MaterialIcons name="chevron-right" size={24} color="#075E54" />
-          }
+          previousComponent={<MaterialIcons name="chevron-left" size={24} color="#075E54" />}
+          nextComponent={<MaterialIcons name="chevron-right" size={24} color="#075E54" />}
         />
       )}
 
+      {/* Horário */}
       <TouchableOpacity
         style={styles.dateInputContainer}
         onPress={handleTimePress}
@@ -213,6 +202,7 @@ const CultosScreen = () => {
         </>
       )}
 
+      {/* Tipo de Culto */}
       <TextInput
         style={styles.input}
         placeholder="Tipo de Culto"
@@ -221,6 +211,33 @@ const CultosScreen = () => {
         placeholderTextColor="#999"
       />
 
+      {/* Local (TextInput simulando picker) */}
+      <TouchableOpacity
+        style={styles.dateInputContainer}
+        onPress={() => setMostrarPickerLocal(true)}
+      >
+        <Text style={styles.dateInputText}>
+          {novoCulto.local || "Selecione o local"}
+        </Text>
+        <MaterialIcons name="location-on" size={20} color="#555" />
+      </TouchableOpacity>
+
+      {mostrarPickerLocal && (
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={novoCulto.local}
+            onValueChange={(itemValue: string) => {
+              setNovoCulto({ ...novoCulto, local: itemValue });
+              setMostrarPickerLocal(false);
+            }}
+          >
+            <Picker.Item label="Continental 2" value="Continental 2" />
+            <Picker.Item label="Jd Tranquilidade" value="Jd Tranquilidade" />
+          </Picker>
+        </View>
+      )}
+
+      {/* Descrição */}
       <TextInput
         style={[styles.input, { height: 80 }]}
         placeholder="Descrição (opcional)"
@@ -234,14 +251,18 @@ const CultosScreen = () => {
         <Text style={styles.buttonText}>Salvar Culto</Text>
       </TouchableOpacity>
 
+      {/* Lista de Cultos */}
       <Text style={styles.sectionTitle}>Cultos Programados</Text>
       {cultos.map((culto) => (
         <View key={culto.id} style={styles.cultoItem}>
           <View>
             <Text style={styles.cultoText}>{culto.tipo}</Text>
-            <Text>
-              {culto.data} às {culto.horario}
-            </Text>
+            <Text>{culto.data} às {culto.horario}</Text>
+            {!!culto.local && (
+              <Text>
+                <MaterialIcons name="location-on" size={14} color="#555" /> {culto.local}
+              </Text>
+            )}
             {!!culto.descricao && <Text>{culto.descricao}</Text>}
           </View>
           <TouchableOpacity onPress={() => removerCulto(culto.id)}>
@@ -317,6 +338,12 @@ const styles = StyleSheet.create({
   cultoText: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    marginBottom: 20,
   },
 });
 

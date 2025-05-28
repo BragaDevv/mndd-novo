@@ -189,7 +189,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Capitulos" component={BookScreen} options={({ route }) => ({ title: route.params.bookName })} />
         <Stack.Screen name="Versiculos" component={ChapterScreen} options={({ route }) => ({ title: route.params.bookName })} />
         <Stack.Screen name="Versiculo" component={VerseScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
-        <Stack.Screen name="Igreja" component={ChurchScreen} options={{ title: "Nossa Igreja" }} />
+        <Stack.Screen name="Igreja" component={ChurchScreen} options={{ title: "" }} />
         <Stack.Screen name="Usuarios" component={UsuariosScreen}options={{ title:'' }} />
         <Stack.Screen name="Carrossel" component={CarroselScreen} options={{ title:'' }} />
         <Stack.Screen name="Cultos" component={CultosScreen} options={{ title:'' }} />
