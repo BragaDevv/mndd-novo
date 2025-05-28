@@ -236,8 +236,7 @@ const UsuariosScreen = () => {
             <Ionicons name="person-circle-outline" size={24} color="#6200ee" />
             <View style={{ marginLeft: 10 }}>
               <Text style={styles.userName}>
-                {item.nome}
-                {item.sobrenome}
+                {item.nome} {item.sobrenome}
               </Text>
               <View style={styles.tagsContainer}>
                 {item.grupos?.map((grupo, idx) => (

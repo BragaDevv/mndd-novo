@@ -17,6 +17,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { MaskedTextInput } from "react-native-mask-text";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/types";
@@ -280,10 +281,32 @@ const MNDDScreen = () => {
               <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
                 <ScrollView>
                   <Text style={styles.modalTitle}>Editar suas informações</Text>
+                  <Text style={styles.label}>Nome*</Text>
                   <TextInput style={styles.modalInput} placeholder="Nome" placeholderTextColor="#999" value={nome} onChangeText={setNome} />
+                  <Text style={styles.label}>Sobrenome*</Text>
                   <TextInput style={styles.modalInput} placeholder="Sobrenome" placeholderTextColor="#999" value={sobrenome} onChangeText={setSobrenome} />
-                  <TextInput style={styles.modalInput} placeholder="Data de Nascimento (DD/MM/AAAA)" placeholderTextColor="#999" value={dataNascimento} onChangeText={setDataNascimento} keyboardType="numeric" />
-                  <TextInput style={styles.modalInput} placeholder="Telefone" placeholderTextColor="#999" value={telefone} onChangeText={setTelefone} keyboardType="phone-pad" />
+
+                  <Text style={styles.label}>Data de Nascimento*</Text>
+                  <MaskedTextInput
+                    mask="99/99/9999"
+                    style={styles.modalInput}
+                    placeholder="Data de Nascimento (DD/MM/AAAA)"
+                    placeholderTextColor="#999"
+                    keyboardType="numeric"
+                    value={dataNascimento}
+                    onChangeText={(text, rawText) => setDataNascimento(text)}
+                  />
+                  <Text style={styles.label}>Telefone</Text>
+                  <MaskedTextInput
+                    mask="(99) 99999-9999"
+                    style={styles.modalInput}
+                    value={telefone}
+                    onChangeText={setTelefone}
+                    keyboardType="phone-pad"
+                    placeholder="(00) 00000-0000"
+                  />
+                  
+                  <Text style={styles.label}>Endereço</Text>
                   <TextInput style={styles.modalInput} placeholder="Endereço" placeholderTextColor="#999" value={endereco} onChangeText={setEndereco} />
 
 
