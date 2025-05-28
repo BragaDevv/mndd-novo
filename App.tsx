@@ -176,8 +176,8 @@ const AppNavigator = () => {
             {showQuestionario ? (
               <Stack.Screen
                 name="Questionario"
-                children={() => <QuestionarioScreen onComplete={handleQuestionarioComplete} />}
-                options={{ title: "Bem vindo ao App MNDD" }}
+                children={() => <QuestionarioScreen onComplete={handleQuestionarioComplete}/>}
+                 options={{ headerShown: false }}
               />
             ) : (
               <>

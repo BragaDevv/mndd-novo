@@ -281,8 +281,15 @@ const MNDDScreen = () => {
               <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
                 <ScrollView>
                   <Text style={styles.modalTitle}>Editar suas informações</Text>
+
                   <Text style={styles.label}>Nome*</Text>
-                  <TextInput style={styles.modalInput} placeholder="Nome" placeholderTextColor="#999" value={nome} onChangeText={setNome} />
+                  <TextInput
+                    style={styles.modalInput}
+                    value={nome}
+                    onChangeText={(text) => setNome(text.replace(/\s/g, ""))}
+                    placeholder="Digite seu nome"
+                  />
+
                   <Text style={styles.label}>Sobrenome*</Text>
                   <TextInput style={styles.modalInput} placeholder="Sobrenome" placeholderTextColor="#999" value={sobrenome} onChangeText={setSobrenome} />
 
@@ -305,7 +312,7 @@ const MNDDScreen = () => {
                     keyboardType="phone-pad"
                     placeholder="(00) 00000-0000"
                   />
-                  
+
                   <Text style={styles.label}>Endereço</Text>
                   <TextInput style={styles.modalInput} placeholder="Endereço" placeholderTextColor="#999" value={endereco} onChangeText={setEndereco} />
 
