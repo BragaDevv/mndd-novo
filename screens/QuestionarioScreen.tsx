@@ -14,6 +14,11 @@ import {
 } from "react-native";
 import { MaskedTextInput } from "react-native-mask-text";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import { getAuth, signInAnonymously } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
 
 interface Props {
   onComplete: (dados: {
@@ -23,6 +28,7 @@ interface Props {
     membro: boolean;
     telefone?: string;
     endereco?: string;
+    uid?: string;
   }) => void;
 }
 
@@ -34,20 +40,56 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
   const [endereco, setEndereco] = useState("");
   const [membro, setMembro] = useState<"sim" | "nao" | null>(null);
 
-  const handleSubmit = () => {
+  const ensureAnonAuth = async (): Promise<string> => {
+    const auth = getAuth();
+    if (auth.currentUser) {
+      console.log("✅ Usuário já autenticado:", auth.currentUser.uid);
+      return auth.currentUser.uid;
+    }
+    const result = await signInAnonymously(auth);
+    console.log("🔐 Novo usuário anônimo:", result.user.uid);
+    return result.user.uid;
+  };
+
+  const handleSubmit = async () => {
     if (!nome || !sobrenome || !dataNascimento || membro === null) {
       Alert.alert("Erro", "Preencha todos os campos obrigatórios");
       return;
     }
 
-    onComplete({
-      nome,
-      sobrenome,
-      dataNascimento,
-      membro: membro === "sim",
-      telefone,
-      endereco,
-    });
+    try {
+      const uid = await ensureAnonAuth();
+      const token = await Notifications.getExpoPushTokenAsync();
+
+      await setDoc(doc(db, "usuarios", uid), {
+        uid,
+        nome,
+        sobrenome,
+        dataNascimento,
+        membro: membro === "sim",
+        telefone,
+        endereco,
+        expoToken: token.data,
+        createdAt: new Date(),
+      });
+
+      await AsyncStorage.setItem("usuarioUID", uid);
+
+      onComplete({
+        nome,
+        sobrenome,
+        dataNascimento,
+        membro: membro === "sim",
+        telefone,
+        endereco,
+        uid,
+      });
+
+      Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar usuário:", error);
+      Alert.alert("Erro", "Não foi possível salvar os dados.");
+    }
   };
 
   return (
