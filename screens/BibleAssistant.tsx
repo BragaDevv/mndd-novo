@@ -275,12 +275,12 @@ const BibleAssistant = () => {
             </View>
           </View>
         )}
-
-        {/* Avatar flutuante no canto inferior direito */}
-        <TouchableOpacity onPress={handlePress} style={styles.avatarFloating}>
-          <Image source={avatar} style={styles.avatarFloating} />
-        </TouchableOpacity>
       </ScrollView>
+
+      {/* Avatar flutuante no canto inferior direito */}
+      <TouchableOpacity onPress={handlePress} style={styles.avatarFloating}>
+        <Image source={avatar} style={styles.avatarFloating} />
+      </TouchableOpacity>
 
       {/* Área de input */}
       <View
@@ -337,11 +337,11 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   avatarFloating: {
-    position: "relative",
-    top: 60,
-    left: 130,
-    width: 100,
-    height: 150,
+    position: "absolute",
+    bottom: 45,
+    left: 150,
+    width: 80,
+    height: 120,
     backgroundColor: "tranparent",
   },
   headerTitle: {
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     marginBottom: 10,
-    maxWidth: "100%",
+    maxWidth: "90%",
   },
   aiContainer: {
     alignSelf: "flex-start",
