@@ -4,6 +4,9 @@ export type RootStackParamList = {
   MNDD: undefined;
   Igreja: undefined;
   Usuarios: undefined;
+  Carrossel: undefined;
+  Cultos: undefined;
+  SendNotificationForm: undefined;
   SendNotification: undefined;
   Login: undefined;
   Favoritos: undefined;

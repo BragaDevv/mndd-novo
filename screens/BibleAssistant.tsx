@@ -28,8 +28,7 @@ const BibleAssistant = () => {
 
   const [messages, setMessages] = useState([
     {
-      text:
-        "A Paz do Senhor ! 🙏 Sou o Assistente Bíblico do MNDD. Posso te ajudar a:\n\n• Encontrar versículos\n• Explicar passagens\n• Contar histórias da Bíblia\n• Dar orientações cristãs\n• Informar sobre os próximos cultos\n\nComo posso te ajudar hoje?",
+      text: "A Paz do Senhor ! 🙏 Sou o Assistente Bíblico do MNDD. Posso te ajudar a:\n\n• Encontrar versículos\n• Explicar passagens\n• Contar histórias da Bíblia\n• Dar orientações cristãs\n• Informar sobre os próximos cultos\n\nComo posso te ajudar hoje?",
       user: false,
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -50,7 +49,7 @@ const BibleAssistant = () => {
   // Avatares (substitua pelos seus caminhos de imagem)
   const assistantAvatar = require("../assets/logo.png");
   const assistantAvatarPastor = require("../assets/avatarpastor.png");
-  const userAvatar = require("../assets/icon-app.png");
+  const userAvatar = require("../assets/avatarpastor.png");
 
   // Carrega os cultos programados
   useEffect(() => {
@@ -206,6 +205,14 @@ const BibleAssistant = () => {
     }
   };
 
+  const avatar1 = require("../assets/avatarpastor.png");
+  const avatar2 = require("../assets/avatarpastor2.png"); // coloque outra imagem
+  const [avatar, setAvatar] = useState(avatar1);
+
+  const handlePress = () => {
+    setAvatar((prev: any) => (prev === avatar1 ? avatar2 : avatar1));
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -236,7 +243,7 @@ const BibleAssistant = () => {
             ]}
           >
             {!msg.user && (
-              <Image source={assistantAvatar} style={styles.messageAvatar} />
+              <Image source={userAvatar} style={styles.messageAvatar} />
             )}
 
             <View
@@ -268,6 +275,11 @@ const BibleAssistant = () => {
             </View>
           </View>
         )}
+
+        {/* Avatar flutuante no canto inferior direito */}
+        <TouchableOpacity onPress={handlePress} style={styles.avatarFloating}>
+          <Image source={avatar} style={styles.avatarFloating} />
+        </TouchableOpacity>
       </ScrollView>
 
       {/* Área de input */}
@@ -298,12 +310,6 @@ const BibleAssistant = () => {
           />
         </TouchableOpacity>
       </View>
-
-       {/* Avatar flutuante no canto inferior direito */}
-      <Image
-        source={assistantAvatarPastor}
-        style={styles.avatarFloating}
-      />
     </KeyboardAvoidingView>
   );
 };
@@ -330,13 +336,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "white",
   },
-    avatarFloating: {
-    position: "absolute",
-    bottom: 90,
-    right: 15,
+  avatarFloating: {
+    position: "relative",
+    top: 60,
+    left: 130,
     width: 100,
     height: 150,
-    backgroundColor:"tranparent"
+    backgroundColor: "tranparent",
   },
   headerTitle: {
     color: "white",
@@ -364,9 +370,9 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   messageAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 40,
+    height: 60,
+    borderRadius: 10,
     marginHorizontal: 5,
   },
   messageBubble: {

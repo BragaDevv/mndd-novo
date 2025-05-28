@@ -12,6 +12,9 @@ import VerseScreen from "./screens/VerseScreen";
 import ChurchScreen from "./screens/ChurchScreen";
 import SendNotificationScreen from "./screens/SendNotificationScreen";
 import UsuariosScreen from "@screens/UsuariosScreen";
+import CarroselScreen from "@screens/CarroselScreen";
+import CultosScreen from "@screens/CultosScreen";
+import SendNotificationFormScreen from "@screens/SendNotificationForm";
 import LoginScreen from "./screens/LoginScreen";
 import FavoritosScreen from "./screens/FavoritosScreen";
 import BibleAssistant from "./screens/BibleAssistant";
@@ -22,7 +25,6 @@ import QuestionarioScreen from "./screens/QuestionarioScreen";
 import { RootStackParamList } from "./types/types";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Toast from "react-native-toast-message";
-import { toastConfig } from "./components/ToastConfig";
 
 import registerForPushNotifications from "./services/registerForPushNotifications";
 import { AppLoadProvider } from "./context/AppLoadContext";
@@ -188,8 +190,11 @@ const AppNavigator = () => {
         <Stack.Screen name="Versiculos" component={ChapterScreen} options={({ route }) => ({ title: route.params.bookName })} />
         <Stack.Screen name="Versiculo" component={VerseScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
         <Stack.Screen name="Igreja" component={ChurchScreen} options={{ title: "Nossa Igreja" }} />
-        <Stack.Screen name="Usuarios" component={UsuariosScreen} />
-        <Stack.Screen name="SendNotification" options={{ title: "ADMINISTRAÇÃO", headerLeft: () => null }}>
+        <Stack.Screen name="Usuarios" component={UsuariosScreen}options={{ title:'' }} />
+        <Stack.Screen name="Carrossel" component={CarroselScreen} options={{ title:'' }} />
+        <Stack.Screen name="Cultos" component={CultosScreen} options={{ title:'' }} />
+        <Stack.Screen name="SendNotificationForm" component={SendNotificationFormScreen}options={{ title:'' }} />
+        <Stack.Screen name="SendNotification" options={{ title: "", headerLeft: () => null }}>
           {() => (
             <ProtectedRoute>
               <SendNotificationScreen />
@@ -205,7 +210,6 @@ const AppNavigator = () => {
     )}
   </Stack.Navigator>
 </NavigationContainer>
-        <Toast config={toastConfig} />
       </AuthProvider>
     </AppLoadProvider>
   );

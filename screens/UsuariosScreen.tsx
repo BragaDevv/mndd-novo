@@ -107,32 +107,31 @@ const UsuariosScreen = () => {
     }
   };
 
-const salvarGrupos = async () => {
-  if (!usuarioSelecionado) return;
+  const salvarGrupos = async () => {
+    if (!usuarioSelecionado) return;
 
-  const db = getFirestore();
-  const docRef = doc(db, "usuarios", usuarioSelecionado.id);
+    const db = getFirestore();
+    const docRef = doc(db, "usuarios", usuarioSelecionado.id);
 
-  try {
-    await updateDoc(docRef, {
-      grupos: usuarioSelecionado.grupos || [],
-    });
+    try {
+      await updateDoc(docRef, {
+        grupos: usuarioSelecionado.grupos || [],
+      });
 
-    // Atualiza o usuário no array de usuários imediatamente
-    setUsuarios((prevUsuarios) =>
-      prevUsuarios.map((u) =>
-        u.id === usuarioSelecionado.id
-          ? { ...u, grupos: usuarioSelecionado.grupos || [] }
-          : u
-      )
-    );
+      // Atualiza o usuário no array de usuários imediatamente
+      setUsuarios((prevUsuarios) =>
+        prevUsuarios.map((u) =>
+          u.id === usuarioSelecionado.id
+            ? { ...u, grupos: usuarioSelecionado.grupos || [] }
+            : u
+        )
+      );
 
-    Alert.alert("Grupos atualizados!");
-  } catch (err) {
-    Alert.alert("Erro ao salvar grupos.");
-  }
-};
-
+      Alert.alert("Grupos atualizados!");
+    } catch (err) {
+      Alert.alert("Erro ao salvar grupos.");
+    }
+  };
 
   const [loadingGrupo, setLoadingGrupo] = useState(false);
 
@@ -170,6 +169,7 @@ const salvarGrupos = async () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Gestão de Membros / Usuários</Text>
       <TextInput
         style={styles.input}
         placeholder="Buscar por nome"
@@ -423,8 +423,19 @@ const salvarGrupos = async () => {
 export default UsuariosScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 12 },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#fff",
+    justifyContent: "flex-start",
+  },
+
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 12,
+    textAlign: "center",
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -503,7 +514,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9ff",
     padding: 10,
     borderRadius: 8,
-    marginTop:10
+    marginTop: 10,
   },
   infoText: {
     fontSize: 14,
@@ -575,5 +586,4 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
-
 });
