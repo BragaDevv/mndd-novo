@@ -3,8 +3,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import { Text, View, Platform } from "react-native";
-import { getAuth, onAuthStateChanged, signInAnonymously, User } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged, signInAnonymously } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { doc, getDoc, query, where, getDocs, collection, setDoc } from "firebase/firestore";
+import * as Notifications from "expo-notifications";
+import Toast from "react-native-toast-message";
 
 import MNDDScreen from "./screens/MNDD";
 import HomeScreen from "./screens/HomeScreen";
@@ -26,15 +29,9 @@ import QuestionarioScreen from "./screens/QuestionarioScreen";
 
 import { RootStackParamList } from "./types/types";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import Toast from "react-native-toast-message";
-
 import registerForPushNotifications from "./services/registerForPushNotifications";
 import { AppLoadProvider } from "./context/AppLoadContext";
-import * as Notifications from "expo-notifications";
-import * as Device from "expo-device";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "./firebaseConfig";
-import { addDoc, collection, getDocs, query, where, serverTimestamp } from "firebase/firestore";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -74,71 +71,28 @@ const AppNavigator = () => {
   const [expoToken, setExpoToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const verificarSeTokenExisteNaColecao = async () => {
-      if (!expoToken) return;
-      try {
-        const q = query(collection(db, "usuarios"), where("expoToken", "==", expoToken));
+    const checkUserByToken = async () => {
+      const token = await registerForPushNotifications();
+      if (token) {
+        setExpoToken(token);
+        const q = query(collection(db, "usuarios"), where("expoToken", "==", token));
         const snapshot = await getDocs(q);
-        if (snapshot.empty) {
-          setShowQuestionario(true);
-        } else {
+        if (!snapshot.empty) {
+          console.log("✅ Token encontrado, pulando questionário");
           setShowQuestionario(false);
+        } else {
+          console.log("🆕 Token não encontrado, exibindo questionário");
+          setShowQuestionario(true);
         }
-      } catch (error) {
-        console.error("Erro ao verificar token no Firestore:", error);
-        setShowQuestionario(false);
       }
     };
 
-    verificarSeTokenExisteNaColecao();
-  }, [expoToken]);
-
-
-  useEffect(() => {
-  const auth = getAuth();
-
-  const restoreAnonUser = async () => {
-    const storedUID = await AsyncStorage.getItem("usuarioUID");
-    if (storedUID) {
-      const docRef = doc(db, "usuarios", storedUID);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        console.log("♻️ Restaurando sessão para UID:", storedUID);
-        // Aqui você pode fazer algo como forçar setUser() manualmente
-        // Mas como Firebase Auth "não lembra", se quiser força-lo:
-        await signInAnonymously(auth); // cria novo user
-        const newUID = auth.currentUser?.uid;
-        if (newUID) {
-          console.log("🔄 Copiando dados para novo UID:", newUID);
-          await setDoc(doc(db, "usuarios", newUID), {
-            ...docSnap.data(),
-            uid: newUID,
-            restauradoDe: storedUID,
-            atualizadoEm: new Date(),
-          });
-          await AsyncStorage.setItem("usuarioUID", newUID);
-        }
-      } else {
-        console.log("⚠️ UID armazenado não existe mais.");
-      }
-    }
-  };
-
-  restoreAnonUser();
-}, []);
-
-
-
+    checkUserByToken();
+  }, []);
 
   useEffect(() => {
     const setupNotifications = async () => {
       try {
-        const token = await registerForPushNotifications();
-        if (token) {
-          console.log("[APP] Token recebido:", token);
-          setExpoToken(token);
-        }
-
         if (Platform.OS === "android") {
           await Notifications.setNotificationChannelAsync("default", {
             name: "default",
@@ -150,7 +104,6 @@ const AppNavigator = () => {
         }
 
         notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-          console.log("[APP] Notificação recebida:", notification);
           Toast.show({
             type: "info",
             text1: notification.request.content.title || "Nova notificação",
@@ -159,10 +112,10 @@ const AppNavigator = () => {
         });
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log("[APP] Usuário interagiu com a notificação:", response);
+          console.log("[APP] Notificação clicada:", response);
         });
       } catch (error) {
-        console.error("[APP] Erro no setup de notificações:", error);
+        console.error("[APP] Erro ao configurar notificações:", error);
       }
     };
 
@@ -181,17 +134,22 @@ const AppNavigator = () => {
     membro: boolean;
     telefone?: string;
     endereco?: string;
+    uid?: string;
   }) => {
     try {
-      const q = query(collection(db, "usuarios"), where("expoToken", "==", expoToken));
-      const snapshot = await getDocs(q);
-      if (snapshot.empty) {
-        await addDoc(collection(db, "usuarios"), {
-          ...dados,
-          expoToken: expoToken || null,
-          createdAt: serverTimestamp(),
-        });
-      }
+      const auth = getAuth();
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+
+      await setDoc(doc(db, "usuarios", uid), {
+        uid,
+        ...dados,
+        expoToken: expoToken || null,
+        createdAt: new Date(),
+      });
+
+      await AsyncStorage.setItem("usuarioUID", uid);
+
       setShowQuestionario(false);
       navigationRef.current?.resetRoot({
         index: 0,
@@ -208,62 +166,50 @@ const AppNavigator = () => {
     <AppLoadProvider>
       <AuthProvider>
         <NavigationContainer ref={navigationRef}>
-  <Stack.Navigator
-    screenOptions={{
-      headerTitleAlign: "center",
-      headerTintColor: "#000",
-      headerStyle: { backgroundColor: "#fff" },
-    }}
-  >
-    {showQuestionario ? (
-      <Stack.Screen
-        name="Questionario"
-        children={() => <QuestionarioScreen onComplete={handleQuestionarioComplete} />}
-        options={{ title: "Bem vindo ao App MNDD" }}
-      />
-    ) : (
-      <>
-        <Stack.Screen name="MNDD" component={MNDDScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Livros" component={HomeScreen} options={{ title: "Livros da Bíblia" }} />
-        <Stack.Screen name="Capitulos" component={BookScreen} options={({ route }) => ({ title: route.params.bookName })} />
-        <Stack.Screen name="Versiculos" component={ChapterScreen} options={({ route }) => ({ title: route.params.bookName })} />
-        <Stack.Screen name="Versiculo" component={VerseScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
-        <Stack.Screen name="Igreja" component={ChurchScreen} options={{ title: "" }} />
-        <Stack.Screen name="Usuarios" component={UsuariosScreen}options={{ title:'' }} />
-        <Stack.Screen name="Carrossel" component={CarroselScreen} options={{ title:'' }} />
-        <Stack.Screen name="Cultos" component={CultosScreen} options={{ title:'' }} />
-        <Stack.Screen name="SendNotificationForm" component={SendNotificationFormScreen}options={{ title:'' }} />
-        <Stack.Screen name="SendNotification" options={{ title: "", headerLeft: () => null }}>
-          {() => (
-            <ProtectedRoute>
-              <SendNotificationScreen />
-            </ProtectedRoute>
-          )}
-        </Stack.Screen>
-        <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Acesso Administrativo" }} />
-        <Stack.Screen name="Favoritos" component={FavoritosScreen} options={{ title: "Versículos Favoritos" }} />
-        <Stack.Screen name="BibleAssistant" component={BibleAssistant} options={{ title: "Assistente Bíblico" }} />
-        <Stack.Screen name="EstudosScreen" component={EstudosScreen} options={{ title: "Devocionais" }} />
-        <Stack.Screen name="HarpaScreen" component={HarpaScreen} options={{ title: "" }} />
-      </>
-    )}
-  </Stack.Navigator>
-</NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerTitleAlign: "center",
+              headerTintColor: "#000",
+              headerStyle: { backgroundColor: "#fff" },
+            }}
+          >
+            {showQuestionario ? (
+              <Stack.Screen
+                name="Questionario"
+                children={() => <QuestionarioScreen onComplete={handleQuestionarioComplete} />}
+                options={{ title: "Bem vindo ao App MNDD" }}
+              />
+            ) : (
+              <>
+                <Stack.Screen name="MNDD" component={MNDDScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Livros" component={HomeScreen} options={{ title: "Livros da Bíblia" }} />
+                <Stack.Screen name="Capitulos" component={BookScreen} options={({ route }) => ({ title: route.params.bookName })} />
+                <Stack.Screen name="Versiculos" component={ChapterScreen} options={({ route }) => ({ title: route.params.bookName })} />
+                <Stack.Screen name="Versiculo" component={VerseScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
+                <Stack.Screen name="Igreja" component={ChurchScreen} options={{ title: "" }} />
+                <Stack.Screen name="Usuarios" component={UsuariosScreen} options={{ title: "" }} />
+                <Stack.Screen name="Carrossel" component={CarroselScreen} options={{ title: "" }} />
+                <Stack.Screen name="Cultos" component={CultosScreen} options={{ title: "" }} />
+                <Stack.Screen name="SendNotificationForm" component={SendNotificationFormScreen} options={{ title: "" }} />
+                <Stack.Screen name="SendNotification" options={{ title: "", headerLeft: () => null }}>
+                  {() => (
+                    <ProtectedRoute>
+                      <SendNotificationScreen />
+                    </ProtectedRoute>
+                  )}
+                </Stack.Screen>
+                <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Acesso Administrativo" }} />
+                <Stack.Screen name="Favoritos" component={FavoritosScreen} options={{ title: "Versículos Favoritos" }} />
+                <Stack.Screen name="BibleAssistant" component={BibleAssistant} options={{ title: "Assistente Bíblico" }} />
+                <Stack.Screen name="EstudosScreen" component={EstudosScreen} options={{ title: "Devocionais" }} />
+                <Stack.Screen name="HarpaScreen" component={HarpaScreen} options={{ title: "" }} />
+              </>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
       </AuthProvider>
     </AppLoadProvider>
   );
 };
 
 export default AppNavigator;
-function setUser(currentUser: User | null) {
-  throw new Error("Function not implemented.");
-}
-
-function setIsAdmin(isAdminUser: boolean) {
-  throw new Error("Function not implemented.");
-}
-
-function setLoading(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}
-

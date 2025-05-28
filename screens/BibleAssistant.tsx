@@ -48,8 +48,7 @@ const BibleAssistant = () => {
 
   // Avatares (substitua pelos seus caminhos de imagem)
   const assistantAvatar = require("../assets/logo.png");
-  const assistantAvatarPastor = require("../assets/avatarpastor.png");
-  const userAvatar = require("../assets/avatarpastor.png");
+  const userAvatar = require("../assets/avatarpastorrosto.png");
 
   // Carrega os cultos programados
   useEffect(() => {
@@ -278,7 +277,7 @@ const BibleAssistant = () => {
       </ScrollView>
 
       {/* Avatar flutuante no canto inferior direito */}
-      <TouchableOpacity onPress={handlePress} style={styles.avatarFloating}>
+      <TouchableOpacity onPress={handlePress} style={styles.avatarFloating} activeOpacity={1}>
         <Image source={avatar} style={styles.avatarFloating} />
       </TouchableOpacity>
 
@@ -371,8 +370,8 @@ const styles = StyleSheet.create({
   },
   messageAvatar: {
     width: 40,
-    height: 60,
-    borderRadius: 10,
+    height: 45,
+    borderRadius: 18,
     marginHorizontal: 5,
   },
   messageBubble: {

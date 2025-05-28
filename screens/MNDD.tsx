@@ -29,11 +29,13 @@ import {
 } from "@expo-google-fonts/montserrat";
 import LottieView from "lottie-react-native";
 import Fontisto from "@expo/vector-icons/Fontisto";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
+
 
 const { height } = Dimensions.get("window");
 
@@ -101,55 +103,53 @@ const MNDDScreen = () => {
   }, []);
 
 
-const handleOpenModal = async () => {
-  try {
-    const auth = getAuth();
+  const handleOpenModal = async () => {
+    try {
+      const tokenInfo = await Notifications.getExpoPushTokenAsync();
+      const expoToken = tokenInfo.data;
 
-    // Aguarda o usuário ser carregado
-    await new Promise(resolve => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          resolve(user);
-          unsubscribe();
-        }
-      });
-    });
+      if (!expoToken) {
+        console.log("❌ Token não disponível.");
+        return;
+      }
 
-    const uid = auth.currentUser?.uid;
-    if (!uid) {
-      console.log("❌ UID ainda não disponível.");
-      return;
+      console.log("🔍 Buscando dados para Token:", expoToken);
+
+      const q = query(collection(db, "usuarios"), where("expoToken", "==", expoToken));
+      const snapshot = await getDocs(q);
+
+      if (!snapshot.empty) {
+        const data = snapshot.docs[0].data();
+        console.log("📥 Dados carregados:", data);
+        setNome(data.nome || "");
+        setSobrenome(data.sobrenome || "");
+        setDataNascimento(data.dataNascimento || "");
+        setTelefone(data.telefone || "");
+        setEndereco(data.endereco || "");
+        setMembro(data.membro === true ? "sim" : data.membro === false ? "nao" : null);
+      } else {
+        console.log("❌ Documento de usuário não encontrado.");
+      }
+
+      // Abre o modal com animação
+      fadeAnim.setValue(0);
+      setShowModal(true);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+
+    } catch (error) {
+      console.error("🔥 Erro ao carregar dados do Firebase:", error);
     }
+  };
 
-    const docSnap = await getDoc(doc(db, "usuarios", uid));
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      console.log("📥 Dados carregados:", data);
-      setNome(data.nome || "");
-      setSobrenome(data.sobrenome || "");
-      setDataNascimento(data.dataNascimento || "");
-      setTelefone(data.telefone || "");
-      setEndereco(data.endereco || "");
-      setMembro(data.membro === true ? "sim" : data.membro === false ? "nao" : null);
-    } else {
-      console.log("❌ Documento de usuário não encontrado.");
-    }
-  } catch (error) {
-    console.error("🔥 Erro ao carregar dados do Firebase:", error);
-  }
 
-  fadeAnim.setValue(0);
-  setShowModal(true);
-  Animated.timing(fadeAnim, {
-    toValue: 1,
-    duration: 500,
-    useNativeDriver: true,
-  }).start();
-};
 
 
   const validateForm = () => {
-    if (!nome || !sobrenome || !telefone) {
+    if (!nome || !sobrenome || !dataNascimento) {
       Alert.alert("Erro", "Preencha os campos obrigatórios: Nome, Sobrenome e Telefone");
       return false;
     }
@@ -160,33 +160,43 @@ const handleOpenModal = async () => {
     if (!validateForm()) return;
 
     try {
+      const tokenInfo = await Notifications.getExpoPushTokenAsync();
+      const expoToken = tokenInfo.data;
 
-      const auth = getAuth();
-      await new Promise(resolve => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-          if (user) {
-            resolve(user);
-            unsubscribe();
-          }
-        });
-      });
-
-      const uid = auth.currentUser?.uid;
-
-      if (!uid) {
-        Alert.alert("Erro", "Usuário não autenticado.");
+      if (!expoToken) {
+        Alert.alert("Erro", "Token não disponível.");
         return;
       }
 
-      await setDoc(doc(db, "usuarios", uid), {
-        nome,
-        sobrenome,
-        dataNascimento,
-        telefone,
-        endereco,
-        membro: membro === "sim",
-        atualizadoEm: new Date(),
-      });
+      const q = query(collection(db, "usuarios"), where("expoToken", "==", expoToken));
+      const snapshot = await getDocs(q);
+
+      if (!snapshot.empty) {
+        // Atualiza o documento existente
+        const docRef = snapshot.docs[0].ref;
+        await setDoc(docRef, {
+          nome,
+          sobrenome,
+          dataNascimento,
+          telefone,
+          endereco,
+          membro: membro === "sim",
+          atualizadoEm: new Date(),
+          expoToken,
+        });
+      } else {
+        // Cria novo documento
+        await setDoc(doc(db, "usuarios", expoToken), {
+          nome,
+          sobrenome,
+          dataNascimento,
+          telefone,
+          endereco,
+          membro: membro === "sim",
+          criadoEm: new Date(),
+          expoToken,
+        });
+      }
 
       Alert.alert("Sucesso", "Informações salvas com sucesso!");
       fadeAnim.setValue(0);
@@ -196,6 +206,7 @@ const handleOpenModal = async () => {
       Alert.alert("Erro", "Não foi possível salvar os dados.");
     }
   };
+
 
 
   if (isLoading || !fontsLoaded) {
@@ -269,18 +280,24 @@ const handleOpenModal = async () => {
               <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
                 <ScrollView>
                   <Text style={styles.modalTitle}>Editar suas informações</Text>
-                  <TextInput style={styles.modalInput} placeholder="Nome" value={nome} onChangeText={setNome} />
-                  <TextInput style={styles.modalInput} placeholder="Sobrenome" value={sobrenome} onChangeText={setSobrenome} />
-                  <TextInput style={styles.modalInput} placeholder="Data de Nascimento (DD/MM/AAAA)" value={dataNascimento} onChangeText={setDataNascimento} keyboardType="numeric" />
-                  <TextInput style={styles.modalInput} placeholder="Telefone" value={telefone} onChangeText={setTelefone} keyboardType="phone-pad" />
-                  <TextInput style={styles.modalInput} placeholder="Endereço" value={endereco} onChangeText={setEndereco} />
+                  <TextInput style={styles.modalInput} placeholder="Nome" placeholderTextColor="#999" value={nome} onChangeText={setNome} />
+                  <TextInput style={styles.modalInput} placeholder="Sobrenome" placeholderTextColor="#999" value={sobrenome} onChangeText={setSobrenome} />
+                  <TextInput style={styles.modalInput} placeholder="Data de Nascimento (DD/MM/AAAA)" placeholderTextColor="#999" value={dataNascimento} onChangeText={setDataNascimento} keyboardType="numeric" />
+                  <TextInput style={styles.modalInput} placeholder="Telefone" placeholderTextColor="#999" value={telefone} onChangeText={setTelefone} keyboardType="phone-pad" />
+                  <TextInput style={styles.modalInput} placeholder="Endereço" placeholderTextColor="#999" value={endereco} onChangeText={setEndereco} />
 
-                  <TouchableOpacity style={styles.modalToggle} onPress={() => setMembro(membro === "sim" ? "nao" : "sim")}>
-                    <Ionicons name={membro === "sim" ? "checkbox" : "square-outline"} size={24} color="#000" />
-                    <Text style={{ marginLeft: 10 }}>
-                      Sou membro da igreja
-                    </Text>
-                  </TouchableOpacity>
+
+                  <Text style={styles.label}>Você é membro da igreja?*</Text>
+                  <View style={styles.radioContainer}>
+                    <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("sim")}>
+                      <MaterialIcons name={membro === "sim" ? "radio-button-checked" : "radio-button-unchecked"} size={24} color="#000" />
+                      <Text style={styles.radioText}>Sim</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("nao")}>
+                      <MaterialIcons name={membro === "nao" ? "radio-button-checked" : "radio-button-unchecked"} size={24} color="#000" />
+                      <Text style={styles.radioText}>Não</Text>
+                    </TouchableOpacity>
+                  </View>
 
                   <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                     <TouchableOpacity style={[styles.modalButton, { backgroundColor: "#ccc" }]} onPress={() => {
@@ -439,6 +456,24 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  radioContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 20,
+  },
+  radioButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  radioText: {
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
   },
 });
 
