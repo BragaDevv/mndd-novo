@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import { Text, View, Platform } from "react-native";
+import { getAuth, onAuthStateChanged, signInAnonymously, User } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 import MNDDScreen from "./screens/MNDD";
 import HomeScreen from "./screens/HomeScreen";
@@ -90,6 +92,43 @@ const AppNavigator = () => {
 
     verificarSeTokenExisteNaColecao();
   }, [expoToken]);
+
+
+  useEffect(() => {
+  const auth = getAuth();
+
+  const restoreAnonUser = async () => {
+    const storedUID = await AsyncStorage.getItem("usuarioUID");
+    if (storedUID) {
+      const docRef = doc(db, "usuarios", storedUID);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        console.log("♻️ Restaurando sessão para UID:", storedUID);
+        // Aqui você pode fazer algo como forçar setUser() manualmente
+        // Mas como Firebase Auth "não lembra", se quiser força-lo:
+        await signInAnonymously(auth); // cria novo user
+        const newUID = auth.currentUser?.uid;
+        if (newUID) {
+          console.log("🔄 Copiando dados para novo UID:", newUID);
+          await setDoc(doc(db, "usuarios", newUID), {
+            ...docSnap.data(),
+            uid: newUID,
+            restauradoDe: storedUID,
+            atualizadoEm: new Date(),
+          });
+          await AsyncStorage.setItem("usuarioUID", newUID);
+        }
+      } else {
+        console.log("⚠️ UID armazenado não existe mais.");
+      }
+    }
+  };
+
+  restoreAnonUser();
+}, []);
+
+
+
 
   useEffect(() => {
     const setupNotifications = async () => {
@@ -216,3 +255,15 @@ const AppNavigator = () => {
 };
 
 export default AppNavigator;
+function setUser(currentUser: User | null) {
+  throw new Error("Function not implemented.");
+}
+
+function setIsAdmin(isAdminUser: boolean) {
+  throw new Error("Function not implemented.");
+}
+
+function setLoading(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
+

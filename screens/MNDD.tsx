@@ -30,7 +30,7 @@ import {
 import LottieView from "lottie-react-native";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { Ionicons } from "@expo/vector-icons";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -101,40 +101,52 @@ const MNDDScreen = () => {
   }, []);
 
 
-  const handleOpenModal = async () => {
-    try {
-      const auth = getAuth();
+const handleOpenModal = async () => {
+  try {
+    const auth = getAuth();
 
-      const uid = auth.currentUser?.uid;
-      if (uid) {
-        const docSnap = await getDoc(doc(db, "usuarios", uid));
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          console.log("Dados carregados:", data);
-          setNome(data.nome || "");
-          setSobrenome(data.sobrenome || "");
-          setDataNascimento(data.dataNascimento || "");
-          setTelefone(data.telefone || "");
-          setEndereco(data.endereco || "");
-          setMembro(data.membro || null);
-        } else {
-          console.log("Documento de usuário não encontrado");
+    // Aguarda o usuário ser carregado
+    await new Promise(resolve => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          resolve(user);
+          unsubscribe();
         }
-      } else {
-        console.log("UID ainda não disponível.");
-      }
-    } catch (error) {
-      console.error("Erro ao carregar dados do Firebase:", error);
+      });
+    });
+
+    const uid = auth.currentUser?.uid;
+    if (!uid) {
+      console.log("❌ UID ainda não disponível.");
+      return;
     }
 
-    fadeAnim.setValue(0);
-    setShowModal(true);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  };
+    const docSnap = await getDoc(doc(db, "usuarios", uid));
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      console.log("📥 Dados carregados:", data);
+      setNome(data.nome || "");
+      setSobrenome(data.sobrenome || "");
+      setDataNascimento(data.dataNascimento || "");
+      setTelefone(data.telefone || "");
+      setEndereco(data.endereco || "");
+      setMembro(data.membro === true ? "sim" : data.membro === false ? "nao" : null);
+    } else {
+      console.log("❌ Documento de usuário não encontrado.");
+    }
+  } catch (error) {
+    console.error("🔥 Erro ao carregar dados do Firebase:", error);
+  }
+
+  fadeAnim.setValue(0);
+  setShowModal(true);
+  Animated.timing(fadeAnim, {
+    toValue: 1,
+    duration: 500,
+    useNativeDriver: true,
+  }).start();
+};
+
 
   const validateForm = () => {
     if (!nome || !sobrenome || !telefone) {
@@ -146,9 +158,25 @@ const MNDDScreen = () => {
 
   const handleSave = async () => {
     if (!validateForm()) return;
+
     try {
-      const uid = getAuth().currentUser?.uid;
-      if (!uid) return;
+
+      const auth = getAuth();
+      await new Promise(resolve => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            resolve(user);
+            unsubscribe();
+          }
+        });
+      });
+
+      const uid = auth.currentUser?.uid;
+
+      if (!uid) {
+        Alert.alert("Erro", "Usuário não autenticado.");
+        return;
+      }
 
       await setDoc(doc(db, "usuarios", uid), {
         nome,
@@ -156,7 +184,7 @@ const MNDDScreen = () => {
         dataNascimento,
         telefone,
         endereco,
-        membro,
+        membro: membro === "sim",
         atualizadoEm: new Date(),
       });
 
@@ -164,9 +192,11 @@ const MNDDScreen = () => {
       fadeAnim.setValue(0);
       setShowModal(false);
     } catch (error) {
+      console.error("🔥 Erro ao salvar os dados:", error);
       Alert.alert("Erro", "Não foi possível salvar os dados.");
     }
   };
+
 
   if (isLoading || !fontsLoaded) {
     return (
@@ -337,7 +367,7 @@ const styles = StyleSheet.create({
   },
 
   boasVindas: {
-    fontStyle:'italic',
+    fontStyle: 'italic',
     fontSize: 16,
     color: "#0003",
     marginTop: 10,
