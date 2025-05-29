@@ -1,4 +1,3 @@
-// screens/QuestionarioScreen.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -19,8 +18,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
-import SuccessMessage from "../components/SuccessMessage"; // ajuste o caminho conforme seu projeto
-
+import SuccessMessageLottie from "../components/SuccessMessageLottie";
 
 interface Props {
   onComplete: (dados: {
@@ -42,7 +40,7 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
   const [endereco, setEndereco] = useState("");
   const [membro, setMembro] = useState<"sim" | "nao" | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-
+  const [pendingData, setPendingData] = useState<any | null>(null);
 
   const ensureAnonAuth = async (): Promise<string> => {
     const auth = getAuth();
@@ -79,7 +77,7 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
 
       await AsyncStorage.setItem("usuarioUID", uid);
 
-      onComplete({
+      setPendingData({
         nome,
         sobrenome,
         dataNascimento,
@@ -89,101 +87,114 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
         uid,
       });
 
-      // Em vez de Alert.alert
-      Alert.alert(" Sucesso! Seja bem vindo !");
-      setShowSuccess(true);
+      setShowSuccess(true); // ativa a animação
     } catch (error) {
       console.error("Erro ao salvar usuário:", error);
       Alert.alert("Erro", "Não foi possível salvar os dados.");
     }
   };
 
-
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, padding: 30 }}
-        keyboardShouldPersistTaps="handled"
+    <View style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
-        <Image source={require("../assets/logoigreja.png")} style={styles.logo} />
-        <Text style={styles.labelTitle}>Bem vindo ao aplicativo MNDD</Text>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, padding: 30 }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Image source={require("../assets/logoigreja.png")} style={styles.logo} />
+          <Text style={styles.labelTitle}>Bem vindo ao aplicativo MNDD</Text>
 
-        <Text style={styles.label}>Nome*</Text>
-        <TextInput
-          style={styles.input}
-          value={nome}
-          onChangeText={(text) => setNome(text.replace(/\s/g, ""))}
-          placeholder="Digite seu nome"
-        />
+          <Text style={styles.label}>Nome*</Text>
+          <TextInput
+            style={styles.input}
+            value={nome}
+            onChangeText={(text) => setNome(text.replace(/\s/g, ""))}
+            placeholder="Digite seu nome"
+          />
 
-        <Text style={styles.label}>Sobrenome*</Text>
-        <TextInput
-          style={styles.input}
-          value={sobrenome}
-          onChangeText={setSobrenome}
-          placeholder="Digite seu sobrenome"
-        />
+          <Text style={styles.label}>Sobrenome*</Text>
+          <TextInput
+            style={styles.input}
+            value={sobrenome}
+            onChangeText={setSobrenome}
+            placeholder="Digite seu sobrenome"
+          />
 
-        <Text style={styles.label}>Data de Nascimento*</Text>
-        <MaskedTextInput
-          mask="99/99/9999"
-          style={styles.input}
-          value={dataNascimento}
-          onChangeText={setDataNascimento}
-          keyboardType="numeric"
-          placeholder="DD/MM/AAAA"
-        />
+          <Text style={styles.label}>Data de Nascimento*</Text>
+          <MaskedTextInput
+            mask="99/99/9999"
+            style={styles.input}
+            value={dataNascimento}
+            onChangeText={setDataNascimento}
+            keyboardType="numeric"
+            placeholder="DD/MM/AAAA"
+          />
 
-        <Text style={styles.label}>Telefone</Text>
-        <MaskedTextInput
-          mask="(99) 99999-9999"
-          style={styles.input}
-          value={telefone}
-          onChangeText={setTelefone}
-          keyboardType="phone-pad"
-          placeholder="(00) 00000-0000"
-        />
+          <Text style={styles.label}>Telefone</Text>
+          <MaskedTextInput
+            mask="(99) 99999-9999"
+            style={styles.input}
+            value={telefone}
+            onChangeText={setTelefone}
+            keyboardType="phone-pad"
+            placeholder="(00) 00000-0000"
+          />
 
-        <Text style={styles.label}>Endereço</Text>
-        <TextInput
-          style={styles.input}
-          value={endereco}
-          onChangeText={setEndereco}
-          placeholder="Digite seu endereço"
-        />
+          <Text style={styles.label}>Endereço</Text>
+          <TextInput
+            style={styles.input}
+            value={endereco}
+            onChangeText={setEndereco}
+            placeholder="Digite seu endereço"
+          />
 
-        <Text style={styles.label}>Você é membro da igreja?*</Text>
-        <View style={styles.radioContainer}>
-          <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("sim")}>
-            <MaterialIcons name={membro === "sim" ? "radio-button-checked" : "radio-button-unchecked"} size={24} color="#000" />
-            <Text style={styles.radioText}>Sim</Text>
+          <Text style={styles.label}>Você é membro da igreja?*</Text>
+          <View style={styles.radioContainer}>
+            <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("sim")}>
+              <MaterialIcons
+                name={membro === "sim" ? "radio-button-checked" : "radio-button-unchecked"}
+                size={24}
+                color="#000"
+              />
+              <Text style={styles.radioText}>Sim</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("nao")}>
+              <MaterialIcons
+                name={membro === "nao" ? "radio-button-checked" : "radio-button-unchecked"}
+                size={24}
+                color="#000"
+              />
+              <Text style={styles.radioText}>Não</Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <FontAwesome5 name="check" size={18} color="#fff" style={{ marginRight: 8 }} />
+            <Text style={styles.buttonText}>Ir para o APP</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("nao")}>
-            <MaterialIcons name={membro === "nao" ? "radio-button-checked" : "radio-button-unchecked"} size={24} color="#000" />
-            <Text style={styles.radioText}>Não</Text>
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <FontAwesome5 name="check" size={18} color="#fff" style={{ marginRight: 8 }} />
-          <Text style={styles.buttonText}>Ir para o APP</Text>
-        </TouchableOpacity>
-      </ScrollView>
-        <SuccessMessage visible={showSuccess} onFinish={() => setShowSuccess(false)} />
-    </KeyboardAvoidingView>
+
+      <SuccessMessageLottie
+        visible={showSuccess}
+        message="Cadastro salvo com sucesso! Bem vindo ao app MNDD"
+        onFinish={() => setShowSuccess(false)}
+      />
+
+    </View>
   );
-
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: "#fff",
-    flex: 1
+    flex: 1,
   },
   logo: {
     width: "60%",
@@ -191,16 +202,15 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     alignSelf: "center",
     marginBottom: 10,
-    marginTop: '20%'
+    marginTop: "20%",
   },
   labelTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    fontFamily: 'Montserrat_500Medium',
-    marginBottom: '10%',
-    textAlign: 'center',
+    fontFamily: "Montserrat_500Medium",
+    marginBottom: "10%",
+    textAlign: "center",
   },
-
   label: {
     fontSize: 14,
     fontWeight: "bold",
@@ -216,7 +226,7 @@ const styles = StyleSheet.create({
   radioContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginTop: '3%'
+    marginTop: "3%",
   },
   radioButton: {
     flexDirection: "row",
@@ -233,13 +243,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: '10%'
+    marginTop: "10%",
   },
   buttonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
-    fontFamily: 'Montserrat_500Medium',
+    fontFamily: "Montserrat_500Medium",
   },
 });
 

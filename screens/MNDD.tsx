@@ -36,6 +36,7 @@ import { doc, setDoc, getDoc, query, collection, where, getDocs } from "firebase
 import { db } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
+import SuccessMessageLottie from "../components/SuccessMessageLottie";
 
 
 const { height } = Dimensions.get("window");
@@ -52,6 +53,7 @@ const MNDDScreen = () => {
   const [endereco, setEndereco] = useState("");
   const [membro, setMembro] = useState<"sim" | "nao" | null>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const [fontsLoaded] = useFonts({
     Montserrat_500Medium,
@@ -199,7 +201,7 @@ const MNDDScreen = () => {
         });
       }
 
-      Alert.alert("Sucesso", "Informações salvas com sucesso!");
+      setShowSuccess(true); // ativa a animação
       fadeAnim.setValue(0);
       setShowModal(false);
     } catch (error) {
@@ -347,6 +349,16 @@ const MNDDScreen = () => {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+
+      <SuccessMessageLottie
+        visible={showSuccess}
+        message="Cadastro Atualizado !"
+        onFinish={() => setShowSuccess(false)}
+      />
+
+
+
+
     </View>
   );
 };

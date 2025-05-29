@@ -36,7 +36,7 @@ const SuccessMessage = ({ visible, onFinish }: Props) => {
 
   const animatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
-    top: 50,
+    top: '50%',
     left: width * 0.1,
     width: width * 0.8,
     padding: 16,
@@ -59,6 +59,7 @@ const SuccessMessage = ({ visible, onFinish }: Props) => {
     <Animated.View style={animatedStyle}>
       <FontAwesome name="check-circle" size={24} color="#2e7d32" />
       <Text style={styles.text}>Cadastro realizado com sucesso!</Text>
+      <Text style={styles.text}>Bem vindo ao app MNDD </Text>
     </Animated.View>
   );
 };
