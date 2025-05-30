@@ -43,7 +43,7 @@ const CapitulosScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.subtitle}>Capítulos</Text>
+      <Text style={styles.subtitle}>{bookName} - Capítulos</Text>
       <FlatList
         data={book.chapters}
         renderItem={renderItem}
@@ -77,16 +77,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 18,
-    color: "#333",
+    fontSize: 20,
+    color: "#000",
     fontWeight: "bold",
+    fontFamily: "Montserrat_500Medium",
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
     textAlign: "center",
-    color: "#444",
+    color: "#000",
+    fontFamily: "Montserrat_500Medium",
   },
 });
 

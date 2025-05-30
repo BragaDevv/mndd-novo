@@ -100,11 +100,12 @@ const styles = StyleSheet.create({
   },
   reference: {
     marginTop: -10,
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: "bold",
     marginBottom: 10,
     color: "#000",
     textAlign: "center",
+    fontFamily: "Montserrat_500Medium",
   },
   verse: {
     fontSize: 18,
