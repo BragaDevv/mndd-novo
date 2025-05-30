@@ -16,7 +16,7 @@ type BookScreenNavigationProp = NativeStackNavigationProp<
   "Versiculos"
 >;
 
-const BookScreen = () => {
+const CapitulosScreen = () => {
   const navigation = useNavigation<BookScreenNavigationProp>();
   const route = useRoute<BookScreenRouteProp>();
   const { book, bookName } = route.params;
@@ -90,4 +90,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BookScreen;
+export default CapitulosScreen;

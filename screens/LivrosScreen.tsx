@@ -19,7 +19,7 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<
   "Livros"
 >;
 
-const HomeScreen = () => {
+const LivrosScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const [searchTerm, setSearchTerm] = useState("");
   const [testamentFilter, setTestamentFilter] = useState<"todos" | "vt" | "nt">("todos");
@@ -100,15 +100,15 @@ const HomeScreen = () => {
 
   // Livros separados por testamento
   const velhoTestamento = [
-    "gn", "ex", "lv", "nm", "dt", "js", "jz", "rt", "1sm", "2sm", 
-    "1rs", "2rs", "1cr", "2cr", "ed", "ne", "et", "jó", "sl", "pv", 
-    "ec", "ct", "is", "jr", "lm", "ez", "dn", "os", "jl", "am", 
+    "gn", "ex", "lv", "nm", "dt", "js", "jz", "rt", "1sm", "2sm",
+    "1rs", "2rs", "1cr", "2cr", "ed", "ne", "et", "jó", "sl", "pv",
+    "ec", "ct", "is", "jr", "lm", "ez", "dn", "os", "jl", "am",
     "ob", "jn", "mq", "na", "hc", "sf", "ag", "zc", "ml"
   ];
-  
+
   const novoTestamento = [
-    "mt", "mc", "lc", "jo", "atos", "rm", "1co", "2co", "gl", "ef", 
-    "fp", "cl", "1ts", "2ts", "1tm", "2tm", "tt", "fm", "hb", "tg", 
+    "mt", "mc", "lc", "jo", "atos", "rm", "1co", "2co", "gl", "ef",
+    "fp", "cl", "1ts", "2ts", "1tm", "2tm", "tt", "fm", "hb", "tg",
     "1pe", "2pe", "1jo", "2jo", "3jo", "jd", "ap"
   ];
 
@@ -143,13 +143,17 @@ const HomeScreen = () => {
         })
       }
     >
-      <Text style={styles.title}>{item.name}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Ionicons name="book-outline" size={22} color="#555" style={{ marginRight: 10 }} />
+        <Text style={styles.livrosTitle}>{item.name}</Text>
+      </View>
     </TouchableOpacity>
-    
   );
+
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Livros</Text>
       {/* Barra de pesquisa e filtros */}
       <View style={styles.contentContainer}>
         <TextInput
@@ -161,33 +165,22 @@ const HomeScreen = () => {
 
         <View style={styles.filterButtons}>
           <TouchableOpacity
-            style={[
-              styles.filterButton,
-              testamentFilter === "todos" && styles.activeFilter,
-            ]}
+            style={[styles.filterButton, testamentFilter === "todos" && styles.activeFilter]}
             onPress={() => setTestamentFilter("todos")}
           >
-            <Text style={styles.filterText}>Todos</Text>
+            <Text style={styles.filterText}>📚 Todos</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
-            style={[
-              styles.filterButton,
-              testamentFilter === "vt" && styles.activeFilter,
-            ]}
+            style={[styles.filterButton, testamentFilter === "vt" && styles.activeFilter]}
             onPress={() => setTestamentFilter("vt")}
           >
-            <Text style={styles.filterText}>VT</Text>
+            <Text style={styles.filterText}>📜 VT</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
-            style={[
-              styles.filterButton,
-              testamentFilter === "nt" && styles.activeFilter,
-            ]}
+            style={[styles.filterButton, testamentFilter === "nt" && styles.activeFilter]}
             onPress={() => setTestamentFilter("nt")}
           >
-            <Text style={styles.filterText}>NT</Text>
+            <Text style={styles.filterText}>✝️ NT</Text>
           </TouchableOpacity>
         </View>
 
@@ -232,12 +225,20 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 20,
     backgroundColor: "#f5f5f5",
   },
   contentContainer: {
     flex: 1,
     padding: 16,
     paddingBottom: 0, // Para não ficar embaixo da barra de navegação
+  },
+    title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 12,
+    textAlign: "center",
+    fontFamily: "Montserrat_500Medium",
   },
   input: {
     padding: 10,
@@ -254,11 +255,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   filterButton: {
-    width: 100,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    flex: 1,
+    paddingVertical: 10,
+    marginHorizontal: 5,
     backgroundColor: "#ccc",
     borderRadius: 8,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   activeFilter: {
     backgroundColor: "#000",
@@ -267,6 +274,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: "#fff",
     fontWeight: "bold",
+    fontFamily: "Montserrat_500Medium",
   },
   item: {
     padding: 16,
@@ -277,9 +285,10 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     elevation: 2,
   },
-  title: {
+  livrosTitle: {
     fontSize: 18,
     color: "#333",
+    fontFamily: "Montserrat_500Medium",
   },
   listContent: {
     paddingBottom: 80, // Espaço para a barra de navegação
@@ -307,4 +316,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default LivrosScreen;

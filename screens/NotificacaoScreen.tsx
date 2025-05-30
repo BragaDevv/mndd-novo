@@ -23,7 +23,7 @@ import LoadingMessageLottie from "../components/LoadingMessageLottie";
 const SendNotificationForm = () => {
   const navigation =
     useNavigation<
-      NativeStackNavigationProp<RootStackParamList, "SendNotificationForm">
+      NativeStackNavigationProp<RootStackParamList, "Notificacao">
     >();
 
   const [title, setTitle] = useState("");

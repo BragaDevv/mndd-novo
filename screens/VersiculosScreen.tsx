@@ -341,7 +341,7 @@ const ChapterScreen = () => {
       chapterNumber,
       chapter:
         bibleData.find((b) => b.name === bookName)?.chapters[
-          chapterNumber - 1
+        chapterNumber - 1
         ] || chapter,
       totalChapters,
       bibleVersion: version,
@@ -403,7 +403,7 @@ const ChapterScreen = () => {
       chapterNumber: result.chapterNumber,
       chapter:
         bibleData.find((b) => b.name === result.bookName)?.chapters[
-          result.chapterNumber - 1
+        result.chapterNumber - 1
         ] || [],
       totalChapters:
         bibleData.find((b) => b.name === result.bookName)?.chapters.length || 0,
@@ -427,9 +427,9 @@ const ChapterScreen = () => {
 
     const highlightStyle = isHighlighted
       ? {
-          backgroundColor: isHighlighted.bgColor,
-          borderLeftColor: isHighlighted.textColor,
-        }
+        backgroundColor: isHighlighted.bgColor,
+        borderLeftColor: isHighlighted.textColor,
+      }
       : {};
 
     return (
@@ -616,15 +616,15 @@ const ChapterScreen = () => {
       animationType="slide"
     >
       <SafeAreaView style={styles.modalIntroContainer}>
-        
+
         {/* Cabeçalho Fixo */}
         {/* <View style={styles.modalIntroHeader}> */}
-          <View style={styles.backIntroHeader}>
+        <View style={styles.backIntroHeader}>
           <TouchableOpacity onPress={() => setIntroModalVisible(false)}>
             <Ionicons name="arrow-back" size={24} color="#007AFF" />
           </TouchableOpacity>
-          </View>
-          <View style={styles.modalIntroHeader}>
+        </View>
+        <View style={styles.modalIntroHeader}>
           <Text style={styles.modalIntroTitle}>{introData.title}</Text>
           <View style={{ width: 24 }} />
         </View>
@@ -894,12 +894,16 @@ const ChapterScreen = () => {
         </TouchableOpacity>
       </View>
 
+
+      <View style={styles.header}>
+        <Text style={styles.titleheader}>{bookName}</Text>
+      </View>
       <View style={styles.header}>
         <Image style={styles.imgheader} source={APP_LOGO} />
         <Text style={styles.txtheader}>Capítulo {chapterNumber}</Text>
         <TouchableOpacity onPress={() => setIntroModalVisible(true)}>
           <View style={styles.btnIntroContainer}>
-          <Text style={styles.btnIntroTxt}>INTRO</Text>
+            <Text style={styles.btnIntroTxt}>INTRO</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -1054,35 +1058,46 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginRight: 5,
     fontWeight: "500",
+    fontFamily: "Montserrat_500Medium",
   },
   versionButtonList: {
     color: "#007AFF",
     fontSize: 18,
     marginRight: 5,
     fontWeight: "500",
+    fontFamily: "Montserrat_500Medium",
   },
   header: {
     backgroundColor: "transparent",
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
-    gap: 25,
+    gap: 30,
     marginTop: 10,
   },
   imgheader: {
     width: 45,
     height: 45,
   },
+   titleheader: {
+    marginTop:5,
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#000",
+    textAlign: "center",
+    fontFamily: "Montserrat_500Medium",
+  },
   txtheader: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight:'200',
     color: "#000",
     paddingVertical: 10,
     textAlign: "center",
+    fontFamily: "Montserrat_500Medium",
   },
   listContent: {
     padding: 16,
-    paddingBottom: 20,
+    paddingBottom: 150,
   },
   verseItem: {
     flexDirection: "row",
@@ -1127,14 +1142,16 @@ const styles = StyleSheet.create({
     color: "#333",
     lineHeight: 24,
     marginTop: 2,
+    fontFamily: "Montserrat_500Medium",
   },
   footerContainer: {
     marginTop: 20,
+    marginHorizontal:50
   },
   footerButtons: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 12,
+    justifyContent: "center",
+    gap: 1,
   },
   navButton: {
     flex: 1,
@@ -1244,6 +1261,7 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 15,
     fontStyle: "italic",
+    fontFamily: "Montserrat_500Medium",
   },
   commentInput: {
     borderWidth: 1,
@@ -1379,6 +1397,7 @@ const styles = StyleSheet.create({
   searchResultText: {
     color: "#333",
     fontSize: 16,
+    fontFamily: "Montserrat_500Medium",
   },
   noResultsContainer: {
     flex: 1,
@@ -1407,6 +1426,7 @@ const styles = StyleSheet.create({
     color: "#000",
     marginBottom: 15,
     textAlign: "center",
+    fontFamily: "Montserrat_500Medium",
   },
   versionOption: {
     padding: 15,
@@ -1506,17 +1526,18 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     marginTop: 16,
     color: "#333",
-    
+
   },
   btnIntroContainer: {
     backgroundColor: "#000",
-    borderRadius:5,
-    padding:5
+    borderRadius: 5,
+    padding: 5
   },
-    btnIntroTxt: {
+  btnIntroTxt: {
     fontSize: 16,
-    fontWeight:'800',
+    fontWeight: '800',
     color: "#fff",
+    fontFamily: "Montserrat_500Medium",
   },
 
 
@@ -1545,9 +1566,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   backIntroHeader: {
-  position:'absolute',
-  left:15,
-  top:15
+    position: 'absolute',
+    left: 15,
+    top: 15
   },
   modalIntroTitle: {
     fontSize: 26,

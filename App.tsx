@@ -177,16 +177,16 @@ const AppNavigator = () => {
             {showQuestionario ? (
               <Stack.Screen
                 name="Questionario"
-                children={() => <QuestionarioScreen onComplete={handleQuestionarioComplete}/>}
-                 options={{ headerShown: false }}
+                children={() => <QuestionarioScreen onComplete={handleQuestionarioComplete} />}
+                options={{ headerShown: false }}
               />
             ) : (
               <>
                 <Stack.Screen name="MNDD" component={MNDDScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Livros" component={LivrosScreen} options={{ title: "" }} />
-                <Stack.Screen name="Capitulos" component={CapitulosScreen} options={({ route }) => ({ title: route.params.bookName })} />
-                <Stack.Screen name="Versiculos" component={VersiculosScreen} options={({ route }) => ({ title: route.params.bookName })} />
-                <Stack.Screen name="Versiculo" component={VersiculoScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
+                <Stack.Screen name="Capitulos" component={CapitulosScreen} options={{ title: "" }} />
+                <Stack.Screen name="Versiculos" component={VersiculosScreen} options={{ title: "" }} />
+                <Stack.Screen name="Versiculo" component={VersiculoScreen} options={{ title: "" }} />
                 <Stack.Screen name="Igreja" component={IgrejaScreen} options={{ title: "" }} />
                 <Stack.Screen name="Usuarios" component={UsuariosScreen} options={{ title: "" }} />
                 <Stack.Screen name="Carrossel" component={ImagensScreen} options={{ title: "" }} />
