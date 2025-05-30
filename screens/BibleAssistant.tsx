@@ -189,9 +189,8 @@ const BibleAssistant = () => {
       setMessages((prev) => [
         ...prev,
         {
-          text: `Houve um erro ao conectar. Por favor, tente novamente mais tarde. (${
-            error.message || "Erro desconhecido"
-          })`,
+          text: `Houve um erro ao conectar. Por favor, tente novamente mais tarde. (${error.message || "Erro desconhecido"
+            })`,
           user: false,
           time: new Date().toLocaleTimeString([], {
             hour: "2-digit",
@@ -347,6 +346,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
+    fontFamily: "Montserrat_500Medium",
   },
   headerSubtitle: {
     color: "rgba(255,255,255,0.8)",
