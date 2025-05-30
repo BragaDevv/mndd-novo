@@ -171,6 +171,7 @@ const AppNavigator = () => {
               headerTitleAlign: "center",
               headerTintColor: "#000",
               headerStyle: { backgroundColor: "#fff" },
+              headerBackTitle: "Voltar", //
             }}
           >
             {showQuestionario ? (
