@@ -15,6 +15,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/types";
+import LottieView from "lottie-react-native";
+import { Modal } from "react-native";
+import SuccessMessageLottie from "../components/SuccessMessageLottie";
+import LoadingMessageLottie from "../components/LoadingMessageLottie";
 
 const SendNotificationForm = () => {
   const navigation =
@@ -29,6 +33,8 @@ const SendNotificationForm = () => {
   const [horaSalva, setHoraSalva] = useState<string>("");
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [tempTime, setTempTime] = useState(new Date());
+  const [showSuccess, setShowSuccess] = useState(false);
+
 
   useEffect(() => {
     const fetchHorario = async () => {
@@ -59,6 +65,7 @@ const SendNotificationForm = () => {
     fetchHorario();
   }, []);
 
+
   const sendNotification = async () => {
     if (!title || !message) {
       Alert.alert("Erro", "Preencha o título e a mensagem.");
@@ -66,6 +73,8 @@ const SendNotificationForm = () => {
     }
 
     setLoading(true);
+    setShowSuccess(false);
+
     try {
       const response = await fetch("https://mndd-backend.onrender.com/send", {
         method: "POST",
@@ -76,9 +85,9 @@ const SendNotificationForm = () => {
       const data = await response.json();
       if (response.ok) {
         const enviados = data.sent ?? 0;
-        Alert.alert("Sucesso", `Enviado para ${enviados} dispositivos.`);
         setTitle("");
         setMessage("");
+        setShowSuccess(true);
       } else {
         Alert.alert("Erro", data.error || "Falha no envio.");
       }
@@ -87,8 +96,10 @@ const SendNotificationForm = () => {
       Alert.alert("Erro", "Falha ao conectar ao servidor.");
     } finally {
       setLoading(false);
+      setTimeout(() => setShowSuccess(false), 2000); // Esconde sucesso após 2s
     }
   };
+
 
   const handleSendDailyVerse = async () => {
     setLoading(true);
@@ -169,89 +180,109 @@ const SendNotificationForm = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.sectionNotif}>
-        <Text style={styles.title}>Notificação Geral </Text>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.sectionNotif}>
+          <Text style={styles.title}>Notificação Geral </Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Título"
-          value={title}
-          onChangeText={setTitle}
-          placeholderTextColor="#999"
-        />
+          <TextInput
+            style={styles.input}
+            placeholder="Título"
+            value={title}
+            onChangeText={setTitle}
+            placeholderTextColor="#999"
+          />
 
-        <TextInput
-          style={[styles.input, styles.textArea]}
-          placeholder="Mensagem"
-          value={message}
-          onChangeText={setMessage}
-          placeholderTextColor="#999"
-          multiline
-        />
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={sendNotification}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>
-            {loading ? "Enviando..." : "Enviar Notificação"}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.sectionHora}>
-        <View style={styles.timeSection}>
-          <Text style={styles.title}>Horário do versículo diário</Text>
-
-          <Text style={{ textAlign: "center", marginBottom: 10 }}>
-            Horário atual salvo: {horaSalva || "Carregando..."}
-          </Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="Mensagem"
+            value={message}
+            onChangeText={setMessage}
+            placeholderTextColor="#999"
+            multiline
+          />
 
           <TouchableOpacity
-            style={[styles.dateInputContainer]}
-            onPress={() => setShowTimePicker(!showTimePicker)}
+            style={styles.button}
+            onPress={sendNotification}
+            disabled={loading}
           >
-            <Text style={styles.dateInputText}>
-              {selectedTime
-                ? selectedTime.toLocaleTimeString("pt-BR", {
+            <Text style={styles.buttonText}>
+              {loading ? "Enviando..." : "Enviar Notificação"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.sectionHora}>
+          <View style={styles.timeSection}>
+            <Text style={styles.title}>Horário do versículo diário</Text>
+
+            <Text style={{ textAlign: "center", marginBottom: 10 }}>
+              Horário atual salvo: {horaSalva || "Carregando..."}
+            </Text>
+
+            <TouchableOpacity
+              style={[styles.dateInputContainer]}
+              onPress={() => setShowTimePicker(!showTimePicker)}
+            >
+              <Text style={styles.dateInputText}>
+                {selectedTime
+                  ? selectedTime.toLocaleTimeString("pt-BR", {
                     hour: "2-digit",
                     minute: "2-digit",
                   })
-                : "Carregando..."}
-            </Text>
-          </TouchableOpacity>
+                  : "Carregando..."}
+              </Text>
+            </TouchableOpacity>
 
-          {showTimePicker && (
-            <View style={styles.inlineTimePickerRow}>
-              <DateTimePicker
-                value={tempTime}
-                mode="time"
-                display={Platform.OS === "ios" ? "spinner" : "clock"}
-                is24Hour
-                onChange={handleTimeChange}
-                style={{ flex: 1 }}
-              />
-              {Platform.OS === "ios" && (
-                <TouchableOpacity
-                  style={styles.inlineButton}
-                  onPress={handleConfirmTime}
-                >
-                  <Text style={styles.buttonText}>OK</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          )}
+            {showTimePicker && (
+              <View style={styles.inlineTimePickerRow}>
+                <DateTimePicker
+                  value={tempTime}
+                  mode="time"
+                  display={Platform.OS === "ios" ? "spinner" : "clock"}
+                  is24Hour
+                  onChange={handleTimeChange}
+                  style={{ flex: 1 }}
+                />
+                {Platform.OS === "ios" && (
+                  <TouchableOpacity
+                    style={styles.inlineButton}
+                    onPress={handleConfirmTime}
+                  >
+                    <Text style={styles.buttonText}>OK</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+          </View>
+
+          <TouchableOpacity
+            style={styles.inlineButton}
+            onPress={salvarHorarioVersiculo}
+          >
+            <Text style={styles.buttonText}>Salvar Horário 💾</Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={styles.inlineButton}
-          onPress={salvarHorarioVersiculo}
-        >
-          <Text style={styles.buttonText}>Salvar Horário 💾</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+
+      </ScrollView>
+
+      <LoadingMessageLottie
+        visible={loading}
+        message="Aguarde ..."
+        onFinish={() => setShowSuccess(false)}
+      />
+
+       <SuccessMessageLottie
+        visible={showSuccess}
+        message="Notificação Enviada com Sucesso !"
+        onFinish={() => setShowSuccess(false)}
+      />
+
+    </View>
+
+
+
   );
 };
 
@@ -277,6 +308,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    fontFamily: "Montserrat_500Medium",
   },
   input: {
     borderWidth: 1,
@@ -302,6 +334,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+    fontFamily: "Montserrat_500Medium",
   },
   link: {
     textAlign: "center",
@@ -350,6 +383,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  overlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
+  },
+
 });
 
 export default SendNotificationForm;

@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 30,
+    fontFamily: "Montserrat_500Medium",
   },
   grid: {
     flexDirection: "row",
@@ -106,6 +107,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
+    fontFamily: "Montserrat_500Medium",
   },
   logoutButton: {
     backgroundColor: "#ff4444",

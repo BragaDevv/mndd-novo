@@ -16,6 +16,8 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/types";
 import { useFonts, Montserrat_500Medium } from "@expo-google-fonts/montserrat";
+import UnlockMessageLottie from "../components/UnlockMessageLottie";
+import ErrorMessageLottie from "../components/ErrorMessageLottie";
 
 const LoginScreen: React.FC = () => {
   const { user, login, isAdmin, loading } = useAuth();
@@ -25,72 +27,84 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [fontsLoaded] = useFonts({ Montserrat_500Medium });
-
-  useEffect(() => {
-    if (user && isAdmin) {
-      navigation.reset({ index: 0, routes: [{ name: "SendNotification" }] });
-    }
-  }, [user, isAdmin]);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const handleLogin = async () => {
+    Keyboard.dismiss(); // Fecha o Teclado
     setError("");
+
     if (!email.trim() || !password.trim()) {
       setError("Preencha todos os campos.");
       return;
     }
 
     try {
-      await login(email, password);
+      await login(email, password); // ← aguarda login
+      setShowSuccess(true);         // ← exibe animação
+
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigation.reset({ index: 0, routes: [{ name: "SendNotification" }] });
+      }, 1500); // ← espera a animação acabar para navegar
     } catch {
+      setShowError(true);
       setError("Email ou senha inválidos.");
     }
   };
 
-  if (loading || !fontsLoaded) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text style={{ fontSize: 18, fontFamily: "Montserrat_500Medium" }}>
-          Carregando...
-        </Text>
-      </View>
-    );
-  }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={{ flex: 1 }}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Login Administrativo</Text>
+    <View style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            <Text style={styles.title}>Login Administrativo</Text>
 
-          <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-            placeholderTextColor="#999"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <TextInput
-            placeholder="Senha"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={styles.input}
-            placeholderTextColor="#999"
-          />
+            <TextInput
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              style={styles.input}
+              placeholderTextColor="#999"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <TextInput
+              placeholder="Senha"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              style={styles.input}
+              placeholderTextColor="#999"
+            />
 
-          {error ? <Text style={styles.error}>{error}</Text> : null}
+            {error ? <Text style={styles.error}>{error}</Text> : null}
 
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Entrar</Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+              <Text style={styles.buttonText}>Entrar</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+
+      </KeyboardAvoidingView>
+
+      <UnlockMessageLottie
+        visible={showSuccess}
+        message="Acesso Autorizado"
+        onFinish={() => setShowSuccess(false)}
+      />
+
+      <ErrorMessageLottie
+        visible={showError}
+        message="Xiii! Login ou Senha Incorretos"
+        onFinish={() => setShowError(false)}
+      />
+    </View>
+
   );
 };
 

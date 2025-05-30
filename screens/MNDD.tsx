@@ -216,7 +216,7 @@ const MNDDScreen = () => {
     return (
       <View style={styles.loadingContainer}>
         <LottieView
-          source={require("../assets/animations/loading.json")}
+          source={require("../assets/animations/loadingsplashscreen.json")}
           autoPlay
           loop
           style={styles.animation}

@@ -10,7 +10,7 @@ interface Props {
   message: string;
 }
 
-const SuccessMessageLottie = ({ visible, onFinish, message }: Props) => {
+const LoadingMessageLottie = ({ visible, onFinish, message }: Props) => {
   const [renderKey, setRenderKey] = useState(0);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const SuccessMessageLottie = ({ visible, onFinish, message }: Props) => {
       <View style={styles.contentBox}>
         <LottieView
           key={renderKey}
-          source={require("../assets/animations/success.json")}
+          source={require("../assets/animations/loading.json")}
           autoPlay
           loop={false}
           style={styles.animation}
@@ -72,12 +72,13 @@ const styles = StyleSheet.create({
   },
   messageText: {
     marginTop: 5,
+    paddingBottom: 21,
     fontSize: 18,
-    color: "#2e7d32",
+    color: "#000",
     textAlign: "center",
     fontWeight: "bold",
     fontFamily: "Montserrat_500Medium",
   },
 });
 
-export default SuccessMessageLottie;
+export default LoadingMessageLottie;

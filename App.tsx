@@ -198,7 +198,7 @@ const AppNavigator = () => {
                     </ProtectedRoute>
                   )}
                 </Stack.Screen>
-                <Stack.Screen name="Login" component={LoginScreen} options={{ title: "Acesso Administrativo" }} />
+                <Stack.Screen name="Login" component={LoginScreen} options={{ title: "" }} />
                 <Stack.Screen name="Favoritos" component={FavoritosScreen} options={{ title: "Versículos Favoritos" }} />
                 <Stack.Screen name="BibleAssistant" component={BibleAssistant} options={{ title: "Assistente Bíblico" }} />
                 <Stack.Screen name="EstudosScreen" component={EstudosScreen} options={{ title: "Devocionais" }} />

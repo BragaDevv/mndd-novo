@@ -10,7 +10,7 @@ interface Props {
   message: string;
 }
 
-const SuccessMessageLottie = ({ visible, onFinish, message }: Props) => {
+const ErrorMessageLottie = ({ visible, onFinish, message }: Props) => {
   const [renderKey, setRenderKey] = useState(0);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const SuccessMessageLottie = ({ visible, onFinish, message }: Props) => {
       setRenderKey(prev => prev + 1); // força novo LottieView
       const timer = setTimeout(() => {
         onFinish();
-      }, 2500);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [visible]);
@@ -30,7 +30,7 @@ const SuccessMessageLottie = ({ visible, onFinish, message }: Props) => {
       <View style={styles.contentBox}>
         <LottieView
           key={renderKey}
-          source={require("../assets/animations/success.json")}
+          source={require("../assets/animations/error.json")}
           autoPlay
           loop={false}
           style={styles.animation}
@@ -56,10 +56,11 @@ const styles = StyleSheet.create({
   contentBox: {
     backgroundColor: "#ffffff",
     borderRadius: 20,
-    padding: 24,
+    padding: 10,
     alignItems: "center",
     justifyContent: "center",
-    width: width * 0.8,
+    width: width * 0.6,
+    height: height * 0.25,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -67,17 +68,16 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   animation: {
+    marginTop:-30,
     width: 120,
     height: 120,
   },
   messageText: {
-    marginTop: 5,
     fontSize: 18,
-    color: "#2e7d32",
+    color: "##FF0000",
     textAlign: "center",
     fontWeight: "bold",
-    fontFamily: "Montserrat_500Medium",
   },
 });
 
-export default SuccessMessageLottie;
+export default ErrorMessageLottie;
