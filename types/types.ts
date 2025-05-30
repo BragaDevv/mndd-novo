@@ -7,7 +7,7 @@ export type RootStackParamList = {
   Carrossel: undefined;
   Cultos: undefined;
   SendNotificationForm: undefined;
-  SendNotification: undefined;
+  AreaAdm: undefined;
   Login: undefined;
   Favoritos: undefined;
   Livros: undefined;

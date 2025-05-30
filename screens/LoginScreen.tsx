@@ -45,7 +45,7 @@ const LoginScreen: React.FC = () => {
 
       setTimeout(() => {
         setShowSuccess(false);
-        navigation.reset({ index: 0, routes: [{ name: "SendNotification" }] });
+        navigation.reset({ index: 0, routes: [{ name: "AreaAdm" }] });
       }, 1500); // ← espera a animação acabar para navegar
     } catch {
       setShowError(true);

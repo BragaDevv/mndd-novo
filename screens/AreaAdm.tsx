@@ -21,7 +21,7 @@ const { width } = Dimensions.get("window");
 
 type NavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  "SendNotification"
+  "AreaAdm"
 >;
 
 const SendNotificationScreen = () => {

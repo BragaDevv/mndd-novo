@@ -15,7 +15,7 @@ import BookScreen from "./screens/BookScreen";
 import ChapterScreen from "./screens/ChapterScreen";
 import VerseScreen from "./screens/VerseScreen";
 import ChurchScreen from "./screens/ChurchScreen";
-import SendNotificationScreen from "./screens/SendNotificationScreen";
+import AreaAdmScreen from "./screens/AreaAdm";
 import UsuariosScreen from "@screens/UsuariosScreen";
 import CarroselScreen from "@screens/CarroselScreen";
 import CultosScreen from "@screens/CultosScreen";
@@ -192,10 +192,10 @@ const AppNavigator = () => {
                 <Stack.Screen name="Carrossel" component={CarroselScreen} options={{ title: "" }} />
                 <Stack.Screen name="Cultos" component={CultosScreen} options={{ title: "" }} />
                 <Stack.Screen name="SendNotificationForm" component={SendNotificationFormScreen} options={{ title: "" }} />
-                <Stack.Screen name="SendNotification" options={{ title: "", headerLeft: () => null }}>
+                <Stack.Screen name="AreaAdm" options={{ title: "", headerLeft: () => null }}>
                   {() => (
                     <ProtectedRoute>
-                      <SendNotificationScreen />
+                      <AreaAdmScreen />
                     </ProtectedRoute>
                   )}
                 </Stack.Screen>

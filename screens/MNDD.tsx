@@ -78,7 +78,7 @@ const MNDDScreen = () => {
 
   const handleLockPress = () => {
     if (isAdmin) {
-      navigation.navigate("SendNotification");
+      navigation.navigate("AreaAdm");
     } else {
       navigation.navigate("Login");
     }
