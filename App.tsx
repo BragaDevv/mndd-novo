@@ -10,16 +10,16 @@ import * as Notifications from "expo-notifications";
 import Toast from "react-native-toast-message";
 
 import MNDDScreen from "./screens/MNDD";
-import HomeScreen from "./screens/HomeScreen";
-import BookScreen from "./screens/BookScreen";
-import ChapterScreen from "./screens/ChapterScreen";
-import VerseScreen from "./screens/VerseScreen";
-import ChurchScreen from "./screens/ChurchScreen";
+import LivrosScreen from "./screens/LivrosScreen";
+import CapitulosScreen from "./screens/CapitulosScreen";
+import VersiculosScreen from "./screens/VersiculosScreen";
+import VersiculoScreen from "./screens/VersiculoScreen";
+import IgrejaScreen from "./screens/IgrejaScreen";
 import AreaAdmScreen from "./screens/AreaAdm";
 import UsuariosScreen from "@screens/UsuariosScreen";
-import CarroselScreen from "@screens/CarroselScreen";
+import ImagensScreen from "@screens/ImagensScreen";
 import CultosScreen from "@screens/CultosScreen";
-import SendNotificationFormScreen from "@screens/SendNotificationForm";
+import NotificacaoScreen from "@screens/NotificacaoScreen";
 import LoginScreen from "./screens/LoginScreen";
 import FavoritosScreen from "./screens/FavoritosScreen";
 import BibleAssistant from "./screens/BibleAssistant";
@@ -183,15 +183,15 @@ const AppNavigator = () => {
             ) : (
               <>
                 <Stack.Screen name="MNDD" component={MNDDScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Livros" component={HomeScreen} options={{ title: "Livros da Bíblia" }} />
-                <Stack.Screen name="Capitulos" component={BookScreen} options={({ route }) => ({ title: route.params.bookName })} />
-                <Stack.Screen name="Versiculos" component={ChapterScreen} options={({ route }) => ({ title: route.params.bookName })} />
-                <Stack.Screen name="Versiculo" component={VerseScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
-                <Stack.Screen name="Igreja" component={ChurchScreen} options={{ title: "" }} />
+                <Stack.Screen name="Livros" component={LivrosScreen} options={{ title: "" }} />
+                <Stack.Screen name="Capitulos" component={CapitulosScreen} options={({ route }) => ({ title: route.params.bookName })} />
+                <Stack.Screen name="Versiculos" component={VersiculosScreen} options={({ route }) => ({ title: route.params.bookName })} />
+                <Stack.Screen name="Versiculo" component={VersiculoScreen} options={({ route }) => ({ title: `${route.params.bookName} ${route.params.chapterNumber}:${route.params.verseNumber}` })} />
+                <Stack.Screen name="Igreja" component={IgrejaScreen} options={{ title: "" }} />
                 <Stack.Screen name="Usuarios" component={UsuariosScreen} options={{ title: "" }} />
-                <Stack.Screen name="Carrossel" component={CarroselScreen} options={{ title: "" }} />
+                <Stack.Screen name="Carrossel" component={ImagensScreen} options={{ title: "" }} />
                 <Stack.Screen name="Cultos" component={CultosScreen} options={{ title: "" }} />
-                <Stack.Screen name="SendNotificationForm" component={SendNotificationFormScreen} options={{ title: "" }} />
+                <Stack.Screen name="Notificacao" component={NotificacaoScreen} options={{ title: "" }} />
                 <Stack.Screen name="AreaAdm" options={{ title: "", headerLeft: () => null }}>
                   {() => (
                     <ProtectedRoute>
@@ -200,9 +200,9 @@ const AppNavigator = () => {
                   )}
                 </Stack.Screen>
                 <Stack.Screen name="Login" component={LoginScreen} options={{ title: "" }} />
-                <Stack.Screen name="Favoritos" component={FavoritosScreen} options={{ title: "Versículos Favoritos" }} />
-                <Stack.Screen name="BibleAssistant" component={BibleAssistant} options={{ title: "Assistente Bíblico" }} />
-                <Stack.Screen name="EstudosScreen" component={EstudosScreen} options={{ title: "Devocionais" }} />
+                <Stack.Screen name="Favoritos" component={FavoritosScreen} options={{ title: "" }} />
+                <Stack.Screen name="BibleAssistant" component={BibleAssistant} options={{ title: "" }} />
+                <Stack.Screen name="EstudosScreen" component={EstudosScreen} options={{ title: "" }} />
                 <Stack.Screen name="HarpaScreen" component={HarpaScreen} options={{ title: "" }} />
               </>
             )}
