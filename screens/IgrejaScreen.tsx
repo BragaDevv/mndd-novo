@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,13 +8,23 @@ import {
   Image,
   ScrollView,
   Dimensions,
-  ActivityIndicator
-} from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialIcons } from '@expo/vector-icons';
-import { collection, onSnapshot, query, orderBy, where, Timestamp } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
+  ActivityIndicator,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types/types";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { MaterialIcons } from "@expo/vector-icons";
+import {
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  where,
+  Timestamp,
+} from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
 type Culto = {
   local: string;
@@ -33,7 +43,9 @@ type CarrosselImage = {
 };
 
 const ChurchScreen = () => {
-  const { width } = Dimensions.get('window');
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, "Quiz">>();
+  const { width } = Dimensions.get("window");
   const [cultosDaSemana, setCultosDaSemana] = useState<Culto[]>([]);
   const [carrosselImages, setCarrosselImages] = useState<CarrosselImage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,8 +77,12 @@ const ChurchScreen = () => {
 
       querySnapshot.forEach((doc) => {
         const cultoData = doc.data();
-        const [dia, mes, ano] = cultoData.data.split('/');
-        const dataCulto = new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia));
+        const [dia, mes, ano] = cultoData.data.split("/");
+        const dataCulto = new Date(
+          parseInt(ano),
+          parseInt(mes) - 1,
+          parseInt(dia)
+        );
 
         if (dataCulto >= hoje && dataCulto <= fimDaSemana) {
           cultos.push({
@@ -112,17 +128,18 @@ const ChurchScreen = () => {
 
   const socialLinks = {
     instagram: {
-      appUrl: 'instagram://user?username=nascidodedeus.oficial',
-      webUrl: 'https://www.instagram.com/nascidodedeus.oficial/',
-      icon: 'instagram' as const,
-      color: '#E1306C'
+      appUrl: "instagram://user?username=nascidodedeus.oficial",
+      webUrl: "https://www.instagram.com/nascidodedeus.oficial/",
+      icon: "instagram" as const,
+      color: "#E1306C",
     },
     facebook: {
-      appUrl: 'fb://profile/nascidos.dedeus.73',
-      webUrl: 'https://www.facebook.com/nascidos.dedeus.73?mibextid=wwXIfr&mibextid=wwXIfr',
-      icon: 'facebook' as const,
-      color: '#1877F2'
-    }
+      appUrl: "fb://profile/nascidos.dedeus.73",
+      webUrl:
+        "https://www.facebook.com/nascidos.dedeus.73?mibextid=wwXIfr&mibextid=wwXIfr",
+      icon: "facebook" as const,
+      color: "#1877F2",
+    },
   };
 
   const openLink = async (appUrl: string, webUrl: string) => {
@@ -134,9 +151,22 @@ const ChurchScreen = () => {
   };
 
   const formatarData = (dataString: string) => {
-    const [dia, mes, ano] = dataString.split('/');
-    const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const [dia, mes, ano] = dataString.split("/");
+    const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    const meses = [
+      "Jan",
+      "Fev",
+      "Mar",
+      "Abr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Set",
+      "Out",
+      "Nov",
+      "Dez",
+    ];
     const data = new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia));
     return `${diasSemana[data.getDay()]}, ${dia} ${meses[parseInt(mes) - 1]}`;
   };
@@ -163,7 +193,9 @@ const ChurchScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 scrollEventThrottle={16}
                 onScroll={(event) => {
-                  const slide = Math.round(event.nativeEvent.contentOffset.x / width);
+                  const slide = Math.round(
+                    event.nativeEvent.contentOffset.x / width
+                  );
                   if (slide !== currentSlide) {
                     setCurrentSlide(slide);
                   }
@@ -193,7 +225,9 @@ const ChurchScreen = () => {
           ) : (
             <View style={styles.placeholderContainer}>
               <MaterialIcons name="image" size={50} color="#ccc" />
-              <Text style={styles.placeholderText}>Nenhuma imagem disponível</Text>
+              <Text style={styles.placeholderText}>
+                Nenhuma imagem disponível
+              </Text>
             </View>
           )}
         </View>
@@ -213,17 +247,43 @@ const ChurchScreen = () => {
                   </View>
                   <View style={styles.eventoInfo}>
                     <Text style={styles.eventoTitulo}>{culto.tipo}</Text>
-                    <Text style={styles.eventoData}><MaterialIcons name="calendar-month" size={14} color="#000" />  {formatarData(culto.data)} • {culto.horario} | <MaterialIcons name="location-on" size={14} color="#f50202" />  {culto.local}
+                    <Text style={styles.eventoData}>
+                      <MaterialIcons
+                        name="calendar-month"
+                        size={14}
+                        color="#000"
+                      />{" "}
+                      {formatarData(culto.data)} • {culto.horario} |{" "}
+                      <MaterialIcons
+                        name="location-on"
+                        size={14}
+                        color="#f50202"
+                      />{" "}
+                      {culto.local}
                     </Text>
                     {culto.descricao && (
-                      <Text style={styles.eventoDescricao}>{culto.descricao}</Text>
+                      <Text style={styles.eventoDescricao}>
+                        {culto.descricao}
+                      </Text>
                     )}
                   </View>
                 </View>
               ))
             ) : (
-              <Text style={styles.emptyText}>Nenhum evento programado para esta semana</Text>
+              <Text style={styles.emptyText}>
+                Nenhum evento programado para esta semana
+              </Text>
             )}
+          </View>
+
+          <View style={styles.sectionQuiz}>
+            <TouchableOpacity
+              style={styles.navButton}
+              onPress={() => navigation.navigate("Quiz")}
+            >
+              <Ionicons name="game-controller" size={36} color="#000" />
+              <Text style={styles.navButtonText}>Quiz Bíblico</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.section}>
@@ -242,166 +302,188 @@ const ChurchScreen = () => {
           </View>
         </View>
 
-        <LinearGradient
-          colors={['#f5f5f5', '#e0e0e0']}
-          style={styles.footer}
-        >
+        <LinearGradient colors={["#f5f5f5", "#e0e0e0"]} style={styles.footer}>
           <Text style={styles.footerTitle}>MINISTÉRIO NASCIDO DE DEUS</Text>
-          <Text style={styles.footerText}>R. Nanci Silva Cabral, 441 - Parque Continental II</Text>
+          <Text style={styles.footerText}>
+            R. Nanci Silva Cabral, 441 - Parque Continental II
+          </Text>
           <Text style={styles.footerText}>Guarulhos / SP - CEP: 07084-000</Text>
-          <Text style={styles.footerText}>(11) 94734-3378 | (11) 94752-1645</Text>
+          <Text style={styles.footerText}>
+            (11) 94734-3378 | (11) 94752-1645
+          </Text>
         </LinearGradient>
       </ScrollView>
     </View>
   );
 };
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
   scrollContainer: {
     flexGrow: 1,
   },
   carouselContainer: {
     height: 200,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    marginBottom: 20
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    marginBottom: 20,
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   placeholderContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%'
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
   },
   placeholderText: {
     marginTop: 10,
-    color: '#999',
-    fontFamily: 'Montserrat_500Medium'
+    color: "#999",
+    fontFamily: "Montserrat_500Medium",
   },
   slide: {
     width,
-    height: '100%'
+    height: "100%",
   },
   pagination: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%',
-    position: 'absolute',
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    position: "absolute",
     bottom: 10,
   },
   paginationDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#ccc',
-    marginHorizontal: 4
+    backgroundColor: "#ccc",
+    marginHorizontal: 4,
   },
   paginationDotActive: {
-    backgroundColor: '#333'
+    backgroundColor: "#333",
   },
   content: {
     padding: 20,
-    paddingBottom: 0
+    paddingBottom: 0,
   },
   section: {
-    marginBottom: 30
+    marginBottom: 30,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
-    color: '#333',
-    fontFamily: 'Montserrat_600SemiBold',
-    textAlign: 'center'
+    color: "#333",
+    fontFamily: "Montserrat_600SemiBold",
+    textAlign: "center",
   },
   eventoCard: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    backgroundColor: "#fff",
     borderRadius: 8,
     padding: 10,
     marginBottom: 12,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4
+    shadowRadius: 4,
   },
   eventoIcon: {
     marginRight: 15,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   eventoInfo: {
-    flex: 1
+    flex: 1,
   },
   eventoTitulo: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#075E54',
+    fontWeight: "bold",
+    color: "#075E54",
     marginBottom: 4,
-    fontFamily: 'Montserrat_600SemiBold'
+    fontFamily: "Montserrat_600SemiBold",
   },
   eventoData: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     marginBottom: 6,
-    fontFamily: 'Montserrat_500Medium'
+    fontFamily: "Montserrat_500Medium",
   },
   eventoDescricao: {
     fontSize: 12,
-    color: '#444',
-    fontFamily: 'Montserrat_500Medium'
+    color: "#444",
+    fontFamily: "Montserrat_500Medium",
   },
   emptyText: {
-    textAlign: 'center',
-    color: '#666',
-    fontStyle: 'italic',
-    fontFamily: 'Montserrat_500Medium'
+    textAlign: "center",
+    color: "#666",
+    fontStyle: "italic",
+    fontFamily: "Montserrat_500Medium",
+  },
+  sectionQuiz: {
+    display: "flex",
+    backgroundColor:'#ccc',
+    borderRadius:10,
+    padding:10,
+    marginBottom: 30,
+  },
+  navButton: {
+    flexDirection:'row',
+    alignItems: "center",
+    justifyContent:"flex-start",
+    flex: 1,
+    gap:20,
+    marginHorizontal:20
+  },
+  navButtonText: {
+    fontFamily: "Montserrat_500Medium",
+    color: "#000",
+    fontSize: 22,
+    marginTop: 5,
   },
   socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 15,
     marginVertical: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
     borderLeftWidth: 4,
-    elevation: 2
+    elevation: 2,
   },
   socialText: {
     marginLeft: 15,
     fontSize: 16,
-    fontFamily: 'Montserrat_500Medium'
+    fontFamily: "Montserrat_500Medium",
   },
   footer: {
-    width: '100%',
+    width: "100%",
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    marginTop: 20
+    borderTopColor: "#ddd",
+    marginTop: 20,
   },
   footerTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    textAlign: 'center',
-    fontFamily: 'Montserrat_600SemiBold'
+    textAlign: "center",
+    fontFamily: "Montserrat_600SemiBold",
   },
   footerText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 5,
-    fontFamily: 'Montserrat_400Regular'
-  }
+    fontFamily: "Montserrat_400Regular",
+  },
 });
 
 export default ChurchScreen;

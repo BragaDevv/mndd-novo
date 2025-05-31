@@ -58,7 +58,7 @@ const CapitulosScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: "#f5f5f5",
   },
   grid: {
@@ -83,9 +83,9 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_500Medium",
   },
   subtitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 16,
+    marginBottom: 12,
     textAlign: "center",
     color: "#000",
     fontFamily: "Montserrat_500Medium",

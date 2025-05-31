@@ -1,0 +1,492 @@
+[
+  {
+    "pergunta": "Qual foi o profeta que enfrentou os profetas de Baal no Monte Carmelo?",
+    "opcoes": [
+      "Jeremias",
+      "Isaías",
+      "Elias",
+      "Eliseu"
+    ],
+    "respostaCorreta": "Elias"
+  },
+  {
+    "pergunta": "Quem foi o rei que pediu sabedoria a Deus?",
+    "opcoes": [
+      "Saul",
+      "Josias",
+      "Salomão",
+      "Davi"
+    ],
+    "respostaCorreta": "Salomão"
+  },
+  {
+    "pergunta": "Qual apóstolo teve uma visão de um lençol descendo do céu?",
+    "opcoes": [
+      "João",
+      "Tiago",
+      "Pedro",
+      "Paulo"
+    ],
+    "respostaCorreta": "Pedro"
+  },
+  {
+    "pergunta": "Quem escreveu o livro de Apocalipse?",
+    "opcoes": [
+      "Paulo",
+      "Pedro",
+      "Tiago",
+      "João"
+    ],
+    "respostaCorreta": "João"
+  },
+  {
+    "pergunta": "Quem foi engolido por um grande peixe?",
+    "opcoes": [
+      "Jonas",
+      "Pedro",
+      "João",
+      "Elias"
+    ],
+    "respostaCorreta": "Jonas"
+  },
+  {
+    "pergunta": "Quem era o discípulo conhecido como 'o incrédulo'?",
+    "opcoes": [
+      "André",
+      "Tiago",
+      "Tomé",
+      "Pedro"
+    ],
+    "respostaCorreta": "Tomé"
+  },
+  {
+    "pergunta": "Qual foi o nome do primeiro homicida na Bíblia?",
+    "opcoes": [
+      "Adão",
+      "Ismael",
+      "Caim",
+      "Sete"
+    ],
+    "respostaCorreta": "Caim"
+  },
+  {
+    "pergunta": "Qual foi a cidade destruída por causa do pecado, junto com Gomorra?",
+    "opcoes": [
+      "Sodoma",
+      "Jericó",
+      "Tiro",
+      "Nínive"
+    ],
+    "respostaCorreta": "Sodoma"
+  },
+  {
+    "pergunta": "Quem era o irmão de Moisés?",
+    "opcoes": [
+      "José",
+      "Esaú",
+      "Arão",
+      "Jacó"
+    ],
+    "respostaCorreta": "Arão"
+  },
+  {
+    "pergunta": "Quantos dias Jesus jejuou no deserto?",
+    "opcoes": [
+      "50",
+      "20",
+      "40",
+      "30"
+    ],
+    "respostaCorreta": "40"
+  },
+  {
+    "pergunta": "Quem escreveu a maioria dos Salmos?",
+    "opcoes": [
+      "Davi",
+      "Asafe",
+      "Moisés",
+      "Salomão"
+    ],
+    "respostaCorreta": "Davi"
+  },
+  {
+    "pergunta": "Em qual livro está a história da torre de Babel?",
+    "opcoes": [
+      "Gênesis",
+      "Levítico",
+      "Êxodo",
+      "Números"
+    ],
+    "respostaCorreta": "Gênesis"
+  },
+  {
+    "pergunta": "Qual o nome do homem que subiu aos céus em um carro de fogo?",
+    "opcoes": [
+      "Eliseu",
+      "Moisés",
+      "Isaías",
+      "Elias"
+    ],
+    "respostaCorreta": "Elias"
+  },
+  {
+    "pergunta": "Quem negou Jesus três vezes?",
+    "opcoes": [
+      "Judas",
+      "Tiago",
+      "João",
+      "Pedro"
+    ],
+    "respostaCorreta": "Pedro"
+  },
+  {
+    "pergunta": "Quem foi vendido como escravo por seus irmãos?",
+    "opcoes": [
+      "Abraão",
+      "Esaú",
+      "José",
+      "Moisés"
+    ],
+    "respostaCorreta": "José"
+  },
+  {
+    "pergunta": "Qual o nome do gigante que Davi matou?",
+    "opcoes": [
+      "Senaqueribe",
+      "Zadoque",
+      "Golias",
+      "Amaleque"
+    ],
+    "respostaCorreta": "Golias"
+  },
+  {
+    "pergunta": "Qual livro vem depois de Provérbios?",
+    "opcoes": [
+      "Salmos",
+      "Cantares",
+      "Isaías",
+      "Eclesiastes"
+    ],
+    "respostaCorreta": "Eclesiastes"
+  },
+  {
+    "pergunta": "Qual rei teve um sonho que só Daniel pôde interpretar?",
+    "opcoes": [
+      "Herodes",
+      "Dario",
+      "Faraó",
+      "Nabucodonosor"
+    ],
+    "respostaCorreta": "Nabucodonosor"
+  },
+  {
+    "pergunta": "Quem disse: 'Eu sou o caminho, a verdade e a vida'?",
+    "opcoes": [
+      "Paulo",
+      "Jesus",
+      "João",
+      "Pedro"
+    ],
+    "respostaCorreta": "Jesus"
+  },
+  {
+    "pergunta": "Qual era o nome da esposa de Abraão?",
+    "opcoes": [
+      "Miriã",
+      "Sara",
+      "Rebeca",
+      "Raquel"
+    ],
+    "respostaCorreta": "Sara"
+  },
+  {
+    "pergunta": "Qual apóstolo era cobrador de impostos?",
+    "opcoes": [
+      "Judas",
+      "Pedro",
+      "Mateus",
+      "André"
+    ],
+    "respostaCorreta": "Mateus"
+  },
+  {
+    "pergunta": "Quantas pragas caíram sobre o Egito?",
+    "opcoes": [
+      "10",
+      "40",
+      "12",
+      "7"
+    ],
+    "respostaCorreta": "10"
+  },
+  {
+    "pergunta": "Quem interpretou o sonho do faraó sobre vacas gordas e magras?",
+    "opcoes": [
+      "Moisés",
+      "Daniel",
+      "José",
+      "Arão"
+    ],
+    "respostaCorreta": "José"
+  },
+  {
+    "pergunta": "Qual é o último livro do Antigo Testamento?",
+    "opcoes": [
+      "Ageu",
+      "Isaías",
+      "Zacarias",
+      "Malaquias"
+    ],
+    "respostaCorreta": "Malaquias"
+  },
+  {
+    "pergunta": "Qual o nome do rei que lançou Daniel na cova dos leões?",
+    "opcoes": [
+      "Herodes",
+      "Ciro",
+      "Dario",
+      "Nabucodonosor"
+    ],
+    "respostaCorreta": "Dario"
+  },
+  {
+    "pergunta": "Qual cidade foi derrubada com o som de trombetas?",
+    "opcoes": [
+      "Nínive",
+      "Jericó",
+      "Samaria",
+      "Tiro"
+    ],
+    "respostaCorreta": "Jericó"
+  },
+  {
+    "pergunta": "Quem era o pai de João Batista?",
+    "opcoes": [
+      "Tiago",
+      "Zacarias",
+      "Simão",
+      "José"
+    ],
+    "respostaCorreta": "Zacarias"
+  },
+  {
+    "pergunta": "Qual o nome do discípulo que traiu Jesus?",
+    "opcoes": [
+      "Tomé",
+      "Pedro",
+      "Tiago",
+      "Judas"
+    ],
+    "respostaCorreta": "Judas"
+  },
+  {
+    "pergunta": "Quem escreveu muitas cartas do Novo Testamento?",
+    "opcoes": [
+      "Tiago",
+      "Paulo",
+      "João",
+      "Pedro"
+    ],
+    "respostaCorreta": "Paulo"
+  },
+  {
+    "pergunta": "Quem foi o primeiro rei de Israel?",
+    "opcoes": [
+      "Josias",
+      "Saul",
+      "Salomão",
+      "Davi"
+    ],
+    "respostaCorreta": "Saul"
+  },
+  {
+    "pergunta": "Quem viu uma sarça ardente que não se consumia?",
+    "opcoes": [
+      "Josué",
+      "Elias",
+      "Moisés",
+      "Abraão"
+    ],
+    "respostaCorreta": "Moisés"
+  },
+  {
+    "pergunta": "Qual livro bíblico fala de uma mulher virtuosa?",
+    "opcoes": [
+      "Ester",
+      "Salmos",
+      "Rute",
+      "Provérbios"
+    ],
+    "respostaCorreta": "Provérbios"
+  },
+  {
+    "pergunta": "Qual era a profissão de Pedro antes de seguir Jesus?",
+    "opcoes": [
+      "Carpinteiro",
+      "Pescador",
+      "Pastor",
+      "Cobrador"
+    ],
+    "respostaCorreta": "Pescador"
+  },
+  {
+    "pergunta": "Quantos discípulos Jesus escolheu?",
+    "opcoes": [
+      "70",
+      "10",
+      "12",
+      "7"
+    ],
+    "respostaCorreta": "12"
+  },
+  {
+    "pergunta": "Quem foi a primeira mulher?",
+    "opcoes": [
+      "Marta",
+      "Sara",
+      "Eva",
+      "Rebeca"
+    ],
+    "respostaCorreta": "Eva"
+  },
+  {
+    "pergunta": "Qual livro conta a história de Rute?",
+    "opcoes": [
+      "Juízes",
+      "Ester",
+      "Neemias",
+      "Rute"
+    ],
+    "respostaCorreta": "Rute"
+  },
+  {
+    "pergunta": "Qual cidade Jesus nasceu?",
+    "opcoes": [
+      "Belém",
+      "Cafarnaum",
+      "Nazaré",
+      "Jerusalém"
+    ],
+    "respostaCorreta": "Belém"
+  },
+  {
+    "pergunta": "Quem disse: 'O Senhor é meu pastor e nada me faltará'?",
+    "opcoes": [
+      "Elias",
+      "Davi",
+      "Salomão",
+      "Moisés"
+    ],
+    "respostaCorreta": "Davi"
+  },
+  {
+    "pergunta": "Quantos capítulos tem o livro de Salmos?",
+    "opcoes": [
+      "100",
+      "120",
+      "150",
+      "200"
+    ],
+    "respostaCorreta": "150"
+  },
+  {
+    "pergunta": "Qual livro vem antes de Apocalipse?",
+    "opcoes": [
+      "Judas",
+      "Tiago",
+      "João",
+      "Hebreus"
+    ],
+    "respostaCorreta": "Judas"
+  },
+  {
+    "pergunta": "Qual discípulo era irmão de Pedro?",
+    "opcoes": [
+      "Felipe",
+      "João",
+      "Tiago",
+      "André"
+    ],
+    "respostaCorreta": "André"
+  },
+  {
+    "pergunta": "Qual foi o primeiro milagre de Jesus?",
+    "opcoes": [
+      "Curar cego",
+      "Água em vinho",
+      "Multiplicar pães",
+      "Ressuscitar morto"
+    ],
+    "respostaCorreta": "Água em vinho"
+  },
+  {
+    "pergunta": "Qual o nome do apóstolo conhecido como 'o amado'?",
+    "opcoes": [
+      "Tiago",
+      "Pedro",
+      "Tomé",
+      "João"
+    ],
+    "respostaCorreta": "João"
+  },
+  {
+    "pergunta": "Qual mulher se tornou rainha e salvou seu povo?",
+    "opcoes": [
+      "Marta",
+      "Raquel",
+      "Ester",
+      "Débora"
+    ],
+    "respostaCorreta": "Ester"
+  },
+  {
+    "pergunta": "Qual o nome do pai de Davi?",
+    "opcoes": [
+      "Salomão",
+      "Eli",
+      "Saul",
+      "Jessé"
+    ],
+    "respostaCorreta": "Jessé"
+  },
+  {
+    "pergunta": "Quem foi levado ao céu sem morrer?",
+    "opcoes": [
+      "Moisés",
+      "João",
+      "Enoque",
+      "Elias"
+    ],
+    "respostaCorreta": "Enoque"
+  },
+  {
+    "pergunta": "Qual era o nome do gigante morto por Davi?",
+    "opcoes": [
+      "Golias",
+      "Senaqueribe",
+      "Zadoque",
+      "Amaleque"
+    ],
+    "respostaCorreta": "Golias"
+  },
+  {
+    "pergunta": "Qual livro da Bíblia fala sobre a criação do mundo?",
+    "opcoes": [
+      "Levítico",
+      "Êxodo",
+      "Gênesis",
+      "Salmos"
+    ],
+    "respostaCorreta": "Gênesis"
+  },
+  {
+    "pergunta": "Quem guiou o povo de Israel na conquista de Canaã?",
+    "opcoes": [
+      "Josué",
+      "Moisés",
+      "Davi",
+      "Samuel"
+    ],
+    "respostaCorreta": "Josué"
+  }
+]

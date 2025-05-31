@@ -5,7 +5,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { Text, View, Platform } from "react-native";
 import { getAuth, onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { doc, getDoc, query, where, getDocs, collection, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  query,
+  where,
+  getDocs,
+  collection,
+  setDoc,
+} from "firebase/firestore";
 import * as Notifications from "expo-notifications";
 import Toast from "react-native-toast-message";
 
@@ -26,6 +34,8 @@ import BibleAssistant from "./screens/BibleAssistant";
 import EstudosScreen from "./screens/EstudosScreen";
 import HarpaScreen from "./screens/HarpaScreen";
 import QuestionarioScreen from "./screens/QuestionarioScreen";
+import QuizScreen from "./screens/QuizScreen";
+import RankingScreen from "./screens/RankingScreen";
 
 import { RootStackParamList } from "./types/types";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -67,7 +77,9 @@ const AppNavigator = () => {
   const responseListener = useRef<Notifications.Subscription | null>(null);
   const navigationRef = useRef<any>(null);
 
-  const [showQuestionario, setShowQuestionario] = useState<boolean | null>(null);
+  const [showQuestionario, setShowQuestionario] = useState<boolean | null>(
+    null
+  );
   const [expoToken, setExpoToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -75,7 +87,10 @@ const AppNavigator = () => {
       const token = await registerForPushNotifications();
       if (token) {
         setExpoToken(token);
-        const q = query(collection(db, "usuarios"), where("expoToken", "==", token));
+        const q = query(
+          collection(db, "usuarios"),
+          where("expoToken", "==", token)
+        );
         const snapshot = await getDocs(q);
         if (!snapshot.empty) {
           console.log("✅ Token encontrado, pulando questionário");
@@ -103,17 +118,19 @@ const AppNavigator = () => {
           });
         }
 
-        notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-          Toast.show({
-            type: "info",
-            text1: notification.request.content.title || "Nova notificação",
-            text2: notification.request.content.body || undefined,
+        notificationListener.current =
+          Notifications.addNotificationReceivedListener((notification) => {
+            Toast.show({
+              type: "info",
+              text1: notification.request.content.title || "Nova notificação",
+              text2: notification.request.content.body || undefined,
+            });
           });
-        });
 
-        responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log("[APP] Notificação clicada:", response);
-        });
+        responseListener.current =
+          Notifications.addNotificationResponseReceivedListener((response) => {
+            console.log("[APP] Notificação clicada:", response);
+          });
       } catch (error) {
         console.error("[APP] Erro ao configurar notificações:", error);
       }
@@ -177,33 +194,100 @@ const AppNavigator = () => {
             {showQuestionario ? (
               <Stack.Screen
                 name="Questionario"
-                children={() => <QuestionarioScreen onComplete={handleQuestionarioComplete} />}
+                children={() => (
+                  <QuestionarioScreen onComplete={handleQuestionarioComplete} />
+                )}
                 options={{ headerShown: false }}
               />
             ) : (
               <>
-                <Stack.Screen name="MNDD" component={MNDDScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Livros" component={LivrosScreen} options={{ title: "" }} />
-                <Stack.Screen name="Capitulos" component={CapitulosScreen} options={{ title: "" }} />
-                <Stack.Screen name="Versiculos" component={VersiculosScreen} options={{ title: "" }} />
-                <Stack.Screen name="Versiculo" component={VersiculoScreen} options={{ title: "" }} />
-                <Stack.Screen name="Igreja" component={IgrejaScreen} options={{ title: "" }} />
-                <Stack.Screen name="Usuarios" component={UsuariosScreen} options={{ title: "" }} />
-                <Stack.Screen name="Carrossel" component={ImagensScreen} options={{ title: "" }} />
-                <Stack.Screen name="Cultos" component={CultosScreen} options={{ title: "" }} />
-                <Stack.Screen name="Notificacao" component={NotificacaoScreen} options={{ title: "" }} />
-                <Stack.Screen name="AreaAdm" options={{ title: "", headerLeft: () => null }}>
+                <Stack.Screen
+                  name="MNDD"
+                  component={MNDDScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Livros"
+                  component={LivrosScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="Capitulos"
+                  component={CapitulosScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="Versiculos"
+                  component={VersiculosScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="Versiculo"
+                  component={VersiculoScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="Igreja"
+                  component={IgrejaScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="Usuarios"
+                  component={UsuariosScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="Carrossel"
+                  component={ImagensScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="Cultos"
+                  component={CultosScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="Notificacao"
+                  component={NotificacaoScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="AreaAdm"
+                  options={{ title: "", headerLeft: () => null }}
+                >
                   {() => (
                     <ProtectedRoute>
                       <AreaAdmScreen />
                     </ProtectedRoute>
                   )}
                 </Stack.Screen>
-                <Stack.Screen name="Login" component={LoginScreen} options={{ title: "" }} />
-                <Stack.Screen name="Favoritos" component={FavoritosScreen} options={{ title: "" }} />
-                <Stack.Screen name="BibleAssistant" component={BibleAssistant} options={{ title: "" }} />
-                <Stack.Screen name="EstudosScreen" component={EstudosScreen} options={{ title: "" }} />
-                <Stack.Screen name="HarpaScreen" component={HarpaScreen} options={{ title: "" }} />
+                <Stack.Screen
+                  name="Login"
+                  component={LoginScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="Favoritos"
+                  component={FavoritosScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="BibleAssistant"
+                  component={BibleAssistant}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="EstudosScreen"
+                  component={EstudosScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen
+                  name="HarpaScreen"
+                  component={HarpaScreen}
+                  options={{ title: "" }}
+                />
+                <Stack.Screen name="Quiz" component={QuizScreen} />
+                <Stack.Screen name="Ranking" component={RankingScreen} />
               </>
             )}
           </Stack.Navigator>

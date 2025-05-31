@@ -168,7 +168,7 @@ const LivrosScreen = () => {
             style={[styles.filterButton, testamentFilter === "todos" && styles.activeFilter]}
             onPress={() => setTestamentFilter("todos")}
           >
-            <Text style={styles.filterText}>📚 Todos</Text>
+            <Text style={styles.filterText}>Todos</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.filterButton, testamentFilter === "vt" && styles.activeFilter]}
@@ -234,18 +234,18 @@ const styles = StyleSheet.create({
     paddingBottom: 0, // Para não ficar embaixo da barra de navegação
   },
     title: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: "bold",
     marginBottom: 12,
     textAlign: "center",
     fontFamily: "Montserrat_500Medium",
   },
   input: {
-    padding: 10,
+    padding: 14,
     marginBottom: 12,
     backgroundColor: "#fff",
     borderRadius: 8,
-    fontSize: 16,
+    fontSize: 18,
     borderColor: "#ccc",
     borderWidth: 1,
   },
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 12,
     marginHorizontal: 5,
     backgroundColor: "#ccc",
     borderRadius: 8,
@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   filterText: {
+    fontSize:18,
     textAlign: 'center',
     color: "#fff",
     fontWeight: "bold",
