@@ -1,9 +1,25 @@
 // screens/RankingScreen.tsx
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from "react-native";
-import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
+import {
+  collection,
+  query,
+  orderBy,
+  limit,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types/types";
 
 interface Resultado {
   nome: string;
@@ -11,6 +27,7 @@ interface Resultado {
 }
 
 const RankingScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "Ranking">>();
   const [ranking, setRanking] = useState<Resultado[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -18,7 +35,7 @@ const RankingScreen = () => {
     const buscarRanking = async () => {
       try {
         const q = query(
-          collection(db, "quizResultados"),
+          collection(db, "ranking"), // atualizado de quizResultados para ranking
           orderBy("pontuacao", "desc"),
           limit(10)
         );
@@ -43,7 +60,7 @@ const RankingScreen = () => {
     <View style={styles.item}>
       <Text style={styles.posicao}>{index + 1}º</Text>
       <FontAwesome5
-        name={index === 0 ? "medal" : index === 1 ? "medal" : "medal"}
+        name="medal"
         size={24}
         color={index === 0 ? "#FFD700" : index === 1 ? "#C0C0C0" : "#CD7F32"}
         style={styles.icone}
@@ -65,6 +82,9 @@ const RankingScreen = () => {
           renderItem={renderItem}
         />
       )}
+       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Quiz")}>
+          <Text style={styles.buttonTxt}>SAIR</Text>
+        </TouchableOpacity>
     </View>
   );
 };
@@ -76,6 +96,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#FAFAFA",
+    paddingTop: 80,
   },
   titulo: {
     fontSize: 24,
@@ -109,4 +130,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#1976D2",
   },
+
+  button:{
+    backgroundColor:'#f25f',
+    padding:12,
+    marginHorizontal:"25%",
+    marginBottom:"12%",
+    borderRadius:10,
+  },
+
+  buttonTxt:{
+    fontFamily: "Montserrat_500Medium",
+    textAlign:'center',
+    fontSize:24
+
+  },
+
 });

@@ -82,28 +82,31 @@ const AppNavigator = () => {
   );
   const [expoToken, setExpoToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    const checkUserByToken = async () => {
-      const token = await registerForPushNotifications();
-      if (token) {
-        setExpoToken(token);
-        const q = query(
-          collection(db, "usuarios"),
-          where("expoToken", "==", token)
-        );
-        const snapshot = await getDocs(q);
-        if (!snapshot.empty) {
-          console.log("✅ Token encontrado, pulando questionário");
-          setShowQuestionario(false);
-        } else {
-          console.log("🆕 Token não encontrado, exibindo questionário");
-          setShowQuestionario(true);
-        }
-      }
-    };
+useEffect(() => {
+  const checkUserByToken = async () => {
+    const token = await registerForPushNotifications();
+    if (token) {
+      setExpoToken(token);
+      await AsyncStorage.setItem("expoPushToken", token); // ✅ SALVA LOCALMENTE
+      console.log("✅ Token Salvo Localmente");
 
-    checkUserByToken();
-  }, []);
+      const q = query(
+        collection(db, "usuarios"),
+        where("expoToken", "==", token)
+      );
+      const snapshot = await getDocs(q);
+      if (!snapshot.empty) {
+        console.log("✅ Token encontrado, pulando questionário");
+        setShowQuestionario(false);
+      } else {
+        console.log("🆕 Token não encontrado, exibindo questionário");
+        setShowQuestionario(true);
+      }
+    }
+  };
+
+  checkUserByToken();
+}, []);
 
   useEffect(() => {
     const setupNotifications = async () => {
@@ -286,8 +289,8 @@ const AppNavigator = () => {
                   component={HarpaScreen}
                   options={{ title: "" }}
                 />
-                <Stack.Screen name="Quiz" component={QuizScreen} />
-                <Stack.Screen name="Ranking" component={RankingScreen} />
+                <Stack.Screen name="Quiz" component={QuizScreen}options={{ title: "" }} />
+                <Stack.Screen name="Ranking" component={RankingScreen} options={{ title: "", headerShown: false  }}/>
               </>
             )}
           </Stack.Navigator>
