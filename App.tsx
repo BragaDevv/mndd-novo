@@ -290,7 +290,7 @@ useEffect(() => {
                   options={{ title: "" }}
                 />
                 <Stack.Screen name="Quiz" component={QuizScreen}options={{ title: "" }} />
-                <Stack.Screen name="Ranking" component={RankingScreen} options={{ title: "", headerShown: false  }}/>
+                <Stack.Screen name="Ranking" component={RankingScreen} options={{ title: "" }}/>
               </>
             )}
           </Stack.Navigator>

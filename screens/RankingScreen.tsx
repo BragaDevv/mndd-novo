@@ -8,15 +8,9 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import {
-  collection,
-  query,
-  orderBy,
-  limit,
-  getDocs,
-} from "firebase/firestore";
+import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/types";
@@ -27,7 +21,8 @@ interface Resultado {
 }
 
 const RankingScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "Ranking">>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, "Ranking">>();
   const [ranking, setRanking] = useState<Resultado[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -82,9 +77,13 @@ const RankingScreen = () => {
           renderItem={renderItem}
         />
       )}
-       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Quiz")}>
-          <Text style={styles.buttonTxt}>SAIR</Text>
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.buttonExit}
+        onPress={() => navigation.navigate("Igreja")}
+      >
+        <Ionicons name="exit" size={40} color="#000" />
+        <Text style={styles.buttonTxtExit}>SAIR</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#FAFAFA",
-    paddingTop: 80,
+    paddingTop: 20,
   },
   titulo: {
     fontSize: 24,
@@ -131,19 +130,27 @@ const styles = StyleSheet.create({
     color: "#1976D2",
   },
 
-  button:{
-    backgroundColor:'#f25f',
-    padding:12,
-    marginHorizontal:"25%",
-    marginBottom:"12%",
-    borderRadius:10,
+  buttonExit: {
+    position: "relative",
+    top: -25,
+    alignSelf: "center",
+    marginTop: 20,
+    backgroundColor: "#ddd",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
-
-  buttonTxt:{
-    fontFamily: "Montserrat_500Medium",
-    textAlign:'center',
-    fontSize:24
-
+  buttonTxtExit: {
+    fontSize: 16,
+    marginLeft: 10,
+    fontWeight: "bold",
+    color: "#000",
   },
-
 });

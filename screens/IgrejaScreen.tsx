@@ -44,7 +44,7 @@ type CarrosselImage = {
 
 const ChurchScreen = () => {
   const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList, "Quiz">>();
+    useNavigation<NativeStackNavigationProp<RootStackParamList, "Igreja">>();
   const { width } = Dimensions.get("window");
   const [cultosDaSemana, setCultosDaSemana] = useState<Culto[]>([]);
   const [carrosselImages, setCarrosselImages] = useState<CarrosselImage[]>([]);
@@ -52,6 +52,7 @@ const ChurchScreen = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
   const mainScrollRef = useRef<ScrollView>(null);
+
 
   // Carrega os cultos programados e imagens do carrossel
   useEffect(() => {

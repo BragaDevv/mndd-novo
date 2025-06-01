@@ -24,8 +24,9 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
+import { Asset } from "expo-asset";
 
 const perguntasJSON = require("../data/quizPerguntas.json");
 const { height } = Dimensions.get("window");
@@ -47,11 +48,24 @@ const QuizScreen = () => {
   const [tempoRestante, setTempoRestante] = useState(10);
   const [timerAtivo, setTimerAtivo] = useState(false);
   const [iniciado, setIniciado] = useState(false);
-  const [respostaSelecionada, setRespostaSelecionada] = useState<string | null>(null);
+  const intervaloRef = useRef<NodeJS.Timeout | null>(null);
+  const [respostaSelecionada, setRespostaSelecionada] = useState<string | null>(
+    null
+  );
   const beepSoundRef = useRef<Audio.Sound | null>(null);
   const timerAnimRef = useRef<LottieView>(null);
 
   const perguntaAtual = perguntas[indiceAtual];
+  const jogoEncerradoRef = useRef(false);
+
+  useEffect(() => {
+    const prepararAssets = async () => {
+      await Asset.loadAsync(require("../assets/quiz_img.png"));
+      const embaralhadas = [...perguntasJSON].sort(() => Math.random() - 0.5);
+      setPerguntas(embaralhadas);
+    };
+    prepararAssets();
+  }, []);
 
   useEffect(() => {
     const embaralhadas = [...perguntasJSON].sort(() => Math.random() - 0.5);
@@ -62,12 +76,20 @@ const QuizScreen = () => {
     let intervalo: NodeJS.Timeout;
 
     const tocarBeep = async () => {
+      if (!timerAtivo || jogoEncerradoRef.current) return;
       if (beepSoundRef.current) return;
 
       try {
         const { sound } = await Audio.Sound.createAsync(
           require("../assets/sounds/timer.mp3")
         );
+
+        // Verifica novamente antes de tocar
+        if (jogoEncerradoRef.current) {
+          await sound.unloadAsync();
+          return;
+        }
+
         beepSoundRef.current = sound;
         await sound.playAsync();
       } catch (error) {
@@ -88,9 +110,17 @@ const QuizScreen = () => {
     };
 
     if (timerAtivo) {
+      jogoEncerradoRef.current = false;
       timerAnimRef.current?.reset();
       timerAnimRef.current?.play();
+      setTempoRestante(10);
+
       intervalo = setInterval(() => {
+        if (jogoEncerradoRef.current) {
+          clearInterval(intervalo);
+          return;
+        }
+
         setTempoRestante((prev) => {
           if (prev <= 6 && prev > 1) {
             tocarBeep();
@@ -131,58 +161,61 @@ const QuizScreen = () => {
     }
   };
 
-const salvarPontuacao = async (pontuacao: number) => {
-  try {
-    const expoToken = await AsyncStorage.getItem("expoPushToken");
-    if (!expoToken) {
-      console.log("❌ Expo token não encontrado.");
-      return;
+  const salvarPontuacao = async (pontuacao: number) => {
+    try {
+      const expoToken = await AsyncStorage.getItem("expoPushToken");
+      if (!expoToken) {
+        console.log("❌ Expo token não encontrado.");
+        return;
+      }
+
+      // Buscar nome do usuário
+      const usuariosRef = collection(db, "usuarios");
+      const q = query(usuariosRef, where("expoToken", "==", expoToken));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        console.log("⚠️ Usuário não encontrado com esse token.");
+        return;
+      }
+
+      const dados = querySnapshot.docs[0].data();
+      const nome = `${dados.nome || ""} ${dados.sobrenome || ""}`.trim();
+
+      // Referência do documento no ranking
+      const rankingRef = doc(db, "ranking", expoToken);
+      const rankingSnap = await getDocs(query(collection(db, "ranking")));
+
+      // Verificar se já existe pontuação registrada
+      const docAtual = rankingSnap.docs.find((d) => d.id === expoToken);
+      const pontuacaoAtual = docAtual?.data()?.pontuacao ?? 0;
+
+      // Salvar apenas se for maior
+      if (pontuacao > pontuacaoAtual) {
+        await setDoc(rankingRef, {
+          nome,
+          pontuacao,
+          data: new Date(),
+        });
+        console.log("✅ Ranking atualizado com nova pontuação!");
+      } else {
+        console.log(
+          "ℹ️ Pontuação não foi salva pois é menor ou igual à anterior."
+        );
+      }
+    } catch (error) {
+      console.log("Erro ao salvar ranking:", error);
     }
-
-    // Buscar nome do usuário
-    const usuariosRef = collection(db, "usuarios");
-    const q = query(usuariosRef, where("expoToken", "==", expoToken));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      console.log("⚠️ Usuário não encontrado com esse token.");
-      return;
-    }
-
-    const dados = querySnapshot.docs[0].data();
-    const nome = `${dados.nome || ""} ${dados.sobrenome || ""}`.trim();
-
-    // Referência do documento no ranking
-    const rankingRef = doc(db, "ranking", expoToken);
-    const rankingSnap = await getDocs(query(collection(db, "ranking")));
-
-    // Verificar se já existe pontuação registrada
-    const docAtual = rankingSnap.docs.find((d) => d.id === expoToken);
-    const pontuacaoAtual = docAtual?.data()?.pontuacao ?? 0;
-
-    // Salvar apenas se for maior
-    if (pontuacao > pontuacaoAtual) {
-      await setDoc(rankingRef, {
-        nome,
-        pontuacao,
-        data: new Date(),
-      });
-      console.log("✅ Ranking atualizado com nova pontuação!");
-    } else {
-      console.log("ℹ️ Pontuação não foi salva pois é menor ou igual à anterior.");
-    }
-  } catch (error) {
-    console.log("Erro ao salvar ranking:", error);
-  }
-};
-0
-
+  };
+  0;
 
   const encerrarJogo = (mensagem: string) => {
+    jogoEncerradoRef.current = true;
+    setTimerAtivo(false);
     pararBeep();
-    tocarSom("erro");
     timerAnimRef.current?.reset();
     salvarPontuacao(pontuacao);
+
     Alert.alert("Fim de jogo", `${mensagem}\nPontuação: ${pontuacao}`, [
       {
         text: "Jogar novamente",
@@ -195,9 +228,9 @@ const salvarPontuacao = async (pontuacao: number) => {
           setTimerAtivo(false);
           setIniciado(false);
           setRespostaSelecionada(null);
+          jogoEncerradoRef.current = false;
         },
       },
-      { text: "Ver Ranking", onPress: () => navigation.navigate("Ranking") },
     ]);
   };
 
@@ -223,12 +256,6 @@ const salvarPontuacao = async (pontuacao: number) => {
           Alert.alert(
             "🎉 Parabéns!",
             `Você acertou todas!\nPontuação: ${pontuacao + 1}`,
-            [
-              {
-                text: "Ver Ranking",
-                onPress: () => navigation.navigate("Ranking"),
-              },
-            ]
           );
         }
       }, 1000);
@@ -255,15 +282,30 @@ const salvarPontuacao = async (pontuacao: number) => {
   if (!iniciado) {
     return (
       <View style={styles.inicioContainer}>
-        <Image style={styles.quizImg} source={require("../assets/quiz_img.png")} />
+        <Image
+          style={styles.quizImg}
+          source={require("../assets/quiz_img.png")}
+        />
         <View style={styles.divRegras}>
-          <Text style={styles.subTitulo1}>⏳ Você terá 10 segundos por pergunta.</Text>
+          <Text style={styles.subTitulo1}>
+            ⏳ Você terá 10 segundos por pergunta.
+          </Text>
           <Text style={styles.subTitulo2}>✅ Acertou: avança.</Text>
-          <Text style={styles.subTitulo2}>❌ Errou ou tempo esgotou: Game Over!</Text>
-          <Text style={styles.subTitulo3}>Clique em "Start" para começar 🚀</Text>
+          <Text style={styles.subTitulo2}>
+            ❌ Errou ou tempo esgotou: Game Over!
+          </Text>
+          <Text style={styles.subTitulo3}>
+            Clique em "Start" para começar 🚀
+          </Text>
         </View>
-        <TouchableOpacity style={styles.botaoIniciar} onPress={iniciarQuiz}>
-          <LottieView source={require("../assets/animations/quiz-animation.json")} autoPlay loop style={{ width: 300, height: 300 }} />
+        <TouchableOpacity style={styles.botaoStart3D} onPress={iniciarQuiz}>
+          <Text style={styles.textoBotaoStart}>🎮 START</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.botaoRanking3D}
+          onPress={() => navigation.navigate("Ranking")}
+        >
+          <Text style={styles.textoBotaoStart}>🏆 RANKING</Text>
         </TouchableOpacity>
       </View>
     );
@@ -279,7 +321,13 @@ const salvarPontuacao = async (pontuacao: number) => {
 
   return (
     <View style={styles.container}>
-      <LottieView ref={timerAnimRef} source={require("../assets/animations/timer10s.json")} autoPlay loop={false} style={styles.timerAnimado} />
+      <LottieView
+        ref={timerAnimRef}
+        source={require("../assets/animations/timer10s.json")}
+        autoPlay
+        loop={false}
+        style={styles.timerAnimado}
+      />
       <Text style={styles.pergunta}>{perguntaAtual.pergunta}</Text>
       {perguntaAtual.opcoes.map((opcao, index) => {
         let cor = "#2196F3";
@@ -287,6 +335,7 @@ const salvarPontuacao = async (pontuacao: number) => {
           if (opcao === perguntaAtual.respostaCorreta) cor = "green";
           else if (opcao === respostaSelecionada) cor = "red";
         }
+
         return (
           <TouchableOpacity
             key={index}
@@ -298,7 +347,14 @@ const salvarPontuacao = async (pontuacao: number) => {
           </TouchableOpacity>
         );
       })}
-      <Text style={styles.pontuacao}>Pontuação: {pontuacao}</Text>
+
+      <TouchableOpacity
+        style={styles.buttonExit}
+        onPress={() => encerrarJogo("⏹ Jogo encerrado pelo usuário")}
+      >
+        <Ionicons name="exit" size={36} color="#000" />
+        <Text style={styles.buttonTxtExit}>SAIR</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -319,15 +375,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffff",
   },
   quizImg: {
-    marginTop: height * 0.15,
+    position: "relative",
+    top: -60,
     width: "80%",
     height: "40%",
   },
   divRegras: {
+    position: "relative",
+    top: -40,
     borderWidth: 2,
     borderRadius: 10,
     padding: 15,
-    marginBottom: 20,
     borderColor: "#aaa",
   },
   subTitulo1: {
@@ -345,35 +403,102 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
-  botaoIniciar: {
-    top: -30,
+  botaoStart3D: {
+    position: "relative",
+    top: 10,
+    backgroundColor: "#4CAF50",
+    paddingVertical: 16,
+    paddingHorizontal: 38,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 10,
+    transform: [{ translateY: -4 }],
   },
+
+  textoBotaoStart: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+    letterSpacing: 2,
+  },
+
+  botaoRanking3D: {
+    position: "relative",
+    top: 10,
+    backgroundColor: "#FFC107",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 10,
+    transform: [{ translateY: -4 }],
+    marginTop: 15,
+  },
+
   timerAnimado: {
+    position:'relative',
+    top:-50,
     width: 150,
     height: 150,
     alignSelf: "center",
-    marginBottom: 10,
   },
   pergunta: {
-    fontSize: 22,
+    fontSize: 20,
     marginBottom: 20,
-    padding: 20,
+    padding: 10,
     textAlign: "center",
     fontWeight: "bold",
   },
   botao: {
-    padding: 15,
+    padding: 12,
+    marginHorizontal:40,
     borderRadius: 10,
     marginVertical: 8,
   },
   textoBotao: {
     color: "white",
-    fontSize: 22,
+    fontSize: 18,
     textAlign: "center",
   },
   pontuacao: {
     marginTop: 30,
     fontSize: 18,
     textAlign: "center",
+  },
+  buttonExit: {
+    position: "relative",
+    top: 30,
+    alignSelf: "center",
+    marginTop: 20,
+    backgroundColor: "#ddd",
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonTxtExit: {
+    fontSize: 16,
+    marginLeft: 10,
+    fontWeight: "bold",
+    color: "#000",
   },
 });
