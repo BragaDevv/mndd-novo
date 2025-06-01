@@ -77,13 +77,6 @@ const RankingScreen = () => {
           renderItem={renderItem}
         />
       )}
-      <TouchableOpacity
-        style={styles.buttonExit}
-        onPress={() => navigation.navigate("Igreja")}
-      >
-        <Ionicons name="exit" size={40} color="#000" />
-        <Text style={styles.buttonTxtExit}>SAIR</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -128,29 +121,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     color: "#1976D2",
-  },
-
-  buttonExit: {
-    position: "relative",
-    top: -25,
-    alignSelf: "center",
-    marginTop: 20,
-    backgroundColor: "#ddd",
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  buttonTxtExit: {
-    fontSize: 16,
-    marginLeft: 10,
-    fontWeight: "bold",
-    color: "#000",
   },
 });

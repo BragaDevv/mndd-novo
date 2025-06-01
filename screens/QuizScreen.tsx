@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   Dimensions,
+  Modal,
 } from "react-native";
 import LottieView from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -57,6 +58,7 @@ const QuizScreen = () => {
 
   const perguntaAtual = perguntas[indiceAtual];
   const jogoEncerradoRef = useRef(false);
+  const [modalVisivel, setModalVisivel] = useState(false);
 
   useEffect(() => {
     const prepararAssets = async () => {
@@ -214,24 +216,7 @@ const QuizScreen = () => {
     setTimerAtivo(false);
     pararBeep();
     timerAnimRef.current?.reset();
-    salvarPontuacao(pontuacao);
-
-    Alert.alert("Fim de jogo", `${mensagem}\nPontuação: ${pontuacao}`, [
-      {
-        text: "Jogar novamente",
-        onPress: () => {
-          const novas = [...perguntasJSON].sort(() => Math.random() - 0.5);
-          setPerguntas(novas);
-          setIndiceAtual(0);
-          setPontuacao(0);
-          setTempoRestante(10);
-          setTimerAtivo(false);
-          setIniciado(false);
-          setRespostaSelecionada(null);
-          jogoEncerradoRef.current = false;
-        },
-      },
-    ]);
+    setModalVisivel(true);
   };
 
   const verificarResposta = async (resposta: string) => {
@@ -255,7 +240,7 @@ const QuizScreen = () => {
           salvarPontuacao(pontuacao + 1);
           Alert.alert(
             "🎉 Parabéns!",
-            `Você acertou todas!\nPontuação: ${pontuacao + 1}`,
+            `Você acertou todas!\nPontuação: ${pontuacao + 1}`
           );
         }
       }, 1000);
@@ -355,6 +340,34 @@ const QuizScreen = () => {
         <Ionicons name="exit" size={36} color="#000" />
         <Text style={styles.buttonTxtExit}>SAIR</Text>
       </TouchableOpacity>
+
+      <Modal visible={modalVisivel} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTxt}>Sua Pontuação:</Text>
+            <Text style={styles.modalPontuacao}>{pontuacao}</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => {
+                setModalVisivel(false);
+                const novas = [...perguntasJSON].sort(
+                  () => Math.random() - 0.5
+                );
+                setPerguntas(novas);
+                setIndiceAtual(0);
+                setPontuacao(0);
+                setTempoRestante(10);
+                setTimerAtivo(false);
+                setIniciado(false);
+                setRespostaSelecionada(null);
+                jogoEncerradoRef.current = false;
+              }}
+            >
+              <Text style={styles.modalButtonText}>Voltar ao Início</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -389,15 +402,19 @@ const styles = StyleSheet.create({
     borderColor: "#aaa",
   },
   subTitulo1: {
+    fontFamily: "Montserrat_500Medium",
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
+    marginBottom: 10,
   },
   subTitulo2: {
+    fontFamily: "Montserrat_500Medium",
     fontSize: 13,
     textAlign: "center",
   },
   subTitulo3: {
+    fontFamily: "Montserrat_500Medium",
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
@@ -421,6 +438,7 @@ const styles = StyleSheet.create({
   },
 
   textoBotaoStart: {
+    fontFamily: "Montserrat_500Medium",
     fontSize: 26,
     fontWeight: "bold",
     color: "#fff",
@@ -449,13 +467,14 @@ const styles = StyleSheet.create({
   },
 
   timerAnimado: {
-    position:'relative',
-    top:-50,
+    position: "relative",
+    top: -50,
     width: 150,
     height: 150,
     alignSelf: "center",
   },
   pergunta: {
+    fontFamily: "Montserrat_500Medium",
     fontSize: 20,
     marginBottom: 20,
     padding: 10,
@@ -464,11 +483,12 @@ const styles = StyleSheet.create({
   },
   botao: {
     padding: 12,
-    marginHorizontal:40,
+    marginHorizontal: 40,
     borderRadius: 10,
     marginVertical: 8,
   },
   textoBotao: {
+    fontFamily: "Montserrat_500Medium",
     color: "white",
     fontSize: 18,
     textAlign: "center",
@@ -496,9 +516,57 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   buttonTxtExit: {
+    fontFamily: "Montserrat_500Medium",
     fontSize: 16,
     marginLeft: 10,
     fontWeight: "bold",
     color: "#000",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: "12%",
+    borderRadius: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+    modalTxt: {
+    fontFamily: "Montserrat_500Medium",
+    fontSize: 24,
+    backgroundColor: "transparent",
+    fontWeight: "bold",
+    color: "#000",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  modalPontuacao: {
+    fontFamily: "Montserrat_500Medium",
+    fontSize: 32,
+    backgroundColor: "transparent",
+    fontWeight: "bold",
+    color: "#ff5722",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: "#4CAF50",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

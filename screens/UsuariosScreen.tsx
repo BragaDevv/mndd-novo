@@ -35,7 +35,7 @@ interface Usuario {
   grupos?: string[];
 }
 
-const gruposDisponiveis = ["Louvor", "Irmãs", "Varões", "Jovens", "Diáconos"];
+const gruposDisponiveis = ["Louvor", "Irmãs", "Varões", "Crianças", "Diácono", "Adolescentes", "Pastor", "Amar&Servir"];
 
 const UsuariosScreen = () => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -543,15 +543,16 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
-    padding: 15,
+    padding: 10,
   },
   chipContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 2,
-    marginHorizontal: 10,
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center'
   },
   chip: {
     paddingVertical: 6,

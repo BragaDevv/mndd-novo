@@ -53,7 +53,6 @@ const ChurchScreen = () => {
   const scrollRef = useRef<ScrollView>(null);
   const mainScrollRef = useRef<ScrollView>(null);
 
-
   // Carrega os cultos programados e imagens do carrossel
   useEffect(() => {
     const hoje = new Date();
@@ -135,7 +134,7 @@ const ChurchScreen = () => {
       color: "#E1306C",
     },
     facebook: {
-      appUrl: "fb://profile/nascidos.dedeus.73",
+      appUrl: "https://www.facebook.com/nascidos.dedeus.73?mibextid=wwXIfr",
       webUrl:
         "https://www.facebook.com/nascidos.dedeus.73?mibextid=wwXIfr&mibextid=wwXIfr",
       icon: "facebook" as const,
@@ -284,6 +283,7 @@ const ChurchScreen = () => {
             >
               <Ionicons name="game-controller" size={36} color="#000" />
               <Text style={styles.navButtonText}>Quiz Bíblico</Text>
+              <Ionicons name="book" size={36} color="#000" />
             </TouchableOpacity>
           </View>
 
@@ -430,20 +430,20 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     fontFamily: "Montserrat_500Medium",
   },
-  sectionQuiz: {
-    display: "flex",
-    backgroundColor:'#ccc',
-    borderRadius:10,
-    padding:10,
-    marginBottom: 30,
-  },
+sectionQuiz: {
+  backgroundColor: "#ccc",
+  borderRadius: 10,
+  padding: 10,
+  marginBottom: 30,
+},
+
   navButton: {
-    flexDirection:'row',
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent:"flex-start",
+    justifyContent: "center",
     flex: 1,
-    gap:20,
-    marginHorizontal:20
+    gap: 40,
+    marginHorizontal: 20,
   },
   navButtonText: {
     fontFamily: "Montserrat_500Medium",
