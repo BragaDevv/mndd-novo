@@ -19,6 +19,9 @@ import { db } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import SuccessMessageLottie from "../components/SuccessMessageLottie";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types/types";
 
 interface Props {
   onComplete: (dados: {
@@ -33,6 +36,10 @@ interface Props {
 }
 
 const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, "Questionario">
+    >();
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
@@ -77,7 +84,7 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
 
       await AsyncStorage.setItem("usuarioUID", uid);
 
-      setPendingData({
+      const dados = {
         nome,
         sobrenome,
         dataNascimento,
@@ -85,9 +92,13 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
         telefone,
         endereco,
         uid,
-      });
-
+      };
+      setPendingData(dados);
       setShowSuccess(true); // ativa a animação
+      // acione o onComplete após a animação terminar
+      setTimeout(() => {
+        onComplete(dados); // ← isso é o que vai disparar a navegação no App.tsx
+      }, 2500);
     } catch (error) {
       console.error("Erro ao salvar usuário:", error);
       Alert.alert("Erro", "Não foi possível salvar os dados.");
@@ -105,7 +116,10 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
           contentContainerStyle={{ flexGrow: 1, padding: 30 }}
           keyboardShouldPersistTaps="handled"
         >
-          <Image source={require("../assets/logoigreja.png")} style={styles.logo} />
+          <Image
+            source={require("../assets/logoigreja.png")}
+            style={styles.logo}
+          />
           <Text style={styles.labelTitle}>Bem vindo ao aplicativo MNDD</Text>
 
           <Text style={styles.label}>Nome*</Text>
@@ -154,17 +168,31 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
 
           <Text style={styles.label}>Você é membro da igreja?*</Text>
           <View style={styles.radioContainer}>
-            <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("sim")}>
+            <TouchableOpacity
+              style={styles.radioButton}
+              onPress={() => setMembro("sim")}
+            >
               <MaterialIcons
-                name={membro === "sim" ? "radio-button-checked" : "radio-button-unchecked"}
+                name={
+                  membro === "sim"
+                    ? "radio-button-checked"
+                    : "radio-button-unchecked"
+                }
                 size={24}
                 color="#000"
               />
               <Text style={styles.radioText}>Sim</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("nao")}>
+            <TouchableOpacity
+              style={styles.radioButton}
+              onPress={() => setMembro("nao")}
+            >
               <MaterialIcons
-                name={membro === "nao" ? "radio-button-checked" : "radio-button-unchecked"}
+                name={
+                  membro === "nao"
+                    ? "radio-button-checked"
+                    : "radio-button-unchecked"
+                }
                 size={24}
                 color="#000"
               />
@@ -173,25 +201,31 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
           </View>
 
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <FontAwesome5 name="check" size={18} color="#fff" style={{ marginRight: 8 }} />
+            <FontAwesome5
+              name="check"
+              size={18}
+              color="#fff"
+              style={{ marginRight: 8 }}
+            />
             <Text style={styles.buttonText}>Ir para o APP</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
 
-
       <SuccessMessageLottie
         visible={showSuccess}
         message="Cadastro salvo com sucesso! Bem vindo ao app MNDD"
-        onFinish={() => setShowSuccess(false)}
+        onFinish={() => {
+          setShowSuccess(false);
+        }}
       />
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    height:'100%',
     padding: 20,
     backgroundColor: "#fff",
     flex: 1,

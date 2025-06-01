@@ -217,46 +217,46 @@ useEffect(() => {
                 <Stack.Screen
                   name="Capitulos"
                   component={CapitulosScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="Versiculos"
                   component={VersiculosScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="Versiculo"
                   component={VersiculoScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="Igreja"
                   component={IgrejaScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="Usuarios"
                   component={UsuariosScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="Carrossel"
                   component={ImagensScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="Cultos"
                   component={CultosScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="Notificacao"
                   component={NotificacaoScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="AreaAdm"
-                  options={{ title: "", headerLeft: () => null }}
+                  options={{ title: "", headerLeft: () => null,headerShown: false }}
                 >
                   {() => (
                     <ProtectedRoute>
@@ -267,30 +267,30 @@ useEffect(() => {
                 <Stack.Screen
                   name="Login"
                   component={LoginScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="Favoritos"
                   component={FavoritosScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="BibleAssistant"
                   component={BibleAssistant}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="EstudosScreen"
                   component={EstudosScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
                 <Stack.Screen
                   name="HarpaScreen"
                   component={HarpaScreen}
-                  options={{ title: "" }}
+                  options={{ title: "",headerShown: false }}
                 />
-                <Stack.Screen name="Quiz" component={QuizScreen}options={{ title: "" }} />
-                <Stack.Screen name="Ranking" component={RankingScreen} options={{ title: "" }}/>
+                <Stack.Screen name="Quiz" component={QuizScreen}options={{ title: "",headerShown: false }} />
+                <Stack.Screen name="Ranking" component={RankingScreen} options={{ title: "",headerShown: false }}/>
               </>
             )}
           </Stack.Navigator>
