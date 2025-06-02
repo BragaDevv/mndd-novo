@@ -305,10 +305,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     width: "100%",
     backgroundColor: "#dadada",
-    paddingVertical: 25,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     elevation: 10,
+    paddingTop: Platform.select({
+      android: 25,
+      ios: 25,
+    }),
+    paddingBottom: Platform.select({
+      android: 70,
+      ios: 40,
+    }),
   },
   navButton: {
     alignItems: "center",

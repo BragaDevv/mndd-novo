@@ -32,17 +32,25 @@ import LottieView from "lottie-react-native";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, setDoc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  query,
+  collection,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import SuccessMessageLottie from "../components/SuccessMessageLottie";
 
-
 const { height } = Dimensions.get("window");
 
 const MNDDScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "MNDD">>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, "MNDD">>();
   const { isAdmin } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -105,7 +113,6 @@ const MNDDScreen = () => {
     carregarNome();
   }, []);
 
-
   const handleOpenModal = async () => {
     try {
       const tokenInfo = await Notifications.getExpoPushTokenAsync();
@@ -118,7 +125,10 @@ const MNDDScreen = () => {
 
       console.log("🔍 Buscando dados para Token:", expoToken);
 
-      const q = query(collection(db, "usuarios"), where("expoToken", "==", expoToken));
+      const q = query(
+        collection(db, "usuarios"),
+        where("expoToken", "==", expoToken)
+      );
       const snapshot = await getDocs(q);
 
       if (!snapshot.empty) {
@@ -129,7 +139,9 @@ const MNDDScreen = () => {
         setDataNascimento(data.dataNascimento || "");
         setTelefone(data.telefone || "");
         setEndereco(data.endereco || "");
-        setMembro(data.membro === true ? "sim" : data.membro === false ? "nao" : null);
+        setMembro(
+          data.membro === true ? "sim" : data.membro === false ? "nao" : null
+        );
       } else {
         console.log("❌ Documento de usuário não encontrado.");
       }
@@ -142,18 +154,17 @@ const MNDDScreen = () => {
         duration: 500,
         useNativeDriver: true,
       }).start();
-
     } catch (error) {
       console.error("🔥 Erro ao carregar dados do Firebase:", error);
     }
   };
 
-
-
-
   const validateForm = () => {
     if (!nome || !sobrenome || !dataNascimento) {
-      Alert.alert("Erro", "Preencha os campos obrigatórios: Nome, Sobrenome e Telefone");
+      Alert.alert(
+        "Erro",
+        "Preencha os campos obrigatórios: Nome, Sobrenome e Telefone"
+      );
       return false;
     }
     return true;
@@ -171,7 +182,10 @@ const MNDDScreen = () => {
         return;
       }
 
-      const q = query(collection(db, "usuarios"), where("expoToken", "==", expoToken));
+      const q = query(
+        collection(db, "usuarios"),
+        where("expoToken", "==", expoToken)
+      );
       const snapshot = await getDocs(q);
 
       if (!snapshot.empty) {
@@ -210,8 +224,6 @@ const MNDDScreen = () => {
     }
   };
 
-
-
   if (isLoading || !fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
@@ -240,7 +252,11 @@ const MNDDScreen = () => {
         onPress={handleLockPress}
         activeOpacity={0.7}
       >
-        <Fontisto name={isAdmin ? "unlocked" : "locked"} size={28} color="#000" />
+        <Fontisto
+          name={isAdmin ? "unlocked" : "locked"}
+          size={28}
+          color="#000"
+        />
       </TouchableOpacity>
 
       <Image
@@ -251,36 +267,55 @@ const MNDDScreen = () => {
 
       <View style={styles.titleContainer}>
         <Text style={styles.titleHome}>Ministério Nascido de Deus</Text>
-        <Text style={styles.subTitleHome}>Andamos por fé, e não por vista!</Text>
+        <Text style={styles.subTitleHome}>
+          Andamos por fé, e não por vista!
+        </Text>
       </View>
 
       {nomeUsuario ? (
         <Text style={styles.boasVindas}>Seja bem-vindo {nomeUsuario}</Text>
       ) : null}
 
-
       <View style={styles.bottomNavBar}>
-        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate("Igreja")}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate("Igreja")}
+        >
           <Ionicons name="home" size={26} color="#000" />
           <Text style={styles.navButtonText}>Igreja</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate("BibleAssistant")}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate("BibleAssistant")}
+        >
           <Ionicons name="chatbubble-ellipses" size={26} color="#000" />
           <Text style={styles.navButtonText}>Assistente</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate("Livros")}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate("Livros")}
+        >
           <Ionicons name="book" size={26} color="#000" />
           <Text style={styles.navButtonText}>Bíblia</Text>
         </TouchableOpacity>
       </View>
 
-      <Modal visible={showModal} animationType="slide" transparent onRequestClose={() => setShowModal(false)}>
+      <Modal
+        visible={showModal}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setShowModal(false)}
+      >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.modalOverlay}>
-            <Animated.View style={[styles.modalContainer, { opacity: fadeAnim }]}>
-              <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined}>
+            <Animated.View
+              style={[styles.modalContainer, { opacity: fadeAnim }]}
+            >
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+              >
                 <ScrollView>
                   <Text style={styles.modalTitle}>Editar suas informações</Text>
 
@@ -293,7 +328,13 @@ const MNDDScreen = () => {
                   />
 
                   <Text style={styles.label}>Sobrenome*</Text>
-                  <TextInput style={styles.modalInput} placeholder="Sobrenome" placeholderTextColor="#999" value={sobrenome} onChangeText={setSobrenome} />
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="Sobrenome"
+                    placeholderTextColor="#999"
+                    value={sobrenome}
+                    onChangeText={setSobrenome}
+                  />
 
                   <Text style={styles.label}>Data de Nascimento*</Text>
                   <MaskedTextInput
@@ -316,30 +357,68 @@ const MNDDScreen = () => {
                   />
 
                   <Text style={styles.label}>Endereço</Text>
-                  <TextInput style={styles.modalInput} placeholder="Endereço" placeholderTextColor="#999" value={endereco} onChangeText={setEndereco} />
-
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="Endereço"
+                    placeholderTextColor="#999"
+                    value={endereco}
+                    onChangeText={setEndereco}
+                  />
 
                   <Text style={styles.label}>Você é membro da igreja?*</Text>
                   <View style={styles.radioContainer}>
-                    <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("sim")}>
-                      <MaterialIcons name={membro === "sim" ? "radio-button-checked" : "radio-button-unchecked"} size={24} color="#000" />
+                    <TouchableOpacity
+                      style={styles.radioButton}
+                      onPress={() => setMembro("sim")}
+                    >
+                      <MaterialIcons
+                        name={
+                          membro === "sim"
+                            ? "radio-button-checked"
+                            : "radio-button-unchecked"
+                        }
+                        size={24}
+                        color="#000"
+                      />
                       <Text style={styles.radioText}>Sim</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.radioButton} onPress={() => setMembro("nao")}>
-                      <MaterialIcons name={membro === "nao" ? "radio-button-checked" : "radio-button-unchecked"} size={24} color="#000" />
+                    <TouchableOpacity
+                      style={styles.radioButton}
+                      onPress={() => setMembro("nao")}
+                    >
+                      <MaterialIcons
+                        name={
+                          membro === "nao"
+                            ? "radio-button-checked"
+                            : "radio-button-unchecked"
+                        }
+                        size={24}
+                        color="#000"
+                      />
                       <Text style={styles.radioText}>Não</Text>
                     </TouchableOpacity>
                   </View>
 
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <TouchableOpacity style={[styles.modalButton, { backgroundColor: "#ccc" }]} onPress={() => {
-                      fadeAnim.setValue(0);
-                      setShowModal(false);
-                    }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <TouchableOpacity
+                      style={[styles.modalButton, { backgroundColor: "#ccc" }]}
+                      onPress={() => {
+                        fadeAnim.setValue(0);
+                        setShowModal(false);
+                      }}
+                    >
                       <Text style={styles.modalButtonText}>Cancelar</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.modalButton} onPress={handleSave}>
+                    <TouchableOpacity
+                      style={styles.modalButton}
+                      onPress={handleSave}
+                    >
                       <Text style={styles.modalButtonText}>Salvar</Text>
                     </TouchableOpacity>
                   </View>
@@ -355,10 +434,6 @@ const MNDDScreen = () => {
         message="Cadastro Atualizado !"
         onFinish={() => setShowSuccess(false)}
       />
-
-
-
-
     </View>
   );
 };
@@ -426,7 +501,7 @@ const styles = StyleSheet.create({
   },
 
   boasVindas: {
-    fontStyle: 'italic',
+    fontStyle: "italic",
     fontSize: 16,
     color: "#0003",
     marginTop: 10,
@@ -438,10 +513,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     width: "100%",
     backgroundColor: "#dadada",
-    paddingVertical: 25,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     elevation: 10,
+    paddingTop: Platform.select({
+      android: 25,
+      ios: 25,
+    }),
+    paddingBottom: Platform.select({
+      android: 70,
+      ios: 40,
+    }),
   },
   navButton: {
     alignItems: "center",

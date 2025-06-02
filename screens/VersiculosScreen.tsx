@@ -1035,6 +1035,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+        paddingBottom: Platform.select({
+          android: 60,
+          ios: 10,
+        }),
   },
   topBar: {
     flexDirection: "row",
@@ -1509,12 +1513,15 @@ const styles = StyleSheet.create({
   floatingButton: {
     position: "absolute",
     right: 20,
-    bottom: 20,
     backgroundColor: "#000",
     opacity: 0.9,
     borderRadius: 50,
     padding: 12,
     elevation: 5,
+    bottom: Platform.select({
+          android: 150,
+          ios: 150,
+        }),
   },
   metaText: {
     fontSize: 18,

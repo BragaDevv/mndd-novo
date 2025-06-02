@@ -106,7 +106,7 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff", }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logo: {
-    width: "60%",
-    height: 100,
+    width: "70%",
+    height: 120,
     resizeMode: "contain",
     alignSelf: "center",
     marginBottom: 10,

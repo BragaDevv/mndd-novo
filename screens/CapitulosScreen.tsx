@@ -61,10 +61,22 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#fff",
+     paddingBottom: Platform.select({
+          android: 60,
+          ios: 10,
+        }),
     
   },
   grid: {
     alignItems: "center",
+        paddingTop: Platform.select({
+      android: 25,
+      ios: 25,
+    }),
+    paddingBottom: Platform.select({
+      android: 70,
+      ios: 40,
+    }),
   },
   item: {
     backgroundColor: "#fff",

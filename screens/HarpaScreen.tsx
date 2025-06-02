@@ -204,6 +204,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+     paddingBottom: Platform.select({
+          android: 60,
+          ios: 10,
+        }),
   },
   safeArea: {
     flex: 0,

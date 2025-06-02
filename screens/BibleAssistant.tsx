@@ -10,10 +10,11 @@ import {
   Platform,
   Keyboard,
   Image,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Speech from "expo-speech";
+import Constants from 'expo-constants';
 
 type Culto = {
   id: string;
@@ -43,9 +44,7 @@ const BibleAssistant = () => {
   const [cultos, setCultos] = useState<Culto[]>([]);
 
   // SUA CHAVE API DA OPENAI (substitua pela sua)
-  const OPENAI_API_KEY =
-    "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";
-
+const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
   // Avatares (substitua pelos seus caminhos de imagem)
   const assistantAvatar = require("../assets/logo.png");
   const userAvatar = require("../assets/avatarpastorrosto.png");
@@ -212,6 +211,7 @@ const BibleAssistant = () => {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
@@ -231,6 +231,7 @@ const BibleAssistant = () => {
         contentContainerStyle={styles.messagesContainer}
         ref={(ref) => ref?.scrollToEnd({ animated: true })}
         keyboardDismissMode="interactive"
+        
       >
         {messages.map((msg, index) => (
           <View
@@ -309,6 +310,7 @@ const BibleAssistant = () => {
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -339,9 +341,8 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   avatarFloating: {
-    position: "absolute",
-    bottom: 45,
-    left: 150,
+    position: "relative",
+    left: '62%',
     width: 80,
     height: 120,
     backgroundColor: "tranparent",
@@ -415,6 +416,14 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderTopWidth: 1,
     borderTopColor: "#ddd",
+     paddingTop: Platform.select({
+      android: 20,
+      ios: 20,
+    }),
+    paddingBottom: Platform.select({
+      android: 60,
+      ios: 30,
+    }),
   },
   inputContainerKeyboardActive: {
     paddingBottom: 35,
