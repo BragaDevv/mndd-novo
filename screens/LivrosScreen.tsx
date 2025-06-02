@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   View,
   TextInput,
-  ScrollView
+  ScrollView,
+  Platform
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -239,6 +240,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: "center",
     fontFamily: "Montserrat_500Medium",
+    marginTop: Platform.select({
+          android: 50,
+          ios: 0,
+        }),
   },
   input: {
     padding: 14,

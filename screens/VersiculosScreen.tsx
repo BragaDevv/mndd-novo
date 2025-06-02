@@ -1043,6 +1043,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
+    marginTop: Platform.select({
+      android: 50,
+      ios: 0,
+    }),
   },
   searchIconButton: {
     padding: 8,

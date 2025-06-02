@@ -212,51 +212,51 @@ useEffect(() => {
                 <Stack.Screen
                   name="Livros"
                   component={LivrosScreen}
-                  options={{ title: "" }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="Capitulos"
                   component={CapitulosScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="Versiculos"
                   component={VersiculosScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="Versiculo"
                   component={VersiculoScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="Igreja"
                   component={IgrejaScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="Usuarios"
                   component={UsuariosScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="Carrossel"
                   component={ImagensScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="Cultos"
                   component={CultosScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="Notificacao"
                   component={NotificacaoScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="AreaAdm"
-                  options={{ title: "", headerLeft: () => null,headerShown: false }}
+                  options={{ title: "", headerLeft: () => null, headerShown: Platform.OS === 'ios' }} 
                 >
                   {() => (
                     <ProtectedRoute>
@@ -267,30 +267,30 @@ useEffect(() => {
                 <Stack.Screen
                   name="Login"
                   component={LoginScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="Favoritos"
                   component={FavoritosScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="BibleAssistant"
                   component={BibleAssistant}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="EstudosScreen"
                   component={EstudosScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
                 <Stack.Screen
                   name="HarpaScreen"
                   component={HarpaScreen}
-                  options={{ title: "",headerShown: false }}
+                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
                 />
-                <Stack.Screen name="Quiz" component={QuizScreen}options={{ title: "",headerShown: false }} />
-                <Stack.Screen name="Ranking" component={RankingScreen} options={{ title: "",headerShown: false }}/>
+                <Stack.Screen name="Quiz" component={QuizScreen} options={{ title: "", headerShown: Platform.OS === 'ios' }} />
+                <Stack.Screen name="Ranking" component={RankingScreen} options={{ title: "", headerShown: Platform.OS === 'ios' }}/>
               </>
             )}
           </Stack.Navigator>

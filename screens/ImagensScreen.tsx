@@ -11,6 +11,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Dimensions,
+  Platform,
 } from "react-native";
 import { useFonts, Montserrat_500Medium } from "@expo-google-fonts/montserrat";
 import * as ImagePicker from "expo-image-picker";
@@ -167,6 +168,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 12,
     textAlign: "center",
+    marginTop: Platform.select({
+          android: 50,
+          ios: 0,
+        }),
   },
   button: {
     flexDirection: "row",

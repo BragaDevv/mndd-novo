@@ -9,6 +9,7 @@ import {
   ScrollView,
   Dimensions,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -334,6 +335,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f5f5f5",
     marginBottom: 20,
+    marginTop: Platform.select({
+          android: 50,
+          ios: 0,
+        }),
   },
   loadingContainer: {
     flex: 1,

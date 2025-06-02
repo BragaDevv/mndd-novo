@@ -9,6 +9,7 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
+  Platform,
 } from "react-native";
 import { useFonts, Montserrat_500Medium } from "@expo-google-fonts/montserrat";
 import { useAuth } from "../context/AuthContext";
@@ -50,7 +51,7 @@ const SendNotificationScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Painel Administrativo</Text>
       <View style={styles.grid}>
-        {botao("Notificações", "bell", "SendNotificationForm")}
+        {botao("Notificações", "bell", "Notificacao")}
         {botao("Cultos", "building", "Cultos")}
         {botao("Carrossel", "picture-o", "Carrossel")}
         {botao("Usuários", "users", "Usuarios")}
@@ -63,7 +64,7 @@ const SendNotificationScreen = () => {
           navigation.replace("MNDD");
         }}
       >
-        <Text style={styles.logoutButtonText}>Logout</Text>
+        <Text style={styles.logoutButtonText}>Sair / Logout</Text>
       </TouchableOpacity>
     </ScrollView>
 
@@ -85,6 +86,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 30,
+    marginTop: Platform.select({
+          android: 50,
+          ios: 0,
+        }),
     fontFamily: "Montserrat_500Medium",
   },
   grid: {

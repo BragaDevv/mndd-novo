@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   Modal,
+  Platform,
 } from "react-native";
 import LottieView from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -379,7 +380,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "center",
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#fff",
   },
   inicioContainer: {
     flex: 1,
@@ -392,6 +393,10 @@ const styles = StyleSheet.create({
     top: -60,
     width: "80%",
     height: "40%",
+    marginTop: Platform.select({
+          android: 50,
+          ios: 0,
+        }),
   },
   divRegras: {
     position: "relative",

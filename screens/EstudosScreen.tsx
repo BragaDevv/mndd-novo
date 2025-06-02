@@ -8,7 +8,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   TextInput,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { carregarDevocionais, gerarNovoDevocional, atualizarDevocional, Devocional } from '../services/devocionaisService';
@@ -22,7 +23,7 @@ const EstudosScreen = () => {
   const [selectedDevocional, setSelectedDevocional] = useState<Devocional | null>(null);
 
   // Sua chave da OpenAI (armazene de forma segura em produção)
-  const OPENAI_API_KEY = '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';
+  const OPENAI_API_KEY = "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";
 
   // Carrega devocionais ao iniciar
   useEffect(() => {
@@ -254,6 +255,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E0E0E0',
     fontSize: 16,
+    marginTop: Platform.select({
+          android: 50,
+          ios: 0,
+        }),
   },
   gerarButton: {
     backgroundColor: '#075E54',

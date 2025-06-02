@@ -229,9 +229,17 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginRight: width * 0.03,
+    marginTop: Platform.select({
+      android: 50,
+      ios: 0,
+    }),
   },
   headerTitle: {
     fontSize: 32,
+    marginTop: Platform.select({
+      android: 50,
+      ios: 0,
+    }),
     fontWeight: "bold",
     color: "#000",
     // Sombreamento mais pronunciado no texto

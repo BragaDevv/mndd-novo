@@ -286,6 +286,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 12,
     textAlign: "center",
+    marginTop: Platform.select({
+      android: 50,
+      ios: 0,
+    }),
   },
   dateInputContainer: {
     borderWidth: 1,

@@ -12,6 +12,7 @@ import {
   Alert,
   Keyboard,
   TouchableWithoutFeedback,
+  Platform,
 } from "react-native";
 import {
   getFirestore,
@@ -434,6 +435,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 12,
     textAlign: "center",
+    marginTop: Platform.select({
+          android: 50,
+          ios: 0,
+        }),
   },
   input: {
     borderWidth: 1,

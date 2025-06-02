@@ -123,6 +123,10 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     textAlign: "center",
     color: "#333",
+    marginTop: Platform.select({
+      android: 50,
+      ios: 0,
+    }),
   },
   input: {
     borderWidth: 1,

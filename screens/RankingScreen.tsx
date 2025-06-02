@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
@@ -95,6 +96,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    marginTop: Platform.select({
+          android: 50,
+          ios: 0,
+        }),
   },
   item: {
     flexDirection: "row",

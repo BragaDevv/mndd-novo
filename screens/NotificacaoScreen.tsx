@@ -300,7 +300,10 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     borderWidth: 1,
     borderRadius: 10,
-    marginTop: 30,
+    marginTop: Platform.select({
+      android: 50,
+      ios: 0,
+    }),
   },
 
   title: {

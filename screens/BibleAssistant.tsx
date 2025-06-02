@@ -325,6 +325,10 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#128C7E",
+    marginTop: Platform.select({
+      android: 50,
+      ios: 0,
+    }),
   },
   avatar: {
     width: 40,

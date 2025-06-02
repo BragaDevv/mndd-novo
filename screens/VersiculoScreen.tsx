@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  Platform,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -88,10 +89,13 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     width: "100%",
-    marginTop: 40,
     marginBottom: 20,
     marginHorizontal: 16,
     alignSelf: "center",
+    marginTop: Platform.select({
+          android: 50,
+          ios: 0,
+        }),
   },
   logo: {
     marginTop: -50,

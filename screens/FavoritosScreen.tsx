@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { useFavoritos } from '../hooks/useFavoritos';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -8,7 +8,10 @@ const FavoritosScreen = () => {
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 10 }}>Versículos Favoritos</Text>
+      <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 10, marginTop: Platform.select({
+            android: 50,
+            ios: 0,
+          }),  }}>Versículos Favoritos</Text>
 
       <FlatList
         data={favoritos}
