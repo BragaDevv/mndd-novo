@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { carregarDevocionais, gerarNovoDevocional, atualizarDevocional, Devocional } from '../services/devocionaisService';
+import Constants from 'expo-constants';
 
 const EstudosScreen = () => {
   const [devocionais, setDevocionais] = useState<Devocional[]>([]);
@@ -23,7 +24,7 @@ const EstudosScreen = () => {
   const [selectedDevocional, setSelectedDevocional] = useState<Devocional | null>(null);
 
   // Sua chave da OpenAI (armazene de forma segura em produção)
-  const OPENAI_API_KEY = "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";
+  const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
 
   // Carrega devocionais ao iniciar
   useEffect(() => {

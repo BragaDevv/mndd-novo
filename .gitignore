@@ -31,8 +31,9 @@ yarn-error.*
 *.pem
 
 # local env files
-.env*.local
 .env
+.env.*
+
 
 # typescript
 *.tsbuildinfo
@@ -40,4 +41,4 @@ yarn-error.*
 # Arquivos gerados dinamicamente em tempo de build
 android/app/google-services.json
 .env
-.env
+
