@@ -51,31 +51,27 @@ const ChurchScreen = () => {
   const [carrosselImages, setCarrosselImages] = useState<CarrosselImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [avisos, setAvisos] = useState<
+    { id: string; mensagem: string; imagens: string[] }[]
+  >([]);
+  const [avisosExpandidos, setAvisosExpandidos] = useState<string[]>([]);
+
   const scrollRef = useRef<ScrollView>(null);
   const mainScrollRef = useRef<ScrollView>(null);
 
-  // Carrega os cultos programados e imagens do carrossel
   useEffect(() => {
     const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0); // zera horas, minutos, segundos e milissegundos
+    hoje.setHours(0, 0, 0, 0);
     const fimDaSemana = new Date();
     fimDaSemana.setDate(hoje.getDate() + 7);
 
-    // Carrega cultos
+    // Cultos
     const cultosQuery = query(
       collection(db, "cultos"),
       orderBy("createdAt", "asc")
     );
-
-    // Carrega imagens do carrossel
-    const carrosselQuery = query(
-      collection(db, "carrossel"),
-      orderBy("createdAt", "desc")
-    );
-
     const unsubscribeCultos = onSnapshot(cultosQuery, (querySnapshot) => {
       const cultos: Culto[] = [];
-
       querySnapshot.forEach((doc) => {
         const cultoData = doc.data();
         const [dia, mes, ano] = cultoData.data.split("/");
@@ -84,33 +80,63 @@ const ChurchScreen = () => {
           parseInt(mes) - 1,
           parseInt(dia)
         );
-
         if (dataCulto >= hoje && dataCulto <= fimDaSemana) {
-          cultos.push({
-            id: doc.id,
-            ...cultoData,
-          } as Culto);
+          cultos.push({ id: doc.id, ...cultoData } as Culto);
         }
       });
-
       setCultosDaSemana(cultos);
     });
 
+    // Carrossel
+    const carrosselQuery = query(
+      collection(db, "carrossel"),
+      orderBy("createdAt", "desc")
+    );
     const unsubscribeCarrossel = onSnapshot(carrosselQuery, (querySnapshot) => {
       const images: CarrosselImage[] = [];
       querySnapshot.forEach((doc) => {
-        images.push({
-          id: doc.id,
-          ...doc.data(),
-        } as CarrosselImage);
+        images.push({ id: doc.id, ...doc.data() } as CarrosselImage);
       });
       setCarrosselImages(images);
       setLoading(false);
     });
 
+    // Avisos
+    // Avisos
+    const avisosQuery = query(
+      collection(db, "avisos"),
+      orderBy("createdAt", "desc")
+    );
+
+    const unsubscribeAvisos = onSnapshot(avisosQuery, (snapshot) => {
+      const agrupados: { [mensagem: string]: string[] } = {};
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const imagem = data.imageBase64 || data.imagem; // fallback
+        const msg = data.mensagem;
+
+        if (msg && imagem) {
+          if (!agrupados[msg]) agrupados[msg] = [];
+          agrupados[msg].push(imagem);
+        }
+      });
+
+      const listaFormatada = Object.entries(agrupados).map(
+        ([mensagem, imagens]) => ({
+          id: mensagem,
+          mensagem,
+          imagens,
+        })
+      );
+
+      setAvisos(listaFormatada);
+    });
+
     return () => {
       unsubscribeCultos();
       unsubscribeCarrossel();
+      unsubscribeAvisos();
     };
   }, []);
 
@@ -126,6 +152,12 @@ const ChurchScreen = () => {
 
     return () => clearInterval(interval);
   }, [currentSlide, carrosselImages]);
+
+  const toggleExpandir = (id: string) => {
+    setAvisosExpandidos((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
 
   const socialLinks = {
     instagram: {
@@ -277,6 +309,63 @@ const ChurchScreen = () => {
             )}
           </View>
 
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>MURAL DE AVISOS</Text>
+
+            {avisos.length === 0 ? (
+              <Text style={styles.emptyText}>Nenhum aviso no momento.</Text>
+            ) : (
+              avisos.map((aviso) => (
+                <View key={aviso.id} style={styles.avisoCard}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={styles.avisoTexto}>{aviso.mensagem}</Text>
+                    <TouchableOpacity onPress={() => toggleExpandir(aviso.id)}
+                      style={styles.btnExp}>
+                      <Ionicons
+                        name={
+                          avisosExpandidos.includes(aviso.id)
+                            ? "remove-circle"
+                            : "add-circle"
+                        }
+                        size={24}
+                        color="#075E54"
+                        
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {avisosExpandidos.includes(aviso.id) && (
+                    <ScrollView
+                      horizontal
+                      pagingEnabled
+                      showsHorizontalScrollIndicator={false}
+                      style={styles.avisoSlideContainer}
+                    >
+                      {aviso.imagens.map((img, idx) => (
+                        <Image
+                          key={idx}
+                          source={{ uri: img }}
+                          style={{
+                            width: Dimensions.get("window").width - 40,
+                            height: 580,
+                            borderRadius: 8,
+                            marginRight: 10,
+                          }}
+                          resizeMode="cover"
+                        />
+                      ))}
+                    </ScrollView>
+                  )}
+                </View>
+              ))
+            )}
+          </View>
+
           <View style={styles.sectionQuiz}>
             <TouchableOpacity
               style={styles.navButton}
@@ -336,9 +425,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     marginBottom: 20,
     marginTop: Platform.select({
-          android: 50,
-          ios: 0,
-        }),
+      android: 50,
+      ios: 0,
+    }),
   },
   loadingContainer: {
     flex: 1,
@@ -435,12 +524,47 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     fontFamily: "Montserrat_500Medium",
   },
-sectionQuiz: {
-  backgroundColor: "#ccc",
-  borderRadius: 10,
-  padding: 10,
-  marginBottom: 30,
-},
+  avisoSlideContainer: {
+    width: "100%",
+    height: 580,
+    borderRadius: 8,
+    overflow: "hidden",
+    marginBottom: 10,
+  },
+
+  avisoCard: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 15,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  avisoTexto: {
+    fontFamily: "Montserrat_500Medium",
+    fontSize: 14,
+    textAlign: "center",
+    marginVertical:10,
+    marginHorizontal:20,
+    padding:10
+  },
+
+   btnExp: {
+   position:'absolute',
+   top:0,
+   left:'95%'
+  },
+
+
+  sectionQuiz: {
+    backgroundColor: "#ccc",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 30,
+  },
 
   navButton: {
     flexDirection: "row",

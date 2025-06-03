@@ -27,6 +27,7 @@ import AreaAdmScreen from "./screens/AreaAdm";
 import UsuariosScreen from "@screens/UsuariosScreen";
 import ImagensScreen from "@screens/ImagensScreen";
 import CultosScreen from "@screens/CultosScreen";
+import AvisosScreen from "./screens/AvisosScreen";
 import NotificacaoScreen from "@screens/NotificacaoScreen";
 import LoginScreen from "./screens/LoginScreen";
 import FavoritosScreen from "./screens/FavoritosScreen";
@@ -82,31 +83,31 @@ const AppNavigator = () => {
   );
   const [expoToken, setExpoToken] = useState<string | null>(null);
 
-useEffect(() => {
-  const checkUserByToken = async () => {
-    const token = await registerForPushNotifications();
-    if (token) {
-      setExpoToken(token);
-      await AsyncStorage.setItem("expoPushToken", token); // ✅ SALVA LOCALMENTE
-      console.log("✅ Token Salvo Localmente");
+  useEffect(() => {
+    const checkUserByToken = async () => {
+      const token = await registerForPushNotifications();
+      if (token) {
+        setExpoToken(token);
+        await AsyncStorage.setItem("expoPushToken", token); // ✅ SALVA LOCALMENTE
+        console.log("✅ Token Salvo Localmente");
 
-      const q = query(
-        collection(db, "usuarios"),
-        where("expoToken", "==", token)
-      );
-      const snapshot = await getDocs(q);
-      if (!snapshot.empty) {
-        console.log("✅ Token encontrado, pulando questionário");
-        setShowQuestionario(false);
-      } else {
-        console.log("🆕 Token não encontrado, exibindo questionário");
-        setShowQuestionario(true);
+        const q = query(
+          collection(db, "usuarios"),
+          where("expoToken", "==", token)
+        );
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          console.log("✅ Token encontrado, pulando questionário");
+          setShowQuestionario(false);
+        } else {
+          console.log("🆕 Token não encontrado, exibindo questionário");
+          setShowQuestionario(true);
+        }
       }
-    }
-  };
+    };
 
-  checkUserByToken();
-}, []);
+    checkUserByToken();
+  }, []);
 
   useEffect(() => {
     const setupNotifications = async () => {
@@ -212,51 +213,55 @@ useEffect(() => {
                 <Stack.Screen
                   name="Livros"
                   component={LivrosScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="Capitulos"
                   component={CapitulosScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="Versiculos"
                   component={VersiculosScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="Versiculo"
                   component={VersiculoScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="Igreja"
                   component={IgrejaScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="Usuarios"
                   component={UsuariosScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="Carrossel"
                   component={ImagensScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="Cultos"
                   component={CultosScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="Notificacao"
                   component={NotificacaoScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="AreaAdm"
-                  options={{ title: "", headerLeft: () => null, headerShown: Platform.OS === 'ios' }} 
+                  options={{
+                    title: "",
+                    headerLeft: () => null,
+                    headerShown: Platform.OS === "ios",
+                  }}
                 >
                   {() => (
                     <ProtectedRoute>
@@ -267,30 +272,43 @@ useEffect(() => {
                 <Stack.Screen
                   name="Login"
                   component={LoginScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="Favoritos"
                   component={FavoritosScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="BibleAssistant"
                   component={BibleAssistant}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="EstudosScreen"
                   component={EstudosScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
                   name="HarpaScreen"
                   component={HarpaScreen}
-                  options={{ title: "", headerShown: Platform.OS === 'ios' }}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
-                <Stack.Screen name="Quiz" component={QuizScreen} options={{ title: "", headerShown: Platform.OS === 'ios' }} />
-                <Stack.Screen name="Ranking" component={RankingScreen} options={{ title: "", headerShown: Platform.OS === 'ios' }}/>
+                <Stack.Screen
+                  name="Quiz"
+                  component={QuizScreen}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
+                />
+                <Stack.Screen
+                  name="Ranking"
+                  component={RankingScreen}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
+                />
+                  <Stack.Screen
+                  name="Avisos"
+                  component={AvisosScreen}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
+                />
               </>
             )}
           </Stack.Navigator>

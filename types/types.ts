@@ -2,6 +2,7 @@ export type RootStackParamList = {
 
   Quiz: undefined;
   Ranking: undefined;
+  Avisos: undefined;
   Questionario: undefined | { onComplete: (dados: any) => void };
   MNDD: undefined;
   Igreja: undefined;

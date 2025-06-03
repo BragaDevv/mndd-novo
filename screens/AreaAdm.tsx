@@ -54,6 +54,7 @@ const SendNotificationScreen = () => {
         {botao("Notificações", "bell", "Notificacao")}
         {botao("Cultos", "building", "Cultos")}
         {botao("Carrossel", "picture-o", "Carrossel")}
+        {botao("Avisos", "exclamation-triangle", "Avisos")}
         {botao("Usuários", "users", "Usuarios")}
       </View>
 
