@@ -116,10 +116,9 @@ const ChurchScreen = () => {
         const imagem = data.imageBase64 || data.imagem; // fallback
         const msg = data.mensagem;
 
-        if (msg && imagem) {
-          if (!agrupados[msg]) agrupados[msg] = [];
-          agrupados[msg].push(imagem);
-        }
+        const chave = msg?.trim() || "Sem mensagem";
+        if (!agrupados[chave]) agrupados[chave] = [];
+        if (imagem) agrupados[chave].push(imagem);
       });
 
       const listaFormatada = Object.entries(agrupados).map(
@@ -317,49 +316,48 @@ const ChurchScreen = () => {
             ) : (
               avisos.map((aviso) => (
                 <View key={aviso.id} style={styles.avisoCard}>
+                  <Text style={styles.pushpin}>📌</Text>
                   <View
                     style={{
                       flexDirection: "row",
-                      justifyContent: "space-between",
+                      justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
                     <Text style={styles.avisoTexto}>{aviso.mensagem}</Text>
-                    <TouchableOpacity onPress={() => toggleExpandir(aviso.id)}
-                      style={styles.btnExp}>
-                      <Ionicons
-                        name={
-                          avisosExpandidos.includes(aviso.id)
-                            ? "remove-circle"
-                            : "add-circle"
-                        }
-                        size={24}
-                        color="#075E54"
-                        
-                      />
-                    </TouchableOpacity>
+                    {aviso.imagens.length > 0 && (
+                      <TouchableOpacity
+                        onPress={() => toggleExpandir(aviso.id)}
+                        style={styles.btnExp}
+                      >
+                        <Ionicons
+                          name={
+                            avisosExpandidos.includes(aviso.id)
+                              ? "remove-circle"
+                              : "add-circle"
+                          }
+                          size={24}
+                          color="#000"
+                        />
+                      </TouchableOpacity>
+                    )}
                   </View>
                   {avisosExpandidos.includes(aviso.id) && (
-                    <ScrollView
-                      horizontal
-                      pagingEnabled
-                      showsHorizontalScrollIndicator={false}
-                      style={styles.avisoSlideContainer}
-                    >
+                    <View style={{ alignItems: "center" }}>
                       {aviso.imagens.map((img, idx) => (
                         <Image
                           key={idx}
                           source={{ uri: img }}
                           style={{
-                            width: Dimensions.get("window").width - 40,
-                            height: 580,
+                            width: Dimensions.get("window").width * 0.8,
+                            height: undefined,
+                            aspectRatio: 1.3,
                             borderRadius: 8,
-                            marginRight: 10,
                           }}
-                          resizeMode="cover"
+                          resizeMode="contain"
                         />
                       ))}
-                    </ScrollView>
+                    </View>
                   )}
                 </View>
               ))
@@ -368,12 +366,23 @@ const ChurchScreen = () => {
 
           <View style={styles.sectionQuiz}>
             <TouchableOpacity
-              style={styles.navButton}
+              style={styles.quizButton}
               onPress={() => navigation.navigate("Quiz")}
             >
-              <Ionicons name="game-controller" size={36} color="#000" />
-              <Text style={styles.navButtonText}>Quiz Bíblico</Text>
-              <Ionicons name="book" size={36} color="#000" />
+              <LinearGradient
+                colors={["#FF9800", "#F44336", "#9C27B0"]}
+                style={styles.quizButtonBackground}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <Ionicons
+                  name="game-controller"
+                  size={32}
+                  color="#fff"
+                  style={{ marginRight: 10 }}
+                />
+                <Text style={styles.quizButtonText}>Quiz Bíblico</Text>
+              </LinearGradient>
             </TouchableOpacity>
           </View>
 
@@ -526,14 +535,14 @@ const styles = StyleSheet.create({
   },
   avisoSlideContainer: {
     width: "100%",
-    height: 580,
+    height: 360,
     borderRadius: 8,
     overflow: "hidden",
     marginBottom: 10,
   },
 
   avisoCard: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF499",
     borderRadius: 8,
     padding: 12,
     marginBottom: 15,
@@ -547,23 +556,56 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_500Medium",
     fontSize: 14,
     textAlign: "center",
-    marginVertical:10,
-    marginHorizontal:20,
-    padding:10
+    marginVertical: 10,
+    marginHorizontal: 20,
+    padding: 10,
   },
 
-   btnExp: {
-   position:'absolute',
-   top:0,
-   left:'95%'
+  btnExp: {
+    position: "absolute",
+    top: 0,
+    left: "94%",
   },
 
+  pushpin: {
+    fontSize: 28,
+    position: "absolute",
+    top: -10,
+    left: "2%",
+  },
 
   sectionQuiz: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 10,
     marginBottom: 30,
+  },
+
+  quizButton: {
+    marginVertical: 20,
+    alignSelf: "center",
+    width: "90%",
+    borderRadius: 12,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+
+  quizButtonBackground: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    borderRadius: 12,
+  },
+
+  quizButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    fontFamily: "Montserrat_600SemiBold",
   },
 
   navButton: {

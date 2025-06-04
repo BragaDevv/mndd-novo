@@ -8,7 +8,6 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  ActivityIndicator,
   Dimensions,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -25,7 +24,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { serverTimestamp } from "firebase/firestore";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
@@ -34,21 +33,28 @@ const AvisosScreen = () => {
   const [imagens, setImagens] = useState<string[]>([]);
   const [avisosAtuais, setAvisosAtuais] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [avisosExpandidos, setAvisosExpandidos] = useState<string[]>([]);
+
+  const toggleExpandir = (id: string) => {
+    setAvisosExpandidos((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
 
   useEffect(() => {
     const carregarAvisos = async () => {
       const q = query(collection(db, "avisos"), orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
-      const agrupados: { [mensagem: string]: { id: string; imagens: string[] } } = {};
+      const agrupados: {
+        [mensagem: string]: { id: string; imagens: string[] };
+      } = {};
 
       snapshot.forEach((docItem) => {
         const data = docItem.data();
         const imagem = data.imageBase64 || data.imagem;
-        const msg = data.mensagem;
-        if (msg && imagem) {
-          if (!agrupados[msg]) agrupados[msg] = { id: msg, imagens: [] };
-          agrupados[msg].imagens.push(imagem);
-        }
+        const msg = data.mensagem || "Sem mensagem";
+        if (!agrupados[msg]) agrupados[msg] = { id: msg, imagens: [] };
+        if (imagem) agrupados[msg].imagens.push(imagem);
       });
 
       const lista = Object.entries(agrupados).map(([mensagem, obj]) => ({
@@ -64,11 +70,11 @@ const AvisosScreen = () => {
   }, [loading]);
 
   const escolherImagens = async () => {
-    const resultado = await ImagePicker.launchImageLibraryAsync({
-      allowsMultipleSelection: true,
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.7,
-    });
+   const resultado = await ImagePicker.launchImageLibraryAsync({
+  allowsMultipleSelection: true,
+  mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  quality: 0.7,
+});
 
     if (!resultado.canceled && resultado.assets.length > 0) {
       const novasUris: string[] = resultado.assets.map((a) => a.uri);
@@ -76,63 +82,122 @@ const AvisosScreen = () => {
     }
   };
 
-  const removerImagemEspecifica = async (mensagem: string, imagem: string) => {
+  const handleMensagemChange = (texto: string) => {
+    if (texto.length <= 200) {
+      setMensagem(texto);
+    }
+  };
+
+   // Adicionar contador visual após o TextInput
+  const renderMensagemInput = () => (
+    <View style={{ marginBottom: 10 }}>
+      <TextInput
+        style={styles.input}
+        placeholder="Digite a mensagem do aviso"
+        value={mensagem}
+        onChangeText={handleMensagemChange}
+        multiline
+      />
+      <Text style={{ textAlign: "right", color: mensagem.length > 180 ? '#c00' : '#999', fontSize: 12 }}>{mensagem.length}/200</Text>
+      
+    </View>
+  );
+
+  const removerAviso = async (mensagem: string, img: string) => {
     try {
+      setLoading(true);
       const q = query(collection(db, "avisos"));
       const snapshot = await getDocs(q);
-      const toDelete = snapshot.docs.find(
-        (doc) => doc.data().mensagem === mensagem && (doc.data().imageBase64 === imagem || doc.data().imagem === imagem)
+      const toDelete = snapshot.docs.filter(
+        (doc) => doc.data().mensagem === mensagem
       );
 
-      if (toDelete) {
-        await deleteDoc(doc(db, "avisos", toDelete.id));
-        Alert.alert("Removido", "Imagem removida com sucesso!");
-        setLoading((prev) => !prev);
-      }
+      const promises = toDelete.map((docRef) =>
+        deleteDoc(doc(db, "avisos", docRef.id))
+      );
+      await Promise.all(promises);
+
+      Alert.alert("Removido", "Aviso removido com sucesso!");
+      setMensagem("");
+      setImagens([]);
     } catch (error) {
       console.error(error);
-      Alert.alert("Erro", "Não foi possível remover a imagem.");
+      Alert.alert("Erro", "Não foi possível remover o aviso.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const salvarAviso = async () => {
-    if (!mensagem.trim()) {
-      Alert.alert("Erro", "Digite uma mensagem.");
-      return;
-    }
-
-    if (imagens.length === 0) {
-      Alert.alert("Erro", "Selecione ao menos uma imagem.");
+    if (imagens.length > 0 && !mensagem.trim()) {
+      Alert.alert("Erro", "Adicione uma mensagem para acompanhar as imagens.");
       return;
     }
 
     setLoading(true);
 
     try {
-      for (const uri of imagens) {
-        const manipulada = await ImageManipulator.manipulateAsync(
-          uri,
-          [{ resize: { width: 1200 } }],
-          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
-        );
-
-        const base64 = await FileSystem.readAsStringAsync(manipulada.uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-
+      if (imagens.length === 0) {
         await addDoc(collection(db, "avisos"), {
           mensagem,
-          imageBase64: `data:image/jpeg;base64,${base64}`,
           createdAt: serverTimestamp(),
         });
+      } else {
+        for (const uri of imagens) {
+          let compressLevel = 0.5;
+          let manipulada = await ImageManipulator.manipulateAsync(
+            uri,
+            [{ resize: { width: 800 } }],
+            {
+              compress: compressLevel,
+              format: ImageManipulator.SaveFormat.JPEG,
+            }
+          );
+
+          let base64 = await FileSystem.readAsStringAsync(manipulada.uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+
+          let base64Length = base64.length * (3 / 4); // base64 to bytes estimate
+
+          // Re-compress if size > 1MB
+          while (base64Length > 1000000 && compressLevel > 0.1) {
+            compressLevel -= 0.1;
+            manipulada = await ImageManipulator.manipulateAsync(
+              uri,
+              [{ resize: { width: 800 } }],
+              {
+                compress: compressLevel,
+                format: ImageManipulator.SaveFormat.JPEG,
+              }
+            );
+
+            base64 = await FileSystem.readAsStringAsync(manipulada.uri, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+            base64Length = base64.length * (3 / 4);
+          }
+
+          if (base64Length > 1000000) {
+            throw new Error(
+              "Imagem excede o tamanho permitido após compressão."
+            );
+          }
+
+          await addDoc(collection(db, "avisos"), {
+            mensagem,
+            imageBase64: `data:image/jpeg;base64,${base64}`,
+            createdAt: serverTimestamp(),
+          });
+        }
       }
 
       setMensagem("");
       setImagens([]);
-      Alert.alert("Sucesso", "Avisos salvos com sucesso!");
-    } catch (error) {
+      Alert.alert("Sucesso", "Aviso salvo com sucesso!");
+    } catch (error: any) {
       console.error(error);
-      Alert.alert("Erro", "Não foi possível salvar os avisos.");
+      Alert.alert("Erro", error.message || "Não foi possível salvar o aviso.");
     } finally {
       setLoading(false);
     }
@@ -142,13 +207,7 @@ const AvisosScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>Novo Aviso</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Digite a mensagem do aviso"
-        value={mensagem}
-        onChangeText={setMensagem}
-        multiline
-      />
+      {renderMensagemInput()}
 
       <TouchableOpacity style={styles.botaoImagem} onPress={escolherImagens}>
         <Text style={styles.botaoTexto}>
@@ -172,15 +231,51 @@ const AvisosScreen = () => {
         </Text>
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={[styles.botaoSalvar, { backgroundColor: "#dc3545" }]}
+        onPress={() => {
+          setMensagem("");
+          setImagens([]);
+          Alert.alert("Cancelado", "Criação do aviso cancelada.");
+        }}
+      >
+        <Text style={styles.botaoSalvarTexto}>Cancelar</Text>
+      </TouchableOpacity>
+
       <Text style={styles.titulo}>Avisos Atuais</Text>
       {avisosAtuais.length === 0 ? (
         <Text style={styles.vazio}>Nenhum aviso no momento.</Text>
       ) : (
-        avisosAtuais.map((aviso, index) => (
-          <View key={aviso.id}>
-            <Text style={styles.subtitulo}>Aviso {index + 1}</Text>
-            <View style={styles.avisoAtual}>
+        avisosAtuais.map((aviso) => (
+          <View key={aviso.id} style={styles.avisoAtual}>
+            <TouchableOpacity
+              style={styles.removerIconeBotao}
+              onPress={() => removerAviso(aviso.mensagem, aviso.imagens[0])}
+            >
+              <MaterialIcons name="delete" size={24} color="#dc3545" />
+            </TouchableOpacity>
+            {aviso.imagens.length > 0 && (
+              <TouchableOpacity
+                style={styles.btnExp}
+                onPress={() => toggleExpandir(aviso.id)}
+              >
+                <Ionicons
+                  name={
+                    avisosExpandidos.includes(aviso.id)
+                      ? "remove-circle"
+                      : "add-circle"
+                  }
+                  size={24}
+                  color="#000"
+                />
+              </TouchableOpacity>
+            )}
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={styles.avisoTexto}>{aviso.mensagem}</Text>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}></View>
+
+            {avisosExpandidos.includes(aviso.id) && (
               <ScrollView
                 horizontal
                 pagingEnabled
@@ -188,21 +283,15 @@ const AvisosScreen = () => {
                 style={styles.slideContainer}
               >
                 {aviso.imagens.map((img: string, idx: number) => (
-                  <View key={idx} style={{ alignItems: "center", position: "relative" }}>
-                    <Image
-                      source={{ uri: img }}
-                      style={styles.preview}
-                    />
-                    <TouchableOpacity
-                      onPress={() => removerImagemEspecifica(aviso.mensagem, img)}
-                      style={styles.removerIconeBotao}
-                    >
-                      <MaterialIcons name="delete" size={28} color="#fff" />
-                    </TouchableOpacity>
-                  </View>
+                  <Image
+                    key={idx}
+                    source={{ uri: img }}
+                    style={styles.preview}
+                    resizeMode="contain"
+                  />
                 ))}
               </ScrollView>
-            </View>
+            )}
           </View>
         ))
       )}
@@ -223,13 +312,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
     fontFamily: "Montserrat_600SemiBold",
-  },
-  subtitulo: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 6,
-    fontFamily: "Montserrat_600SemiBold",
-    color: "#555",
   },
   input: {
     borderColor: "#ccc",
@@ -255,13 +337,13 @@ const styles = StyleSheet.create({
   },
   preview: {
     width: width - 40,
-    height: 280,
+    height: 180,
     borderRadius: 8,
     marginVertical: 10,
   },
   slideContainer: {
     width: width - 40,
-    height: 180,
+    height: "auto",
     borderRadius: 8,
   },
   botaoSalvar: {
@@ -277,32 +359,39 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat_600SemiBold",
   },
   avisoAtual: {
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#FFF499",
     borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
+    padding: 12,
+    marginBottom: 15,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     alignItems: "center",
-    height: 580,
   },
   avisoTexto: {
     fontFamily: "Montserrat_500Medium",
     fontSize: 14,
-    marginTop: 8,
     textAlign: "center",
-    marginBottom:20
+    marginVertical: 10,
+    marginHorizontal: 20,
+    padding: 10,
   },
   removerIconeBotao: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    backgroundColor: "#dc3545",
-    borderRadius: 16,
-    padding: 4,
+    position: "relative",
+    bottom: "0%",
+    left: "-43%",
   },
   vazio: {
     textAlign: "center",
     color: "#999",
     fontFamily: "Montserrat_500Medium",
+  },
+  btnExp: {
+    position: "absolute",
+    bottom: "94%",
+    left: "94%",
   },
 });
 
