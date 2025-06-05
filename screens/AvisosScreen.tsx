@@ -23,6 +23,7 @@ import {
   getDocs,
   orderBy,
   query,
+  where,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { serverTimestamp } from "firebase/firestore";
@@ -160,35 +161,53 @@ const atualizarListaAvisos = async () => {
   setAvisosAtuais(lista);
 };
 
-  const salvarAviso = async () => {
+const salvarAviso = async () => {
+  if (!mensagem.trim() && imagens.length === 0) {
+    Alert.alert("Erro", "Adicione uma mensagem antes de salvar.");
+    return;
+  }
 
-    if (!mensagem.trim() && imagens.length === 0) {
-      Alert.alert("Erro", "Adicione uma mensagem antes de salvar.");
-      return;
+  if (imagens.length > 0 && !mensagem.trim()) {
+    Alert.alert("Erro", "Não é permitido enviar imagens sem uma mensagem.");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const isNovoAviso = !avisoEditandoId;
+
+    if (avisoEditandoId) {
+      await removerAviso(avisoEditandoId, imagens[0]);
+      setAvisoEditandoId(null);
     }
 
-    if (imagens.length > 0 && !mensagem.trim()) {
-      Alert.alert("Erro", "Não é permitido enviar imagens sem uma mensagem.");
-      return;
-    }
+    if (imagens.length === 0) {
+      await addDoc(collection(db, "avisos"), {
+        mensagem,
+        createdAt: serverTimestamp(),
+      });
+    } else {
+      for (const uri of imagens) {
+        let compressLevel = 0.5;
+        let manipulada = await ImageManipulator.manipulateAsync(
+          uri,
+          [{ resize: { width: 800 } }],
+          {
+            compress: compressLevel,
+            format: ImageManipulator.SaveFormat.JPEG,
+          }
+        );
 
-    setLoading(true);
-
-    try {
-      if (avisoEditandoId) {
-        await removerAviso(avisoEditandoId, imagens[0]);
-        setAvisoEditandoId(null);
-      }
-
-      if (imagens.length === 0) {
-        await addDoc(collection(db, "avisos"), {
-          mensagem,
-          createdAt: serverTimestamp(),
+        let base64 = await FileSystem.readAsStringAsync(manipulada.uri, {
+          encoding: FileSystem.EncodingType.Base64,
         });
-      } else {
-        for (const uri of imagens) {
-          let compressLevel = 0.5;
-          let manipulada = await ImageManipulator.manipulateAsync(
+
+        let base64Length = base64.length * (3 / 4);
+
+        while (base64Length > 1000000 && compressLevel > 0.1) {
+          compressLevel -= 0.1;
+          manipulada = await ImageManipulator.manipulateAsync(
             uri,
             [{ resize: { width: 800 } }],
             {
@@ -197,52 +216,83 @@ const atualizarListaAvisos = async () => {
             }
           );
 
-          let base64 = await FileSystem.readAsStringAsync(manipulada.uri, {
+          base64 = await FileSystem.readAsStringAsync(manipulada.uri, {
             encoding: FileSystem.EncodingType.Base64,
           });
-
-          let base64Length = base64.length * (3 / 4);
-
-          while (base64Length > 1000000 && compressLevel > 0.1) {
-            compressLevel -= 0.1;
-            manipulada = await ImageManipulator.manipulateAsync(
-              uri,
-              [{ resize: { width: 800 } }],
-              {
-                compress: compressLevel,
-                format: ImageManipulator.SaveFormat.JPEG,
-              }
-            );
-
-            base64 = await FileSystem.readAsStringAsync(manipulada.uri, {
-              encoding: FileSystem.EncodingType.Base64,
-            });
-            base64Length = base64.length * (3 / 4);
-          }
-
-          if (base64Length > 1000000) {
-            throw new Error("Imagem excede o tamanho permitido após compressão.");
-          }
-
-          await addDoc(collection(db, "avisos"), {
-            mensagem,
-            imageBase64: `data:image/jpeg;base64,${base64}`,
-            createdAt: serverTimestamp(),
-          });
+          base64Length = base64.length * (3 / 4);
         }
-      }
 
-      setMensagem("");
-      setImagens([]);
-      await atualizarListaAvisos();
-      Alert.alert("Sucesso", avisoEditandoId ? "Aviso editado com sucesso!" : "Aviso salvo com sucesso!");
-    } catch (error: any) {
-      console.error(error);
-      Alert.alert("Erro", error.message || "Não foi possível salvar o aviso.");
-    } finally {
-      setLoading(false);
+        if (base64Length > 1000000) {
+          throw new Error("Imagem excede o tamanho permitido após compressão.");
+        }
+
+        await addDoc(collection(db, "avisos"), {
+          mensagem,
+          imageBase64: `data:image/jpeg;base64,${base64}`,
+          createdAt: serverTimestamp(),
+        });
+      }
     }
+
+    setMensagem("");
+    setImagens([]);
+    await atualizarListaAvisos();
+
+    Alert.alert("Sucesso", avisoEditandoId ? "Aviso editado com sucesso!" : "Aviso salvo com sucesso!");
+
+    // ✅ Agendar notificação após 1 minuto (somente para novos avisos)
+   if (isNovoAviso) {
+  console.log("⏳ Aguardando 1 minuto para verificar se aviso persiste...");
+
+  const avisoCriado = {
+    mensagem: mensagem.trim(),
   };
+
+  setTimeout(async () => {
+    try {
+      console.log("🔎 Verificando se o aviso ainda existe no Firestore...");
+      const q = query(
+        collection(db, "avisos"),
+        where("mensagem", "==", avisoCriado.mensagem)
+      );
+
+      const snapshot = await getDocs(q);
+
+      if (!snapshot.empty) {
+        console.log("✅ Aviso ainda existe. Enviando notificação...");
+        await fetch("https://mndd-backend.onrender.com/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: "📢 Alô MNDD !",
+            body: "Tem aviso novo lá no mural!",
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("📨 Resposta do servidor:", data);
+            if (!data?.sent) {
+              console.warn("⚠️ Notificação enviada, mas sem confirmação.");
+            }
+          });
+      } else {
+        console.log("🛑 Aviso foi removido antes de 1 minuto. Cancelando notificação.");
+      }
+    } catch (err) {
+      console.error("❌ Erro ao verificar/executar notificação:", err);
+    }
+  }, 60000); // 60 segundos
+}
+
+
+  } catch (error: any) {
+    console.error(error);
+    Alert.alert("Erro", error.message || "Não foi possível salvar o aviso.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -360,7 +410,7 @@ const atualizarListaAvisos = async () => {
                 showsHorizontalScrollIndicator={false}
                 style={styles.slideContainer}
               >
-                {aviso.imagens.map((img: string, idx: number) => (
+                {aviso.imagens.reverse().map((img: string, idx: number) => (
                   <Image
                     key={idx}
                     source={{ uri: img }}

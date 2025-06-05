@@ -26,6 +26,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import { UnhandledLinkingContext } from "node_modules/@react-navigation/native/lib/typescript/src/UnhandledLinkingContext";
 
 type Culto = {
   local: string;
@@ -102,6 +103,7 @@ const ChurchScreen = () => {
     });
 
     // Avisos
+
     // Avisos
     const avisosQuery = query(
       collection(db, "avisos"),
@@ -343,21 +345,29 @@ const ChurchScreen = () => {
                     )}
                   </View>
                   {avisosExpandidos.includes(aviso.id) && (
-                    <View style={{ alignItems: "center" }}>
-                      {aviso.imagens.map((img, idx) => (
-                        <Image
-                          key={idx}
-                          source={{ uri: img }}
-                          style={{
-                            width: Dimensions.get("window").width * 0.8,
-                            height: undefined,
-                            aspectRatio: 1.3,
-                            borderRadius: 8,
-                          }}
-                          resizeMode="contain"
-                        />
-                      ))}
-                    </View>
+                    <ScrollView
+                      horizontal
+                      pagingEnabled
+                      showsHorizontalScrollIndicator={true}
+                      snapToInterval={Dimensions.get("window").width} // importante!
+                      decelerationRate="fast"
+                      snapToAlignment="center"
+                    >
+                      {aviso.imagens
+                        .slice()
+                        .reverse()
+                        .map((img, idx) => (
+                          <Image
+                            key={idx}
+                            source={{ uri: img }}
+                            style={{
+                              width: Dimensions.get("window").width, // ocupa a tela inteira
+                              height: Dimensions.get("window").width * 1.0, // mantém o aspectRatio aproximado
+                            }}
+                            resizeMode="contain"
+                          />
+                        ))}
+                    </ScrollView>
                   )}
                 </View>
               ))

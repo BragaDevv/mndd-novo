@@ -100,39 +100,6 @@ const SendNotificationForm = () => {
     }
   };
 
-
-  const handleSendDailyVerse = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        "https://mndd-backend.onrender.com/versiculo",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-      if (response.ok) {
-        const enviados = data.sent ?? 0;
-        Alert.alert(
-          "Sucesso",
-          `Versículo enviado para ${enviados} dispositivos.`
-        );
-      } else {
-        console.error("Erro ao enviar versículo:", data.error);
-        Alert.alert("Erro", "Falha ao enviar versículo");
-      }
-    } catch (error) {
-      console.error("Erro na requisição:", error);
-      Alert.alert("Erro", "Falha ao conectar com o servidor.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const salvarHorarioVersiculo = async () => {
     const horas = selectedTime.getHours().toString().padStart(2, "0");
     const minutos = selectedTime.getMinutes().toString().padStart(2, "0");
