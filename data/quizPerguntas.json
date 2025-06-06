@@ -488,5 +488,506 @@
       "Samuel"
     ],
     "respostaCorreta": "Josué"
+  },
+   {
+    "pergunta":"Qual profeta andou nu e descalço por três anos como sinal contra o Egito e a Etiópia?",
+    "opcoes":[
+      "Jeremias",
+      "Isaías",
+      "Oséias",
+      "Ezequiel"
+    ],
+    "respostaCorreta":"Isaías"
+  },
+  {
+    "pergunta":"Quem cortou o cabelo de Sansão enquanto ele dormia?",
+    "opcoes":[
+      "Um servo",
+      "Um anjo",
+      "Sua mãe",
+      "Dalila"
+    ],
+    "respostaCorreta":"Dalila"
+  },
+  {
+    "pergunta":"Quantos capítulos tem o livro de Isaías?",
+    "opcoes":[
+      "60",
+      "61",
+      "70",
+      "66"
+    ],
+    "respostaCorreta":"66"
+  },
+  {
+    "pergunta":"Qual foi o castigo de Zacarias por duvidar do anjo?",
+    "opcoes":[
+      "Ficou mudo",
+      "Ficou cego",
+      "Foi exilado",
+      "Ficou surdo"
+    ],
+    "respostaCorreta":"Ficou mudo"
+  },
+  {
+    "pergunta":"Quem foi a única juíza de Israel?",
+    "opcoes":[
+      "Miriam",
+      "Ana",
+      "Débora",
+      "Ester"
+    ],
+    "respostaCorreta":"Débora"
+  },
+  {
+    "pergunta":"Quantas pessoas estavam na arca de Noé?",
+    "opcoes":[
+      "8",
+      "10",
+      "12",
+      "6"
+    ],
+    "respostaCorreta":"8"
+  },
+  {
+    "pergunta":"Quem viu a mão de Deus escrevendo na parede?",
+    "opcoes":[
+      "Belsazar",
+      "Nabucodonosor",
+      "Daniel",
+      "Ciro"
+    ],
+    "respostaCorreta":"Belsazar"
+  },
+  {
+    "pergunta":"Quantos dias os espias exploraram a terra de Canaã?",
+    "opcoes":[
+      "12",
+      "30",
+      "40",
+      "7"
+    ],
+    "respostaCorreta":"40"
+  },
+  {
+    "pergunta":"Qual apóstolo escreveu o livro de Hebreus, segundo a tradição?",
+    "opcoes":[
+      "João",
+      "Pedro",
+      "Paulo",
+      "Tiago"
+    ],
+    "respostaCorreta":"Paulo"
+  },
+  {
+    "pergunta":"Quem foi apedrejado até a morte e teve uma visão de Jesus?",
+    "opcoes":[
+      "Tiago",
+      "Estevão",
+      "João",
+      "Pedro"
+    ],
+    "respostaCorreta":"Estevão"
+  },
+  {
+    "pergunta":"Qual profeta andou nu e descalço por três anos como sinal contra o Egito e a Etiópia?",
+    "opcoes":[
+      "Jeremias",
+      "Isaías",
+      "Oséias",
+      "Ezequiel"
+    ],
+    "respostaCorreta":"Isaías"
+  },
+  {
+    "pergunta":"Quem cortou o cabelo de Sansão enquanto ele dormia?",
+    "opcoes":[
+      "Um servo",
+      "Um anjo",
+      "Sua mãe",
+      "Dalila"
+    ],
+    "respostaCorreta":"Dalila"
+  },
+  {
+    "pergunta":"Quantos capítulos tem o livro de Isaías?",
+    "opcoes":[
+      "60",
+      "61",
+      "70",
+      "66"
+    ],
+    "respostaCorreta":"66"
+  },
+  {
+    "pergunta":"Qual foi o castigo de Zacarias por duvidar do anjo?",
+    "opcoes":[
+      "Ficou mudo",
+      "Ficou cego",
+      "Foi exilado",
+      "Ficou surdo"
+    ],
+    "respostaCorreta":"Ficou mudo"
+  },
+  {
+    "pergunta":"Quem foi a única juíza de Israel?",
+    "opcoes":[
+      "Miriam",
+      "Ana",
+      "Débora",
+      "Ester"
+    ],
+    "respostaCorreta":"Débora"
+  },
+  {
+    "pergunta":"Quantas pessoas estavam na arca de Noé?",
+    "opcoes":[
+      "8",
+      "10",
+      "12",
+      "6"
+    ],
+    "respostaCorreta":"8"
+  },
+  {
+    "pergunta":"Quem viu a mão de Deus escrevendo na parede?",
+    "opcoes":[
+      "Belsazar",
+      "Nabucodonosor",
+      "Daniel",
+      "Ciro"
+    ],
+    "respostaCorreta":"Belsazar"
+  },
+  {
+    "pergunta":"Quantos dias os espias exploraram a terra de Canaã?",
+    "opcoes":[
+      "12",
+      "30",
+      "40",
+      "7"
+    ],
+    "respostaCorreta":"40"
+  },
+  {
+    "pergunta":"Qual apóstolo escreveu o livro de Hebreus, segundo a tradição?",
+    "opcoes":[
+      "João",
+      "Pedro",
+      "Paulo",
+      "Tiago"
+    ],
+    "respostaCorreta":"Paulo"
+  },
+  {
+    "pergunta":"Quem foi apedrejado até a morte e teve uma visão de Jesus?",
+    "opcoes":[
+      "Tiago",
+      "Estevão",
+      "João",
+      "Pedro"
+    ],
+    "respostaCorreta":"Estevão"
+  },
+  {
+    "pergunta":"Qual profeta andou nu e descalço por três anos como sinal contra o Egito e a Etiópia?",
+    "opcoes":[
+      "Jeremias",
+      "Isaías",
+      "Oséias",
+      "Ezequiel"
+    ],
+    "respostaCorreta":"Isaías"
+  },
+  {
+    "pergunta":"Quem cortou o cabelo de Sansão enquanto ele dormia?",
+    "opcoes":[
+      "Um servo",
+      "Um anjo",
+      "Sua mãe",
+      "Dalila"
+    ],
+    "respostaCorreta":"Dalila"
+  },
+  {
+    "pergunta":"Quantos capítulos tem o livro de Isaías?",
+    "opcoes":[
+      "60",
+      "61",
+      "70",
+      "66"
+    ],
+    "respostaCorreta":"66"
+  },
+  {
+    "pergunta":"Qual foi o castigo de Zacarias por duvidar do anjo?",
+    "opcoes":[
+      "Ficou mudo",
+      "Ficou cego",
+      "Foi exilado",
+      "Ficou surdo"
+    ],
+    "respostaCorreta":"Ficou mudo"
+  },
+  {
+    "pergunta":"Quem foi a única juíza de Israel?",
+    "opcoes":[
+      "Miriam",
+      "Ana",
+      "Débora",
+      "Ester"
+    ],
+    "respostaCorreta":"Débora"
+  },
+  {
+    "pergunta":"Quantas pessoas estavam na arca de Noé?",
+    "opcoes":[
+      "8",
+      "10",
+      "12",
+      "6"
+    ],
+    "respostaCorreta":"8"
+  },
+  {
+    "pergunta":"Quem viu a mão de Deus escrevendo na parede?",
+    "opcoes":[
+      "Belsazar",
+      "Nabucodonosor",
+      "Daniel",
+      "Ciro"
+    ],
+    "respostaCorreta":"Belsazar"
+  },
+  {
+    "pergunta":"Quantos dias os espias exploraram a terra de Canaã?",
+    "opcoes":[
+      "12",
+      "30",
+      "40",
+      "7"
+    ],
+    "respostaCorreta":"40"
+  },
+  {
+    "pergunta":"Qual apóstolo escreveu o livro de Hebreus, segundo a tradição?",
+    "opcoes":[
+      "João",
+      "Pedro",
+      "Paulo",
+      "Tiago"
+    ],
+    "respostaCorreta":"Paulo"
+  },
+  {
+    "pergunta":"Quem foi apedrejado até a morte e teve uma visão de Jesus?",
+    "opcoes":[
+      "Tiago",
+      "Estevão",
+      "João",
+      "Pedro"
+    ],
+    "respostaCorreta":"Estevão"
+  },
+  {
+    "pergunta":"Qual profeta andou nu e descalço por três anos como sinal contra o Egito e a Etiópia?",
+    "opcoes":[
+      "Jeremias",
+      "Isaías",
+      "Oséias",
+      "Ezequiel"
+    ],
+    "respostaCorreta":"Isaías"
+  },
+  {
+    "pergunta":"Quem cortou o cabelo de Sansão enquanto ele dormia?",
+    "opcoes":[
+      "Um servo",
+      "Um anjo",
+      "Sua mãe",
+      "Dalila"
+    ],
+    "respostaCorreta":"Dalila"
+  },
+  {
+    "pergunta":"Quantos capítulos tem o livro de Isaías?",
+    "opcoes":[
+      "60",
+      "61",
+      "70",
+      "66"
+    ],
+    "respostaCorreta":"66"
+  },
+  {
+    "pergunta":"Qual foi o castigo de Zacarias por duvidar do anjo?",
+    "opcoes":[
+      "Ficou mudo",
+      "Ficou cego",
+      "Foi exilado",
+      "Ficou surdo"
+    ],
+    "respostaCorreta":"Ficou mudo"
+  },
+  {
+    "pergunta":"Quem foi a única juíza de Israel?",
+    "opcoes":[
+      "Miriam",
+      "Ana",
+      "Débora",
+      "Ester"
+    ],
+    "respostaCorreta":"Débora"
+  },
+  {
+    "pergunta":"Quantas pessoas estavam na arca de Noé?",
+    "opcoes":[
+      "8",
+      "10",
+      "12",
+      "6"
+    ],
+    "respostaCorreta":"8"
+  },
+  {
+    "pergunta":"Quem viu a mão de Deus escrevendo na parede?",
+    "opcoes":[
+      "Belsazar",
+      "Nabucodonosor",
+      "Daniel",
+      "Ciro"
+    ],
+    "respostaCorreta":"Belsazar"
+  },
+  {
+    "pergunta":"Quantos dias os espias exploraram a terra de Canaã?",
+    "opcoes":[
+      "12",
+      "30",
+      "40",
+      "7"
+    ],
+    "respostaCorreta":"40"
+  },
+  {
+    "pergunta":"Qual apóstolo escreveu o livro de Hebreus, segundo a tradição?",
+    "opcoes":[
+      "João",
+      "Pedro",
+      "Paulo",
+      "Tiago"
+    ],
+    "respostaCorreta":"Paulo"
+  },
+  {
+    "pergunta":"Quem foi apedrejado até a morte e teve uma visão de Jesus?",
+    "opcoes":[
+      "Tiago",
+      "Estevão",
+      "João",
+      "Pedro"
+    ],
+    "respostaCorreta":"Estevão"
+  },
+  {
+    "pergunta":"Qual profeta andou nu e descalço por três anos como sinal contra o Egito e a Etiópia?",
+    "opcoes":[
+      "Jeremias",
+      "Isaías",
+      "Oséias",
+      "Ezequiel"
+    ],
+    "respostaCorreta":"Isaías"
+  },
+  {
+    "pergunta":"Quem cortou o cabelo de Sansão enquanto ele dormia?",
+    "opcoes":[
+      "Um servo",
+      "Um anjo",
+      "Sua mãe",
+      "Dalila"
+    ],
+    "respostaCorreta":"Dalila"
+  },
+  {
+    "pergunta":"Quantos capítulos tem o livro de Isaías?",
+    "opcoes":[
+      "60",
+      "61",
+      "70",
+      "66"
+    ],
+    "respostaCorreta":"66"
+  },
+  {
+    "pergunta":"Qual foi o castigo de Zacarias por duvidar do anjo?",
+    "opcoes":[
+      "Ficou mudo",
+      "Ficou cego",
+      "Foi exilado",
+      "Ficou surdo"
+    ],
+    "respostaCorreta":"Ficou mudo"
+  },
+  {
+    "pergunta":"Quem foi a única juíza de Israel?",
+    "opcoes":[
+      "Miriam",
+      "Ana",
+      "Débora",
+      "Ester"
+    ],
+    "respostaCorreta":"Débora"
+  },
+  {
+    "pergunta":"Quantas pessoas estavam na arca de Noé?",
+    "opcoes":[
+      "8",
+      "10",
+      "12",
+      "6"
+    ],
+    "respostaCorreta":"8"
+  },
+  {
+    "pergunta":"Quem viu a mão de Deus escrevendo na parede?",
+    "opcoes":[
+      "Belsazar",
+      "Nabucodonosor",
+      "Daniel",
+      "Ciro"
+    ],
+    "respostaCorreta":"Belsazar"
+  },
+  {
+    "pergunta":"Quantos dias os espias exploraram a terra de Canaã?",
+    "opcoes":[
+      "12",
+      "30",
+      "40",
+      "7"
+    ],
+    "respostaCorreta":"40"
+  },
+  {
+    "pergunta":"Qual apóstolo escreveu o livro de Hebreus, segundo a tradição?",
+    "opcoes":[
+      "João",
+      "Pedro",
+      "Paulo",
+      "Tiago"
+    ],
+    "respostaCorreta":"Paulo"
+  },
+  {
+    "pergunta":"Quem foi apedrejado até a morte e teve uma visão de Jesus?",
+    "opcoes":[
+      "Tiago",
+      "Estevão",
+      "João",
+      "Pedro"
+    ],
+    "respostaCorreta":"Estevão"
   }
+
 ]
