@@ -1,16 +1,32 @@
 import 'dotenv/config';
 import { ExpoConfig, ConfigContext } from '@expo/config';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export default ({ config }: ConfigContext): ExpoConfig => {
+  const googleServicesBase64 = process.env.GOOGLE_SERVICES_JSON;
   const openaiApiKey = process.env.OPENAI_API_KEY;
 
-  // 🔒 Validação da variável da OpenAI
   if (!openaiApiKey) {
     console.warn('⚠️ OPENAI_API_KEY não definida no .env');
   } else if (!openaiApiKey.startsWith('sk-')) {
     console.warn('❌ OPENAI_API_KEY parece inválida. Verifique o formato.');
   } else {
     console.log('✅ OPENAI_API_KEY carregada com sucesso.');
+  }
+
+  // Cria o google-services.json durante o build, se a pasta android existir (evita erro local)
+  if (googleServicesBase64) {
+    const filePath = path.resolve('android/app/google-services.json');
+    try {
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+      fs.writeFileSync(filePath, Buffer.from(googleServicesBase64, 'base64'));
+      console.log('✅ google-services.json criado via variável de ambiente.');
+    } catch (err) {
+      console.warn('❌ Falha ao criar google-services.json:', err);
+    }
+  } else {
+    console.warn('⚠️ GOOGLE_SERVICES_JSON não definida.');
   }
 
   return {
@@ -48,7 +64,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           iosDisplayInForeground: true,
         },
       ],
-      'expo-build-properties', // ✅ Necessário para GOOGLE_SERVICES_JSON funcionar
+      'expo-build-properties',
     ],
     android: {
       package: 'com.mbragam.MNDD',
