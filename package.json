@@ -56,6 +56,7 @@
     "react-native-screens": "^4.10.0",
     "react-native-toast-message": "^2.3.0",
     "react-native-view-shot": "^4.0.3",
+    "rss-parser": "^3.13.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

@@ -28,11 +28,12 @@ import UsuariosScreen from "@screens/UsuariosScreen";
 import ImagensScreen from "@screens/ImagensScreen";
 import CultosScreen from "@screens/CultosScreen";
 import AvisosScreen from "./screens/AvisosScreen";
+import AdmDevocionalScreen from "./screens/AdmDevocionalScreen";
+import DevocionalScreen from "./screens/DevocionalScreen";
 import NotificacaoScreen from "@screens/NotificacaoScreen";
 import LoginScreen from "./screens/LoginScreen";
 import FavoritosScreen from "./screens/FavoritosScreen";
 import BibleAssistant from "./screens/BibleAssistant";
-import EstudosScreen from "./screens/EstudosScreen";
 import HarpaScreen from "./screens/HarpaScreen";
 import QuestionarioScreen from "./screens/QuestionarioScreen";
 import QuizScreen from "./screens/QuizScreen";
@@ -285,11 +286,6 @@ const AppNavigator = () => {
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
-                  name="EstudosScreen"
-                  component={EstudosScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
                   name="HarpaScreen"
                   component={HarpaScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
@@ -307,6 +303,16 @@ const AppNavigator = () => {
                   <Stack.Screen
                   name="Avisos"
                   component={AvisosScreen}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
+                />
+                <Stack.Screen
+                  name="AdmDevocional"
+                  component={AdmDevocionalScreen}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
+                />
+                <Stack.Screen
+                  name="Devocional"
+                  component={DevocionalScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
               </>

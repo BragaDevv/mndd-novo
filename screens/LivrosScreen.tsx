@@ -205,10 +205,10 @@ const LivrosScreen = () => {
 
         <TouchableOpacity
           style={styles.navButton}
-          onPress={() => navigation.navigate("EstudosScreen")}
+          onPress={() => navigation.navigate("Devocional")}
         >
           <Ionicons name="book" size={26} color="#000" />
-          <Text style={styles.navButtonText}>Estudo</Text>
+          <Text style={styles.navButtonText}>Devocional</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

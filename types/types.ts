@@ -3,6 +3,8 @@ export type RootStackParamList = {
   Quiz: undefined;
   Ranking: undefined;
   Avisos: undefined;
+  AdmDevocional: undefined;
+  Devocional: undefined;
   Questionario: undefined | { onComplete: (dados: any) => void };
   MNDD: undefined;
   Igreja: undefined;
@@ -15,7 +17,6 @@ export type RootStackParamList = {
   Favoritos: undefined;
   Livros: undefined;
   BibleAssistant: undefined;
-  EstudosScreen: undefined;
   HarpaScreen: undefined;
   Capitulos: {
     book: Book;
