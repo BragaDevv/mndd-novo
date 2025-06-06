@@ -1,44 +1,49 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# 📚 Documentação
+# Saiba mais: https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-# dependencies
+# 📦 Dependências
 node_modules/
 
-# Expo
+# ⚙️ Expo
 .expo/
 dist/
 web-build/
 expo-env.d.ts
 
-# Native
-.kotlin/
-*.orig.*
-*.jks
+# ⚙️ Build Android/iOS
+android/
+ios/
+*.apk
+*.aab
+
+# 🔐 Arquivos sensíveis
+.env
+.env.*
+*.pem
 *.p8
 *.p12
 *.key
+*.jks
 *.mobileprovision
+android/app/google-services.json
 
-# Metro
+# ⚠️ Arquivos de lock (opcional ignorar em projetos Expo)
+package-lock.json
+yarn.lock
+
+# 🛠 Metro bundler
 .metro-health-check*
 
-# debug
+# 🐞 Logs de debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# macOS
+# 🍎 macOS
 .DS_Store
-*.pem
 
-# local env files
-.env
-.env.*
-
-
-# typescript
+# 📄 TypeScript
 *.tsbuildinfo
 
-# Arquivos gerados dinamicamente em tempo de build
-android/app/google-services.json
-.env
-
+# 🗑 Arquivos de merge ou backup
+*.orig.*
