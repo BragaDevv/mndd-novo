@@ -20,6 +20,7 @@ import {
   getDocs,
   doc,
   updateDoc,
+  deleteDoc
 } from "firebase/firestore";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -133,6 +134,36 @@ const UsuariosScreen = () => {
       Alert.alert("Erro ao salvar grupos.");
     }
   };
+
+  const excluirUsuario = async () => {
+    if (!usuarioSelecionado) return;
+
+    Alert.alert(
+      "Confirmar exclusão",
+      `Deseja realmente excluir ${usuarioSelecionado.nome} ${usuarioSelecionado.sobrenome}?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const db = getFirestore();
+              await deleteDoc(doc(db, "usuarios", usuarioSelecionado.id));
+              setUsuarios((prev) =>
+                prev.filter((u) => u.id !== usuarioSelecionado.id)
+              );
+              setModalVisible(false);
+              Alert.alert("Usuário excluído com sucesso!");
+            } catch (err) {
+              Alert.alert("Erro", "Falha ao excluir usuário.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
 
   const [loadingGrupo, setLoadingGrupo] = useState(false);
 
@@ -256,10 +287,15 @@ const UsuariosScreen = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>
-                {usuarioSelecionado?.nome}
-                {usuarioSelecionado?.sobrenome}
-              </Text>
+              <View style={styles.titleRow}>
+                <Text style={styles.modalTitle}>
+                  {usuarioSelecionado?.nome} {usuarioSelecionado?.sobrenome}
+                </Text>
+                <TouchableOpacity onPress={excluirUsuario} style={{ marginLeft: 10 }}>
+                  <Ionicons name="trash-outline" size={24} color="#d32f2f" />
+                </TouchableOpacity>
+              </View>
+
 
               {/* Info do usuário */}
               {usuarioSelecionado && (
@@ -436,10 +472,18 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: "center",
     marginTop: Platform.select({
-          android: 50,
-          ios: 0,
-        }),
+      android: 50,
+      ios: 0,
+    }),
   },
+  titleRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 10,
+  marginBottom: 10,
+},
+
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -555,9 +599,9 @@ const styles = StyleSheet.create({
   chipContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    display:'flex',
-    alignItems:'center',
-    justifyContent:'center'
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   chip: {
     paddingVertical: 6,
