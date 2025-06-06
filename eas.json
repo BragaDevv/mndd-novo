@@ -5,8 +5,7 @@
   "build": {
     "production": {
       "android": {
-        "buildType": "apk",
-        "workflow": "managed"
+        "buildType": "apk"
       },
       "env": {
         "GOOGLE_SERVICES_JSON": "${GOOGLE_SERVICES_JSON}"
