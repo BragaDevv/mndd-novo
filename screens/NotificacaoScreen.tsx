@@ -10,6 +10,7 @@ import {
   Alert,
   ScrollView,
   Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
@@ -147,108 +148,114 @@ const SendNotificationForm = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.sectionNotif}>
-          <Text style={styles.title}>Notificação Geral </Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+    >
+      <ScrollView>
+        <View style={styles.container}>
+          <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.sectionNotif}>
+              <Text style={styles.title}>Notificação Geral </Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Título"
-            value={title}
-            onChangeText={setTitle}
-            placeholderTextColor="#999"
-          />
+              <TextInput
+                style={styles.input}
+                placeholder="Título"
+                value={title}
+                onChangeText={setTitle}
+                placeholderTextColor="#999"
+              />
 
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Mensagem"
-            value={message}
-            onChangeText={setMessage}
-            placeholderTextColor="#999"
-            multiline
-          />
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Mensagem"
+                value={message}
+                onChangeText={setMessage}
+                placeholderTextColor="#999"
+                multiline
+              />
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={sendNotification}
-            disabled={loading}
-          >
-            <Text style={styles.buttonText}>
-              {loading ? "Enviando..." : "Enviar Notificação"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.sectionHora}>
-          <View style={styles.timeSection}>
-            <Text style={styles.title}>Horário do versículo diário</Text>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={sendNotification}
+                disabled={loading}
+              >
+                <Text style={styles.buttonText}>
+                  {loading ? "Enviando..." : "Enviar Notificação"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.sectionHora}>
+              <View style={styles.timeSection}>
+                <Text style={styles.title}>Horário do versículo diário</Text>
 
-            <Text style={{ textAlign: "center", marginBottom: 10 }}>
-              Horário atual salvo: {horaSalva || "Carregando..."}
-            </Text>
+                <Text style={{ textAlign: "center", marginBottom: 10 }}>
+                  Horário atual salvo: {horaSalva || "Carregando..."}
+                </Text>
 
-            <TouchableOpacity
-              style={[styles.dateInputContainer]}
-              onPress={() => setShowTimePicker(!showTimePicker)}
-            >
-              <Text style={styles.dateInputText}>
-                {selectedTime
-                  ? selectedTime.toLocaleTimeString("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                  : "Carregando..."}
-              </Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.dateInputContainer]}
+                  onPress={() => setShowTimePicker(!showTimePicker)}
+                >
+                  <Text style={styles.dateInputText}>
+                    {selectedTime
+                      ? selectedTime.toLocaleTimeString("pt-BR", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                      : "Carregando..."}
+                  </Text>
+                </TouchableOpacity>
 
-            {showTimePicker && (
-              <View style={styles.inlineTimePickerRow}>
-                <DateTimePicker
-                  value={tempTime}
-                  mode="time"
-                  display={Platform.OS === "ios" ? "spinner" : "clock"}
-                  is24Hour
-                  onChange={handleTimeChange}
-                  style={{ flex: 1 }}
-                />
-                {Platform.OS === "ios" && (
-                  <TouchableOpacity
-                    style={styles.inlineButton}
-                    onPress={handleConfirmTime}
-                  >
-                    <Text style={styles.buttonText}>OK</Text>
-                  </TouchableOpacity>
+                {showTimePicker && (
+                  <View style={styles.inlineTimePickerRow}>
+                    <DateTimePicker
+                      value={tempTime}
+                      mode="time"
+                      display={Platform.OS === "ios" ? "spinner" : "clock"}
+                      is24Hour
+                      onChange={handleTimeChange}
+                      style={{ flex: 1 }}
+                    />
+                    {Platform.OS === "ios" && (
+                      <TouchableOpacity
+                        style={styles.inlineButton}
+                        onPress={handleConfirmTime}
+                      >
+                        <Text style={styles.buttonText}>OK</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 )}
               </View>
-            )}
-          </View>
 
-          <TouchableOpacity
-            style={styles.inlineButton}
-            onPress={salvarHorarioVersiculo}
-          >
-            <Text style={styles.buttonText}>Salvar Horário 💾</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.inlineButton}
+                onPress={salvarHorarioVersiculo}
+              >
+                <Text style={styles.buttonText}>Salvar Horário 💾</Text>
+              </TouchableOpacity>
+            </View>
+
+
+          </ScrollView>
+
+          <LoadingMessageLottie
+            visible={loading}
+            message="Aguarde ..."
+            onFinish={() => setShowSuccess(false)}
+          />
+
+          <SuccessMessageLottie
+            visible={showSuccess}
+            message="Notificação Enviada com Sucesso !"
+            onFinish={() => setShowSuccess(false)}
+          />
+
         </View>
-
-
       </ScrollView>
-
-      <LoadingMessageLottie
-        visible={loading}
-        message="Aguarde ..."
-        onFinish={() => setShowSuccess(false)}
-      />
-
-       <SuccessMessageLottie
-        visible={showSuccess}
-        message="Notificação Enviada com Sucesso !"
-        onFinish={() => setShowSuccess(false)}
-      />
-
-    </View>
-
-
+    </KeyboardAvoidingView>
 
   );
 };
