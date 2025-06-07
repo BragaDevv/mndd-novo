@@ -15,13 +15,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     console.log("✅ OPENAI_API_KEY carregada com sucesso.");
   }
 
-  // Cria o google-services.json durante o build, se a pasta android existir (evita erro local)
+  // Cria apenas o arquivo google-services.json, sem pasta android
   if (googleServicesBase64) {
-    const filePath = path.join(
-      config?.android?.googleServicesFile ?? "google-services.json"
-    );
+    const filePath = path.join("google-services.json"); // ✅ SEM 'android/app'
     try {
-      fs.mkdirSync(path.dirname(filePath), { recursive: true });
       fs.writeFileSync(filePath, Buffer.from(googleServicesBase64, "base64"));
       console.log("✅ google-services.json criado via variável de ambiente.");
     } catch (err) {
@@ -52,8 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         "expo-image-picker",
         {
-          photosPermission:
-            "O app acessa suas fotos para adicionar ao carrossel",
+          photosPermission: "O app acessa suas fotos para adicionar ao carrossel",
         },
       ],
       [
@@ -71,9 +67,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ],
     android: {
       package: "com.mbragam.mndd",
-      versionCode: 1,              // ✅ obrigatório para publicação
+      versionCode: 1,
       adaptiveIcon: {
-        foregroundImage: './assets/adaptive-icon.png',
+        foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
       permissions: ["NOTIFICATIONS", "FOREGROUND_SERVICE"],
@@ -87,8 +83,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         CFBundleDisplayName: "MNDD",
         NSCameraUsageDescription: "Permissão para acessar a câmera",
         NSPhotoLibraryUsageDescription: "Permissão para acessar fotos",
-        NSUserTrackingUsageDescription:
-          "Este identificador é usado para envio de notificações personalizadas",
+        NSUserTrackingUsageDescription: "Este identificador é usado para envio de notificações personalizadas",
         UIBackgroundModes: ["remote-notification"],
       },
     },
