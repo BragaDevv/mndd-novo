@@ -240,10 +240,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: "center",
     fontFamily: "Montserrat_500Medium",
-    marginTop: Platform.select({
-          android: 25,
-          ios: 0,
-        }),
   },
   input: {
     padding: 14,
@@ -309,8 +305,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     elevation: 10,
     paddingTop: Platform.select({
-      android: 25,
-      ios: 25,
+      android: 20,
+      ios: 20,
     }),
     paddingBottom: Platform.select({
       android: 30,

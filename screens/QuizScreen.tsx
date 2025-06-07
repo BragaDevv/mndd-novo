@@ -1,3 +1,4 @@
+// screens/QuizScreen.tsx
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
@@ -18,8 +19,6 @@ import { Audio } from "expo-av";
 import {
   getFirestore,
   collection,
-  addDoc,
-  serverTimestamp,
   getDocs,
   query,
   where,
@@ -34,69 +33,59 @@ const perguntasJSON = require("../data/quizPerguntas.json");
 const { height } = Dimensions.get("window");
 const db = getFirestore();
 
-type QuizNavigationProp = NativeStackNavigationProp<RootStackParamList, "Quiz">;
-
-interface Pergunta {
+type Pergunta = {
   pergunta: string;
   opcoes: string[];
   respostaCorreta: string;
-}
+};
 
 const QuizScreen = () => {
-  const navigation = useNavigation<QuizNavigationProp>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "Quiz">>();
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [pontuacao, setPontuacao] = useState(0);
   const [tempoRestante, setTempoRestante] = useState(10);
   const [timerAtivo, setTimerAtivo] = useState(false);
   const [iniciado, setIniciado] = useState(false);
-  const intervaloRef = useRef<NodeJS.Timeout | null>(null);
-  const [respostaSelecionada, setRespostaSelecionada] = useState<string | null>(
-    null
-  );
+  const [respostaSelecionada, setRespostaSelecionada] = useState<string | null>(null);
+  const [modalVisivel, setModalVisivel] = useState(false);
+  const [expoToken, setExpoToken] = useState<string | null>(null);
+  const [novoRecorde, setNovoRecorde] = useState(false);
   const beepSoundRef = useRef<Audio.Sound | null>(null);
   const timerAnimRef = useRef<LottieView>(null);
-
-  const perguntaAtual = perguntas[indiceAtual];
   const jogoEncerradoRef = useRef(false);
-  const [modalVisivel, setModalVisivel] = useState(false);
+  const perguntaAtual = perguntas[indiceAtual];
 
   useEffect(() => {
     const prepararAssets = async () => {
+      console.log("[QUIZ] Preparando assets e carregando token...");
       await Asset.loadAsync(require("../assets/quiz_img.png"));
       const embaralhadas = [...perguntasJSON].sort(() => Math.random() - 0.5);
       setPerguntas(embaralhadas);
+
+      const token = await AsyncStorage.getItem("expoPushToken");
+      if (!token) {
+        Alert.alert("Erro", "Token não encontrado. Não será possível salvar sua pontuação.");
+        console.log("[QUIZ] ❌ Token não encontrado.");
+      } else {
+        setExpoToken(token);
+        console.log("[QUIZ] ✅ Token carregado:", token);
+      }
     };
     prepararAssets();
-  }, []);
-
-  useEffect(() => {
-    const embaralhadas = [...perguntasJSON].sort(() => Math.random() - 0.5);
-    setPerguntas(embaralhadas);
   }, []);
 
   useEffect(() => {
     let intervalo: NodeJS.Timeout;
 
     const tocarBeep = async () => {
-      if (!timerAtivo || jogoEncerradoRef.current) return;
-      if (beepSoundRef.current) return;
-
+      if (!timerAtivo || jogoEncerradoRef.current || beepSoundRef.current) return;
       try {
-        const { sound } = await Audio.Sound.createAsync(
-          require("../assets/sounds/timer.mp3")
-        );
-
-        // Verifica novamente antes de tocar
-        if (jogoEncerradoRef.current) {
-          await sound.unloadAsync();
-          return;
-        }
-
+        const { sound } = await Audio.Sound.createAsync(require("../assets/sounds/timer.mp3"));
         beepSoundRef.current = sound;
         await sound.playAsync();
       } catch (error) {
-        console.log("Erro ao tocar som:", error);
+        console.log("[QUIZ] Erro ao tocar som:", error);
       }
     };
 
@@ -107,7 +96,7 @@ const QuizScreen = () => {
           await beepSoundRef.current.unloadAsync();
           beepSoundRef.current = null;
         } catch (error) {
-          console.log("Erro ao parar som:", error);
+          console.log("[QUIZ] Erro ao parar som:", error);
         }
       }
     };
@@ -125,9 +114,7 @@ const QuizScreen = () => {
         }
 
         setTempoRestante((prev) => {
-          if (prev <= 6 && prev > 1) {
-            tocarBeep();
-          }
+          if (prev <= 6 && prev > 1) tocarBeep();
           if (prev === 1) {
             clearInterval(intervalo);
             pararBeep();
@@ -143,11 +130,9 @@ const QuizScreen = () => {
   }, [timerAtivo]);
 
   const tocarSom = async (tipo: "acerto" | "erro") => {
-    const caminho =
-      tipo === "acerto"
-        ? require("../assets/sounds/acerto.mp3")
-        : require("../assets/sounds/erro.mp3");
-
+    const caminho = tipo === "acerto"
+      ? require("../assets/sounds/acerto.mp3")
+      : require("../assets/sounds/erro.mp3");
     const { sound } = await Audio.Sound.createAsync(caminho);
     await sound.playAsync();
   };
@@ -159,76 +144,85 @@ const QuizScreen = () => {
         await beepSoundRef.current.unloadAsync();
         beepSoundRef.current = null;
       } catch (error) {
-        console.log("Erro ao parar som:", error);
+        console.log("[QUIZ] Erro ao parar som:", error);
       }
     }
   };
 
-  const salvarPontuacao = async (pontuacao: number) => {
+  const salvarPontuacao = async (pontos: number) => {
+    if (!expoToken || pontos <= 0) {
+      console.log("[QUIZ] ℹ️ Nenhum ponto salvo: token ausente ou pontuação zerada.");
+      return;
+    }
     try {
-      const expoToken = await AsyncStorage.getItem("expoPushToken");
-      if (!expoToken) {
-        console.log("❌ Expo token não encontrado.");
-        return;
-      }
-
-      // Buscar nome do usuário
+      console.log("[QUIZ] 🔍 Buscando usuário com token:", expoToken);
       const usuariosRef = collection(db, "usuarios");
       const q = query(usuariosRef, where("expoToken", "==", expoToken));
       const querySnapshot = await getDocs(q);
-
       if (querySnapshot.empty) {
-        console.log("⚠️ Usuário não encontrado com esse token.");
+        console.log("[QUIZ] ⚠️ Nenhum usuário encontrado com esse token.");
         return;
       }
 
       const dados = querySnapshot.docs[0].data();
       const nome = `${dados.nome || ""} ${dados.sobrenome || ""}`.trim();
-
-      // Referência do documento no ranking
       const rankingRef = doc(db, "ranking", expoToken);
       const rankingSnap = await getDocs(query(collection(db, "ranking")));
-
-      // Verificar se já existe pontuação registrada
       const docAtual = rankingSnap.docs.find((d) => d.id === expoToken);
       const pontuacaoAtual = docAtual?.data()?.pontuacao ?? 0;
 
-      // Salvar apenas se for maior
-      if (pontuacao > pontuacaoAtual) {
+      console.log(`[QUIZ] 🏁 Pontuação atual: ${pontuacaoAtual} | Nova: ${pontos}`);
+
+      if (pontos > pontuacaoAtual) {
         await setDoc(rankingRef, {
           nome,
-          pontuacao,
+          pontuacao: pontos,
           data: new Date(),
         });
-        console.log("✅ Ranking atualizado com nova pontuação!");
+        setNovoRecorde(true);
+        console.log("[QUIZ] ✅ Ranking atualizado com nova pontuação!");
       } else {
-        console.log(
-          "ℹ️ Pontuação não foi salva pois é menor ou igual à anterior."
-        );
+        console.log("[QUIZ] 🔁 Pontuação não foi atualizada. Já existe valor maior ou igual.");
       }
     } catch (error) {
-      console.log("Erro ao salvar ranking:", error);
+      console.log("[QUIZ] ❌ Erro ao salvar pontuação:", error);
     }
   };
-  0;
 
   const encerrarJogo = (mensagem: string) => {
     jogoEncerradoRef.current = true;
     setTimerAtivo(false);
     pararBeep();
     timerAnimRef.current?.reset();
+    if (pontuacao > 0) salvarPontuacao(pontuacao);
     setModalVisivel(true);
+    console.log("[QUIZ] 🚨 Jogo encerrado:", mensagem);
+  };
+
+  const iniciarQuiz = () => {
+    if (!expoToken) {
+      Alert.alert("Token não encontrado", "Você não poderá salvar sua pontuação.");
+      console.log("[QUIZ] ⚠️ Tentativa de iniciar jogo sem token.");
+    }
+    const novas = [...perguntasJSON].sort(() => Math.random() - 0.5);
+    setPerguntas(novas);
+    setIndiceAtual(0);
+    setPontuacao(0);
+    setTempoRestante(10);
+    setTimerAtivo(true);
+    setRespostaSelecionada(null);
+    setIniciado(true);
+    setNovoRecorde(false);
+    console.log("[QUIZ] 🚀 Início do quiz");
   };
 
   const verificarResposta = async (resposta: string) => {
     setTimerAtivo(false);
     await pararBeep();
     timerAnimRef.current?.reset();
-
     if (resposta === perguntaAtual.respostaCorreta) {
       await tocarSom("acerto");
       setRespostaSelecionada(resposta);
-
       setTimeout(() => {
         const proxima = indiceAtual + 1;
         if (proxima < perguntas.length) {
@@ -239,10 +233,8 @@ const QuizScreen = () => {
           setRespostaSelecionada(null);
         } else {
           salvarPontuacao(pontuacao + 1);
-          Alert.alert(
-            "🎉 Parabéns!",
-            `Você acertou todas!\nPontuação: ${pontuacao + 1}`
-          );
+          setModalVisivel(true);
+          setPontuacao((prev) => prev + 1);
         }
       }, 1000);
     } else {
@@ -252,17 +244,6 @@ const QuizScreen = () => {
         encerrarJogo("❌ Resposta errada!");
       }, 1000);
     }
-  };
-
-  const iniciarQuiz = () => {
-    const novas = [...perguntasJSON].sort(() => Math.random() - 0.5);
-    setPerguntas(novas);
-    setIndiceAtual(0);
-    setPontuacao(0);
-    setTempoRestante(10);
-    setTimerAtivo(true);
-    setRespostaSelecionada(null);
-    setIniciado(true);
   };
 
   if (!iniciado) {

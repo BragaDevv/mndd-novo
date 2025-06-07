@@ -1036,7 +1036,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
         paddingBottom: Platform.select({
-          android: 60,
+          android: 10,
           ios: 10,
         }),
   },
@@ -1047,10 +1047,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
-    marginTop: Platform.select({
-      android: 25,
-      ios: 0,
-    }),
   },
   searchIconButton: {
     padding: 8,
