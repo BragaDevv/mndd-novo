@@ -48,6 +48,7 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
   const [membro, setMembro] = useState<"sim" | "nao" | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [pendingData, setPendingData] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const ensureAnonAuth = async (): Promise<string> => {
     const auth = getAuth();
@@ -65,6 +66,8 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
       Alert.alert("Erro", "Preencha todos os campos obrigatórios");
       return;
     }
+
+    setLoading(true); // 👈 Ativa o loading Botão
 
     try {
       const uid = await ensureAnonAuth();
@@ -97,16 +100,18 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
       setShowSuccess(true); // ativa a animação
       // acione o onComplete após a animação terminar
       setTimeout(() => {
-        onComplete(dados); // ← isso é o que vai disparar a navegação no App.tsx
+        onComplete(dados);
       }, 2500);
     } catch (error) {
       console.error("Erro ao salvar usuário:", error);
       Alert.alert("Erro", "Não foi possível salvar os dados.");
+    } finally {
+      setLoading(false); // 👈 Desativa o loading mesmo em caso de erro
     }
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff", }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -200,14 +205,24 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <FontAwesome5
-              name="check"
-              size={18}
-              color="#fff"
-              style={{ marginRight: 8 }}
-            />
-            <Text style={styles.buttonText}>Ir para o APP</Text>
+          <TouchableOpacity
+            style={[styles.button, loading && { opacity: 0.7 }]}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? (
+              <Text style={styles.buttonText}>Criando usuário...</Text>
+            ) : (
+              <>
+                <FontAwesome5
+                  name="check"
+                  size={18}
+                  color="#fff"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={styles.buttonText}>Ir para o APP</Text>
+              </>
+            )}
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -225,7 +240,7 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
 
 const styles = StyleSheet.create({
   container: {
-    height:'100%',
+    height: "100%",
     backgroundColor: "#fff",
     flex: 1,
   },
