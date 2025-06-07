@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     marginBottom: 20,
     marginTop: Platform.select({
-      android: 50,
+      android: 25,
       ios: 0,
     }),
   },

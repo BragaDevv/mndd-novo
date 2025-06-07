@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#333",
     marginTop: Platform.select({
-      android: 50,
+      android: 25,
       ios: 0,
     }),
   },

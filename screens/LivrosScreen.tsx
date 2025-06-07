@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Montserrat_500Medium",
     marginTop: Platform.select({
-          android: 50,
+          android: 25,
           ios: 0,
         }),
   },
@@ -313,8 +313,8 @@ const styles = StyleSheet.create({
       ios: 25,
     }),
     paddingBottom: Platform.select({
-      android: 70,
-      ios: 40,
+      android: 30,
+      ios: 30,
     }),
   },
   navButton: {

@@ -1048,7 +1048,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
     marginTop: Platform.select({
-      android: 50,
+      android: 25,
       ios: 0,
     }),
   },

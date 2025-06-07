@@ -51,11 +51,11 @@ const SendNotificationScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Painel Administrativo</Text>
       <View style={styles.grid}>
-        {botao("Notificações", "bell", "Notificacao")}
-        {botao("Cultos", "building", "Cultos")}
-        {botao("Imagens", "picture-o", "Carrossel")}
-        {botao("Avisos", "exclamation-triangle", "Avisos")}
-        {botao("Usuários", "users", "Usuarios")}
+        {botao("Notificações", "bell", "AdmNotificacao")}
+        {botao("Cultos", "building", "AdmCultos")}
+        {botao("Imagens", "picture-o", "AdmImagens")}
+        {botao("Avisos", "exclamation-triangle", "AdmAvisos")}
+        {botao("Usuários", "users", "AdmUsuarios")}
         {botao("Devocional", "book", "AdmDevocional")}
       </View>
 
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 30,
     marginTop: Platform.select({
-          android: 50,
+          android: 25,
           ios: 0,
         }),
     fontFamily: "Montserrat_500Medium",

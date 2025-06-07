@@ -132,7 +132,7 @@ const HarpaScreen = () => {
         <View style={styles.contentContainer}>
           <View style={styles.headerContainer}>
             <Image 
-              source={require('../assets/icon-app.png')} 
+              source={require('../assets/logo.png')} 
               style={styles.logo} 
             />
             <Text style={styles.headerTitle}>HARPA CRISTÃ</Text>
@@ -234,14 +234,14 @@ const styles = StyleSheet.create({
     height: 60,
     marginRight: width * 0.03,
     marginTop: Platform.select({
-      android: 50,
+      android: 25,
       ios: 0,
     }),
   },
   headerTitle: {
     fontSize: 32,
     marginTop: Platform.select({
-      android: 50,
+      android: 25,
       ios: 0,
     }),
     fontWeight: "bold",

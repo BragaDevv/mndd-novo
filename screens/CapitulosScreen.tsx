@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
      paddingBottom: Platform.select({
-          android: 60,
+          android: 50,
           ios: 10,
         }),
     
@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
       ios: 25,
     }),
     paddingBottom: Platform.select({
-      android: 70,
-      ios: 40,
+      android: 30,
+      ios: 30,
     }),
   },
   item: {
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     color: "#000",
     fontFamily: "Montserrat_500Medium",
     marginTop: Platform.select({
-          android: 50,
+          android: 25,
           ios: 0,
         }),
   },

@@ -517,12 +517,12 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     elevation: 10,
     paddingTop: Platform.select({
-      android: 25,
-      ios: 25,
+      android: 20,
+      ios: 20,
     }),
     paddingBottom: Platform.select({
-      android: 70,
-      ios: 40,
+      android: 30,
+      ios: 30,
     }),
   },
   navButton: {

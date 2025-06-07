@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     alignSelf: "center",
     marginTop: Platform.select({
-          android: 50,
+          android: 25,
           ios: 0,
         }),
   },

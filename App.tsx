@@ -24,13 +24,13 @@ import VersiculosScreen from "./screens/VersiculosScreen";
 import VersiculoScreen from "./screens/VersiculoScreen";
 import IgrejaScreen from "./screens/IgrejaScreen";
 import AreaAdmScreen from "./screens/AreaAdm";
-import UsuariosScreen from "@screens/UsuariosScreen";
-import ImagensScreen from "@screens/ImagensScreen";
-import CultosScreen from "@screens/CultosScreen";
-import AvisosScreen from "./screens/AvisosScreen";
+import AdmUsuariosScreen from "@screens/AdmUsuariosScreen";
+import AdmImagensScreen from "@screens/AdmImagensScreen";
+import AdmCultosScreen from "@screens/AdmCultosScreen";
+import AdmAvisosScreen from "./screens/AdmAvisosScreen";
 import AdmDevocionalScreen from "./screens/AdmDevocionalScreen";
 import DevocionalScreen from "./screens/DevocionalScreen";
-import NotificacaoScreen from "@screens/NotificacaoScreen";
+import AdmNotificacaoScreen from "@screens/AdmNotificacaoScreen";
 import LoginScreen from "./screens/LoginScreen";
 import FavoritosScreen from "./screens/FavoritosScreen";
 import BibleAssistant from "./screens/BibleAssistant";
@@ -237,23 +237,23 @@ const AppNavigator = () => {
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
-                  name="Usuarios"
-                  component={UsuariosScreen}
+                  name="AdmUsuarios"
+                  component={AdmUsuariosScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
-                  name="Carrossel"
-                  component={ImagensScreen}
+                  name="AdmImagens"
+                  component={AdmImagensScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
-                  name="Cultos"
-                  component={CultosScreen}
+                  name="AdmCultos"
+                  component={AdmCultosScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
-                  name="Notificacao"
-                  component={NotificacaoScreen}
+                  name="AdmNotificacao"
+                  component={AdmNotificacaoScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen
@@ -301,8 +301,8 @@ const AppNavigator = () => {
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                   <Stack.Screen
-                  name="Avisos"
-                  component={AvisosScreen}
+                  name="AdmAvisos"
+                  component={AdmAvisosScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
                 <Stack.Screen

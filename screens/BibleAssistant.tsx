@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#128C7E",
     marginTop: Platform.select({
-      android: 50,
+      android: 25,
       ios: 0,
     }),
   },
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
       ios: 20,
     }),
     paddingBottom: Platform.select({
-      android: 60,
+      android: 30,
       ios: 30,
     }),
   },

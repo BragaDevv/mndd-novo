@@ -2,16 +2,16 @@ export type RootStackParamList = {
 
   Quiz: undefined;
   Ranking: undefined;
-  Avisos: undefined;
+  AdmAvisos: undefined;
   AdmDevocional: undefined;
   Devocional: undefined;
   Questionario: undefined | { onComplete: (dados: any) => void };
   MNDD: undefined;
   Igreja: undefined;
-  Usuarios: undefined;
-  Carrossel: undefined;
-  Cultos: undefined;
-  Notificacao: undefined;
+  AdmUsuarios: undefined;
+  AdmImagens: undefined;
+  AdmCultos: undefined;
+  AdmNotificacao: undefined;
   AreaAdm: undefined;
   Login: undefined;
   Favoritos: undefined;

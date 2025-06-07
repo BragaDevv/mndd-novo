@@ -24,7 +24,7 @@ import LoadingMessageLottie from "../components/LoadingMessageLottie";
 const SendNotificationForm = () => {
   const navigation =
     useNavigation<
-      NativeStackNavigationProp<RootStackParamList, "Notificacao">
+      NativeStackNavigationProp<RootStackParamList, "AdmNotificacao">
     >();
 
   const [title, setTitle] = useState("");
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     marginTop: Platform.select({
-      android: 50,
+      android: 25,
       ios: 0,
     }),
   },

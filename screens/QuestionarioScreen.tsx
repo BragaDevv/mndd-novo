@@ -226,7 +226,6 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
 const styles = StyleSheet.create({
   container: {
     height:'100%',
-    padding: 20,
     backgroundColor: "#fff",
     flex: 1,
   },
@@ -236,7 +235,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     alignSelf: "center",
     marginBottom: 10,
-    marginTop: "20%",
+    marginTop: "10%",
   },
   labelTitle: {
     fontSize: 16,

@@ -37,7 +37,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     slug: "MNDD",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/icon-app.png",
+    icon: "./assets/logo.png",
     userInterfaceStyle: "light",
     splash: {
       image: "./assets/splash.png",
@@ -72,7 +72,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       package: "com.mbragam.MNDD",
       adaptiveIcon: {
-        foregroundImage: "./assets/icon-app.png",
+        foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: "#ffffff",
       },
       permissions: ["NOTIFICATIONS", "FOREGROUND_SERVICE"],
