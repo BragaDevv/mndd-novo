@@ -70,7 +70,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       "expo-build-properties",
     ],
     android: {
-      package: "com.mbragam.MNDD",
+      package: "com.mbragam.mndd",
+      versionCode: 1,              // ✅ obrigatório para publicação
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: "#ffffff",
