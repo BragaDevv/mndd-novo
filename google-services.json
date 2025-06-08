@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "129813834901",
+    "project_id": "mndd-b99a2",
+    "storage_bucket": "mndd-b99a2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129813834901:android:d8a79bc824ca8f37b87f9c",
+        "android_client_info": {
+          "package_name": "com.mbragam.MNDD"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVI56663bia7YWanStwo8DT0UhZjszKBk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
