@@ -182,19 +182,29 @@ const AppNavigator = () => {
     }
   };
 
-  useEffect(() => {
-    fetch("https://seu-backend.com/api/openai")
-      .then((res) => {
-        if (res.ok) {
-          console.log("✅ API está online.");
-        } else {
-          console.warn("⚠️ API respondeu com erro:", res.status);
-        }
-      })
-      .catch((err) => {
-        console.error("❌ API OFFLINE ou erro de rede:", err.message);
+useEffect(() => {
+  const testarAPI = async () => {
+    try {
+      const res = await fetch("https://mndd-backend.onrender.com/api/openai/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: "Teste de conexão" }),
       });
-  }, []);
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log("✅ API OpenAI online. Resposta:", data);
+      } else {
+        console.warn("⚠️ API respondeu com erro:", res.status);
+      }
+    } catch (err: any) {
+      console.error("❌ API OFFLINE ou erro de rede:", err.message);
+    }
+  };
+
+  testarAPI();
+}, []);
+
 
   if (showQuestionario === null) return null;
 
