@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/types";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
@@ -58,23 +59,25 @@ const SendNotificationScreen = () => {
         {botao("Usuários", "users", "AdmUsuarios")}
         {botao("Devocional", "book", "AdmDevocional")}
         {botao("Logs", "folder-open", "AdmLogsScreen")}
-      </View>
 
-      <TouchableOpacity
-        style={styles.logoutButton}
-        onPress={async () => {
-          await logout();
-          navigation.replace("MNDD");
-        }}
-      >
-        <Text style={styles.logoutButtonText}>Sair / Logout</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={async () => {
+            await logout();
+            navigation.replace("MNDD");
+          }}
+        >
+          <Ionicons name="exit" size={42} color="#fff" />
+          <Text style={styles.logoutButtonText}>Sair / Logout</Text>
+        </TouchableOpacity>
+
+      </View>
     </ScrollView>
 
-    
+
   );
 
-  
+
 };
 
 const styles = StyleSheet.create({
@@ -90,9 +93,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 30,
     marginTop: Platform.select({
-          android: 25,
-          ios: 0,
-        }),
+      android: 25,
+      ios: 0,
+    }),
     fontFamily: "Montserrat_500Medium",
   },
   grid: {
@@ -119,12 +122,17 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     backgroundColor: "#ff4444",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center"
+    padding: 10,
+    width: width / 2 - 30,
+    aspectRatio: 1,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
   },
   logoutButtonText: {
     color: "#fff",
+    marginTop: 2,
     fontSize: 16,
     fontFamily: "Montserrat_500Medium",
   },
