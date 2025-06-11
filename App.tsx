@@ -183,7 +183,7 @@ const AppNavigator = () => {
   };
 
   useEffect(() => {
-    fetch("https://seu-backend.com/api/versiculo-dia")
+    fetch("https://seu-backend.com/api/openai")
       .then((res) => {
         if (res.ok) {
           console.log("✅ API está online.");
