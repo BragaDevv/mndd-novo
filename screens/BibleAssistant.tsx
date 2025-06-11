@@ -14,7 +14,10 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Constants from 'expo-constants';
+
+// Avatares (substitua pelos seus caminhos de imagem)
+const assistantAvatar = require("../assets/logo.png");
+const userAvatar = require("../assets/avatarpastorrosto.png");
 
 type Culto = {
   id: string;
@@ -25,8 +28,6 @@ type Culto = {
 };
 
 const BibleAssistant = () => {
-  const saudacaoInicial = "Como posso te ajudar hoje?";
-
   const [messages, setMessages] = useState([
     {
       text: "A Paz do Senhor ! 🙏 Sou o Assistente Bíblico do MNDD. Posso te ajudar a:\n\n• Encontrar versículos\n• Explicar passagens\n• Contar histórias da Bíblia\n• Dar orientações cristãs\n• Informar sobre os próximos cultos\n\nComo posso te ajudar hoje?",
@@ -43,13 +44,6 @@ const BibleAssistant = () => {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [cultos, setCultos] = useState<Culto[]>([]);
 
-  // SUA CHAVE API DA OPENAI (substitua pela sua)
-const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
-  // Avatares (substitua pelos seus caminhos de imagem)
-  const assistantAvatar = require("../assets/logo.png");
-  const userAvatar = require("../assets/avatarpastorrosto.png");
-
-  // Carrega os cultos programados
   useEffect(() => {
     const carregarCultos = async () => {
       try {
@@ -65,7 +59,6 @@ const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
     carregarCultos();
   }, []);
 
-  // Monitora o teclado
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
@@ -82,7 +75,6 @@ const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
     };
   }, []);
 
-  // Formata a lista de cultos para exibição
   const formatarCultos = () => {
     if (cultos.length === 0) {
       return "No momento não há cultos programados. Fique atento às nossas redes sociais para atualizações!";
@@ -116,7 +108,6 @@ const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
     setInput("");
     setLoading(true);
 
-    // Verifica se o usuário está perguntando sobre cultos
     const perguntaSobreCultos =
       input.toLowerCase().includes("culto") ||
       input.toLowerCase().includes("evento") ||
@@ -124,7 +115,6 @@ const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
       input.toLowerCase().includes("agenda");
 
     if (perguntaSobreCultos) {
-      // Resposta local sem precisar da API
       setTimeout(() => {
         const respostaCultos = {
           text: formatarCultos(),
@@ -141,42 +131,17 @@ const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
     }
 
     try {
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [
-              {
-                role: "system",
-                content:
-                  "Você é um assistente bíblico cristão do Ministério Nascido de Deus (MNDD). " +
-                  "Responda de forma clara, simples e acolhedora, citando versículos quando apropriado. " +
-                  "Mantenha-se estritamente no contexto bíblico. " +
-                  "Se perguntarem sobre cultos ou eventos da igreja, informe que pode verificar os próximos eventos. " +
-                  "Para informações sobre cultos, diga apenas: 'Por favor, pergunte especificamente sobre os cultos para que eu possa verificar.'",
-              },
-              {
-                role: "user",
-                content: input,
-              },
-            ],
-            temperature: 0.7,
-            max_tokens: 500,
-          }),
-        }
-      );
+      const response = await fetch("https://mndd-backend.onrender.com/api/openai/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: input }),
+      });
 
       const data = await response.json();
       const aiMessage = {
-        text:
-          data.choices[0]?.message?.content ||
-          "Não entendi sua pergunta. Poderia reformular?",
+        text: data.result || "Não entendi sua pergunta. Poderia reformular?",
         user: false,
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
@@ -184,12 +149,11 @@ const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
         }),
       };
       setMessages((prev) => [...prev, aiMessage]);
-    } catch (error: any) {
+    } catch (error) {
       setMessages((prev) => [
         ...prev,
         {
-          text: `Houve um erro ao conectar. Por favor, tente novamente mais tarde. (${error.message || "Erro desconhecido"
-            })`,
+          text: `Houve um erro ao conectar. Por favor, tente novamente mais tarde.`,
           user: false,
           time: new Date().toLocaleTimeString([], {
             hour: "2-digit",
@@ -203,13 +167,12 @@ const OPENAI_API_KEY = Constants?.expoConfig?.extra?.OPENAI_API_KEY;
   };
 
   const avatar1 = require("../assets/avatarpastor.png");
-  const avatar2 = require("../assets/avatarpastor2.png"); // coloque outra imagem
+  const avatar2 = require("../assets/avatarpastor2.png");
   const [avatar, setAvatar] = useState(avatar1);
 
   const handlePress = () => {
     setAvatar((prev: any) => (prev === avatar1 ? avatar2 : avatar1));
   };
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <KeyboardAvoidingView
