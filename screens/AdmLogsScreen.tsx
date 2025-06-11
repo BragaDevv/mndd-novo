@@ -18,6 +18,7 @@ import {
   doc,
   getDoc,
   Timestamp,
+  where,
 } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -50,27 +51,36 @@ const LogsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [nomeUsuario, setNomeUsuario] = useState<string>("");
 
-  useEffect(() => {
-    const carregarNome = async () => {
-      try {
-        const uid = await AsyncStorage.getItem("usuarioUID");
-        if (uid) {
-          const docRef = doc(db, "usuarios", uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            const nomeCompleto = `${data.nome || ""} ${data.sobrenome || ""}`.trim();
-            setNomeUsuario(nomeCompleto);
-            console.log("Nome carregado:", nomeCompleto);
-          }
-        }
-      } catch (error) {
-        console.log("Erro ao carregar nome do usuário:", error);
-      }
-    };
+useEffect(() => {
+  const carregarNomePorToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem("expoPushToken");
+      console.log("Expo Token recuperado:", token);
 
-    carregarNome();
-  }, []);
+      if (token) {
+        const usuariosRef = collection(db, "usuarios");
+        const q = query(usuariosRef, where("expoToken", "==", token));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const usuarioDoc = querySnapshot.docs[0].data();
+          const nomeCompleto = `${usuarioDoc.nome || ""} ${usuarioDoc.sobrenome || ""}`.trim();
+          setNomeUsuario(nomeCompleto);
+          console.log("Nome carregado via token:", nomeCompleto);
+        } else {
+          console.log("Nenhum usuário encontrado com esse expoToken.");
+        }
+      } else {
+        console.log("expoPushToken não encontrado no AsyncStorage.");
+      }
+    } catch (error) {
+      console.log("Erro ao carregar nome por token:", error);
+    }
+  };
+
+  carregarNomePorToken();
+}, []);
+
 
   useEffect(() => {
     const carregarLogs = async () => {
