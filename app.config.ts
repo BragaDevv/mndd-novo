@@ -5,19 +5,16 @@ import * as path from "path";
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   const googleServicesBase64 = process.env.GOOGLE_SERVICES_JSON;
-  const openaiApiKey = process.env.OPENAI_API_KEY;
 
-  if (!openaiApiKey) {
+  // ✅ Logs para debug local (sem expor a chave no bundle)
+  if (!process.env.OPENAI_API_KEY) {
     console.warn("⚠️ OPENAI_API_KEY não definida no .env");
-  } else if (!openaiApiKey.startsWith("sk-")) {
-    console.warn("❌ OPENAI_API_KEY parece inválida. Verifique o formato.");
   } else {
-    console.log("✅ OPENAI_API_KEY carregada com sucesso.");
+    console.log("✅ OPENAI_API_KEY carregada (uso exclusivo no backend)");
   }
 
-  // Cria apenas o arquivo google-services.json, sem pasta android
   if (googleServicesBase64) {
-    const filePath = path.join("google-services.json"); // ✅ SEM 'android/app'
+    const filePath = path.join("google-services.json");
     try {
       fs.writeFileSync(filePath, Buffer.from(googleServicesBase64, "base64"));
       console.log("✅ google-services.json criado via variável de ambiente.");
@@ -88,7 +85,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       },
     },
     extra: {
-      OPENAI_API_KEY: openaiApiKey,
+      // ❌ REMOVIDO: OPENAI_API_KEY
       eas: {
         projectId: "05b35e5f-69a7-4bd5-942a-2dc3f167601c",
       },
