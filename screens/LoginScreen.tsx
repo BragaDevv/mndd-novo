@@ -19,6 +19,10 @@ import { useFonts, Montserrat_500Medium } from "@expo-google-fonts/montserrat";
 import UnlockMessageLottie from "../components/UnlockMessageLottie";
 import ErrorMessageLottie from "../components/ErrorMessageLottie";
 
+// 🔽 Firestore para registrar logs
+import { db } from "../firebaseConfig";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
 const LoginScreen: React.FC = () => {
   const { user, login, isAdmin, loading } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -43,16 +47,22 @@ const LoginScreen: React.FC = () => {
       await login(email, password); // ← aguarda login
       setShowSuccess(true);         // ← exibe animação
 
+      // 🔽 Registrar log no Firestore
+      await addDoc(collection(db, "logs_acesso"), {
+        email: email.trim().toLowerCase(),
+        acao: "Login bem-sucedido",
+        timestamp: serverTimestamp(),
+      });
+
       setTimeout(() => {
         setShowSuccess(false);
         navigation.reset({ index: 0, routes: [{ name: "AreaAdm" }] });
-      }, 1500); // ← espera a animação acabar para navegar
+      }, 1500);
     } catch {
       setShowError(true);
       setError("Email ou senha inválidos.");
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -89,7 +99,6 @@ const LoginScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
-
       </KeyboardAvoidingView>
 
       <UnlockMessageLottie
@@ -104,7 +113,6 @@ const LoginScreen: React.FC = () => {
         onFinish={() => setShowError(false)}
       />
     </View>
-
   );
 };
 

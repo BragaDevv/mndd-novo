@@ -29,6 +29,7 @@ import AdmImagensScreen from "@screens/AdmImagensScreen";
 import AdmCultosScreen from "@screens/AdmCultosScreen";
 import AdmAvisosScreen from "./screens/AdmAvisosScreen";
 import AdmDevocionalScreen from "./screens/AdmDevocionalScreen";
+import AdmLogsScreen from "./screens/AdmLogsScreen";
 import DevocionalScreen from "./screens/DevocionalScreen";
 import AdmNotificacaoScreen from "@screens/AdmNotificacaoScreen";
 import LoginScreen from "./screens/LoginScreen";
@@ -337,6 +338,11 @@ useEffect(() => {
                 <Stack.Screen
                   name="Devocional"
                   component={DevocionalScreen}
+                  options={{ title: "", headerShown: Platform.OS === "ios" }}
+                />
+                <Stack.Screen
+                  name="AdmLogsScreen"
+                  component={AdmLogsScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
               </>

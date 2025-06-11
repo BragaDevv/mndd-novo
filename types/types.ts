@@ -12,6 +12,7 @@ export type RootStackParamList = {
   AdmImagens: undefined;
   AdmCultos: undefined;
   AdmNotificacao: undefined;
+  AdmLogsScreen : undefined;
   AreaAdm: undefined;
   Login: undefined;
   Favoritos: undefined;

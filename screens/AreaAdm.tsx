@@ -57,6 +57,7 @@ const SendNotificationScreen = () => {
         {botao("Avisos", "exclamation-triangle", "AdmAvisos")}
         {botao("Usuários", "users", "AdmUsuarios")}
         {botao("Devocional", "book", "AdmDevocional")}
+        {botao("Logs", "folder-open", "AdmLogsScreen")}
       </View>
 
       <TouchableOpacity
