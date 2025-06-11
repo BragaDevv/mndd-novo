@@ -8,8 +8,15 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "GOOGLE_SERVICES_JSON": "${GOOGLE_SERVICES_JSON}",
-        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
+        "GOOGLE_SERVICES_JSON": "${GOOGLE_SERVICES_JSON}"
+      }
+    },
+    "apk": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "GOOGLE_SERVICES_JSON": "${GOOGLE_SERVICES_JSON}"
       }
     }
   }
