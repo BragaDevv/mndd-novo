@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Platform,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { db } from "../firebaseConfig";
 import {
@@ -15,12 +16,13 @@ import {
   query,
   orderBy,
   getDocs,
+  deleteDoc,
   doc,
-  getDoc,
   Timestamp,
   where,
 } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getAuth } from "firebase/auth";
 
 // Tipagem
 type Log = {
@@ -49,38 +51,13 @@ const LogsScreen = () => {
   const [busca, setBusca] = useState("");
   const [categoria, setCategoria] = useState("Todas");
   const [loading, setLoading] = useState(true);
-  const [nomeUsuario, setNomeUsuario] = useState<string>("");
+  const [emailUsuario, setEmailUsuario] = useState<string>("");
 
-useEffect(() => {
-  const carregarNomePorToken = async () => {
-    try {
-      const token = await AsyncStorage.getItem("expoPushToken");
-      console.log("Expo Token recuperado:", token);
-
-      if (token) {
-        const usuariosRef = collection(db, "usuarios");
-        const q = query(usuariosRef, where("expoToken", "==", token));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          const usuarioDoc = querySnapshot.docs[0].data();
-          const nomeCompleto = `${usuarioDoc.nome || ""} ${usuarioDoc.sobrenome || ""}`.trim();
-          setNomeUsuario(nomeCompleto);
-          console.log("Nome carregado via token:", nomeCompleto);
-        } else {
-          console.log("Nenhum usuário encontrado com esse expoToken.");
-        }
-      } else {
-        console.log("expoPushToken não encontrado no AsyncStorage.");
-      }
-    } catch (error) {
-      console.log("Erro ao carregar nome por token:", error);
-    }
-  };
-
-  carregarNomePorToken();
-}, []);
-
+  useEffect(() => {
+    const auth = getAuth();
+    const emailAtual = auth.currentUser?.email || "";
+    setEmailUsuario(emailAtual);
+  }, []);
 
   useEffect(() => {
     const carregarLogs = async () => {
@@ -102,6 +79,28 @@ useEffect(() => {
 
     carregarLogs();
   }, []);
+
+  const deletarTodosOsLogs = async () => {
+    Alert.alert("Confirmação", "Deseja apagar todos os logs?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Apagar",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const snapshot = await getDocs(collection(db, "logs_acesso"));
+            const batch = snapshot.docs.map((docSnap) => deleteDoc(doc(db, "logs_acesso", docSnap.id)));
+            await Promise.all(batch);
+            setLogs([]);
+            Alert.alert("Sucesso", "Todos os logs foram apagados.");
+          } catch (error) {
+            console.error("Erro ao apagar logs:", error);
+            Alert.alert("Erro", "Não foi possível apagar os logs.");
+          }
+        },
+      },
+    ]);
+  };
 
   const filtrarPorCategoria = (log: Log) => {
     const acao = log.acao.toLowerCase();
@@ -158,9 +157,6 @@ useEffect(() => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Logs de Acesso ADM</Text>
-      {nomeUsuario ? (
-        <Text style={styles.usuarioInfo}>Visualizando como: {nomeUsuario}</Text>
-      ) : null}
 
       <TextInput
         style={styles.search}
@@ -192,6 +188,12 @@ useEffect(() => {
         ))}
       </View>
 
+      {emailUsuario === "braga@adm.com" && (
+        <TouchableOpacity style={styles.botaoDeletar} onPress={deletarTodosOsLogs}>
+          <Text style={styles.textoDeletar}>🗑️ Apagar todos os logs</Text>
+        </TouchableOpacity>
+      )}
+
       {loading ? (
         <ActivityIndicator size="large" color="#000" />
       ) : (
@@ -219,12 +221,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 8,
-    textAlign: "center",
-  },
-  usuarioInfo: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 16,
     textAlign: "center",
   },
   search: {
@@ -278,5 +274,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     textAlign: "right",
+  },
+  botaoDeletar: {
+    backgroundColor: "#ff4444",
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  textoDeletar: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });

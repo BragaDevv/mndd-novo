@@ -240,7 +240,7 @@ const handleSend = async () => {
 
         {loading && (
           <View style={[styles.messageContainer, styles.aiContainer]}>
-            <Image source={assistantAvatar} style={styles.messageAvatar} />
+            <Image source={userAvatar} style={styles.messageAvatar} />
             <View style={[styles.messageBubble, styles.aiBubble]}>
               <Text style={styles.aiText}>Digitando...</Text>
             </View>
