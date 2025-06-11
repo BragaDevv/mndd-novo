@@ -136,7 +136,6 @@ const AvisosScreen = () => {
           await registrarAcaoADM(user.email, "Removeu um Aviso ");
         }
 
-
       }
 
       setMensagem("");

@@ -27,6 +27,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
+import { registrarAcaoADM } from "@services/logAction";
+import { useAuth } from "../context/AuthContext";
 
 const { width } = Dimensions.get("window");
 
@@ -35,6 +37,7 @@ const DevocionalAdminScreen = () => {
   const [subtitulo, setSubtitulo] = useState("");
   const [imagens, setImagens] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+   const { user } = useAuth();
 
   type DevocionalResumo = {
     id: string;
@@ -141,6 +144,9 @@ const DevocionalAdminScreen = () => {
               deleteDoc(docSnap.ref)
             );
             await Promise.all(batchDeletions);
+             if (user?.email) {
+              await registrarAcaoADM(user.email, "Excluiu um Devocional");
+            }
           } catch (err) {
             console.error("Erro ao excluir:", err);
           }
@@ -209,6 +215,9 @@ const DevocionalAdminScreen = () => {
       setTitulo("");
       setSubtitulo("");
       setImagens([]);
+      if (user?.email) {
+              await registrarAcaoADM(user.email, "Adicionou um Devocional");
+            }
       Alert.alert("Sucesso", "Devocional salvo com sucesso!");
 
       setTimeout(async () => {

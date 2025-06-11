@@ -16,10 +16,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/types";
-import LottieView from "lottie-react-native";
-import { Modal } from "react-native";
 import SuccessMessageLottie from "../components/SuccessMessageLottie";
 import LoadingMessageLottie from "../components/LoadingMessageLottie";
+import { useAuth } from "../context/AuthContext";
+import { registrarAcaoADM } from "@services/logAction";
 
 const SendNotificationForm = () => {
   const navigation =
@@ -35,6 +35,7 @@ const SendNotificationForm = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [tempTime, setTempTime] = useState(new Date());
   const [showSuccess, setShowSuccess] = useState(false);
+  const { user } = useAuth();
 
 
   useEffect(() => {
@@ -89,6 +90,12 @@ const SendNotificationForm = () => {
         setTitle("");
         setMessage("");
         setShowSuccess(true);
+        if (user?.email && message.trim()) {
+          await registrarAcaoADM(
+            user.email,
+            `Enviou uma NOTIF Geral: "${message.trim()}"`
+          );
+        }
       } else {
         Alert.alert("Erro", data.error || "Falha no envio.");
       }
@@ -127,6 +134,12 @@ const SendNotificationForm = () => {
         setHoraSalva(horaFinal);
         setSelectedTime(new Date(tempTime));
         Alert.alert("Sucesso", `Horário salvo: ${horaFinal}`);
+        if (user?.email && horaFinal.trim()) {
+          await registrarAcaoADM(
+            user.email,
+            `Alterou a hora de Versiculo Diário para: "${horaFinal.trim()}"`
+          );
+        }
       } else {
         Alert.alert("Erro", data.error || "Erro ao salvar horário.");
       }

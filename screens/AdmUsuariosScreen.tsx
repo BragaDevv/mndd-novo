@@ -23,9 +23,12 @@ import {
   deleteDoc
 } from "firebase/firestore";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../context/AuthContext";
+import { registrarAcaoADM } from "@services/logAction";
 
 // Tipagem de usuário
 interface Usuario {
+  trim(): unknown;
   dataNascimento: any;
   id: string;
   nome: string;
@@ -52,6 +55,7 @@ const UsuariosScreen = () => {
   const [mensagem, setMensagem] = useState("");
   const [tituloGrupo, setTituloGrupo] = useState("");
   const [mensagemGrupo, setMensagemGrupo] = useState("");
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchUsuarios = async () => {
@@ -103,37 +107,51 @@ const UsuariosScreen = () => {
       });
 
       Alert.alert("Sucesso", "Notificação enviada.");
+      if (user?.email) {
+      await registrarAcaoADM(
+        user.email,
+        `Enviou NOTIF para: ${usuarioSelecionado.nome?.trim()} ${usuarioSelecionado.sobrenome?.trim()}`
+      );
+    }
       setModalVisible(false);
     } catch (err) {
       Alert.alert("Erro", "Falha ao enviar.");
     }
   };
 
-  const salvarGrupos = async () => {
-    if (!usuarioSelecionado) return;
+const salvarGrupos = async () => {
+  if (!usuarioSelecionado) return;
 
-    const db = getFirestore();
-    const docRef = doc(db, "usuarios", usuarioSelecionado.id);
+  const db = getFirestore();
+  const docRef = doc(db, "usuarios", usuarioSelecionado.id);
 
-    try {
-      await updateDoc(docRef, {
-        grupos: usuarioSelecionado.grupos || [],
-      });
+  try {
+    await updateDoc(docRef, {
+      grupos: usuarioSelecionado.grupos || [],
+    });
 
-      // Atualiza o usuário no array de usuários imediatamente
-      setUsuarios((prevUsuarios) =>
-        prevUsuarios.map((u) =>
-          u.id === usuarioSelecionado.id
-            ? { ...u, grupos: usuarioSelecionado.grupos || [] }
-            : u
-        )
+    // Atualiza o usuário no array de usuários imediatamente
+    setUsuarios((prevUsuarios) =>
+      prevUsuarios.map((u) =>
+        u.id === usuarioSelecionado.id
+          ? { ...u, grupos: usuarioSelecionado.grupos || [] }
+          : u
+      )
+    );
+
+    Alert.alert("Grupos atualizados!");
+
+    if (user?.email) {
+      await registrarAcaoADM(
+        user.email,
+        `Atualizou Grupos de: ${usuarioSelecionado.nome?.trim()} ${usuarioSelecionado.sobrenome?.trim()} | Grupos: ${usuarioSelecionado.grupos}`
       );
-
-      Alert.alert("Grupos atualizados!");
-    } catch (err) {
-      Alert.alert("Erro ao salvar grupos.");
     }
-  };
+  } catch (err) {
+    Alert.alert("Erro ao salvar grupos.");
+  }
+};
+
 
   const excluirUsuario = async () => {
     if (!usuarioSelecionado) return;
@@ -155,6 +173,12 @@ const UsuariosScreen = () => {
               );
               setModalVisible(false);
               Alert.alert("Usuário excluído com sucesso!");
+              if (user?.email) {
+                await registrarAcaoADM(
+                  user.email,
+                  `Exclui o usuário: "${usuarioSelecionado.nome?.trim()}"`
+                );
+              }
             } catch (err) {
               Alert.alert("Erro", "Falha ao excluir usuário.");
             }
@@ -191,6 +215,12 @@ const UsuariosScreen = () => {
       });
 
       Alert.alert("Sucesso", "Notificação enviada para o grupo!");
+      if (user?.email && grupoFiltro) {
+        await registrarAcaoADM(
+          user.email,
+          `Enviou uma NOTIF para o grupo "${grupoFiltro}" : "${mensagemGrupo}"`
+        );
+      }
       setModalGrupoVisible(false);
     } catch (err) {
       Alert.alert("Erro", "Falha ao enviar para o grupo.");
@@ -477,12 +507,12 @@ const styles = StyleSheet.create({
     }),
   },
   titleRow: {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 10,
-  marginBottom: 10,
-},
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    marginBottom: 10,
+  },
 
   input: {
     borderWidth: 1,

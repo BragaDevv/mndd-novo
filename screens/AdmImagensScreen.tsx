@@ -29,6 +29,8 @@ import {
   doc,
   serverTimestamp,
 } from "firebase/firestore";
+import { registrarAcaoADM } from "@services/logAction";
+import { useAuth } from "../context/AuthContext";
 
 const { width } = Dimensions.get("window");
 
@@ -36,6 +38,7 @@ const CarrosselScreen = () => {
   const [carrosselImages, setCarrosselImages] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [fontsLoaded] = useFonts({ Montserrat_500Medium });
+  const { user } = useAuth();
 
   useEffect(() => {
     const carrosselRef = collection(db, "carrossel");
@@ -87,6 +90,9 @@ const CarrosselScreen = () => {
       });
 
       Alert.alert("Sucesso", "Imagem adicionada ao carrossel!");
+      if (user?.email) {
+        await registrarAcaoADM(user.email, "Adicionou uma Imagem ");
+      }
     } catch (error) {
       console.error("Erro ao fazer upload:", error);
       Alert.alert("Erro", "Falha ao adicionar imagem");
@@ -99,6 +105,9 @@ const CarrosselScreen = () => {
     try {
       await deleteDoc(doc(db, "carrossel", id));
       Alert.alert("Sucesso", "Imagem removida!");
+      if (user?.email) {
+        await registrarAcaoADM(user.email, "Removeu uma Imagem ");
+      }
     } catch (error) {
       console.error("Erro ao remover imagem:", error);
       Alert.alert("Erro", "Falha ao remover imagem");
@@ -169,9 +178,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: "center",
     marginTop: Platform.select({
-          android: 25,
-          ios: 0,
-        }),
+      android: 25,
+      ios: 0,
+    }),
   },
   button: {
     flexDirection: "row",

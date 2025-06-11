@@ -26,6 +26,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { Picker } from "@react-native-picker/picker";
+import { registrarAcaoADM } from "@services/logAction";
+import { useAuth } from "../context/AuthContext";
 
 const { width } = Dimensions.get("window");
 
@@ -52,6 +54,7 @@ const CultosScreen = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [tempTime, setTempTime] = useState(new Date());
   const [fontsLoaded] = useFonts({ Montserrat_500Medium });
+  const { user } = useAuth();
 
   useEffect(() => {
     const cultosRef = collection(db, "cultos");
@@ -127,6 +130,9 @@ const CultosScreen = () => {
         local: "",
       });
       Alert.alert("Sucesso", "Culto adicionado");
+      if (user?.email) {
+        await registrarAcaoADM(user.email, "Criou um Culto");
+      }
     } catch (error) {
       Alert.alert("Erro", "Falha ao adicionar culto");
     }
@@ -136,6 +142,9 @@ const CultosScreen = () => {
     try {
       await deleteDoc(doc(db, "cultos", id));
       Alert.alert("Sucesso", "Culto removido!");
+      if (user?.email) {
+        await registrarAcaoADM(user.email, "Removeu um Culto");
+      }
     } catch (error) {
       Alert.alert("Erro", "Falha ao remover culto");
     }
