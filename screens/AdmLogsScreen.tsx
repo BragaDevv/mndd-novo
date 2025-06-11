@@ -7,52 +7,138 @@ import {
   TextInput,
   ActivityIndicator,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import { db } from "../firebaseConfig";
 import {
   collection,
   query,
   orderBy,
-  onSnapshot,
+  getDocs,
+  doc,
+  getDoc,
   Timestamp,
 } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Tipagem
 type Log = {
   id: string;
   email: string;
+  nome?: string;
+  sobrenome?: string;
   acao: string;
   timestamp: Timestamp;
 };
 
+const categorias = [
+  "Todas",
+  "Aviso",
+  "Notificação",
+  "Culto",
+  "Devocional",
+  "Grupo",
+  "Hora",
+  "Hoje",
+  "Ontem",
+];
+
 const LogsScreen = () => {
   const [logs, setLogs] = useState<Log[]>([]);
-  const [searchEmail, setSearchEmail] = useState("");
+  const [busca, setBusca] = useState("");
+  const [categoria, setCategoria] = useState("Todas");
   const [loading, setLoading] = useState(true);
+  const [nomeUsuario, setNomeUsuario] = useState<string>("");
 
   useEffect(() => {
-    const q = query(collection(db, "logs_acesso"), orderBy("timestamp", "desc"));
+    const carregarNome = async () => {
+      try {
+        const uid = await AsyncStorage.getItem("usuarioUID");
+        if (uid) {
+          const docRef = doc(db, "usuarios", uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const nomeCompleto = `${data.nome || ""} ${data.sobrenome || ""}`.trim();
+            setNomeUsuario(nomeCompleto);
+            console.log("Nome carregado:", nomeCompleto);
+          }
+        }
+      } catch (error) {
+        console.log("Erro ao carregar nome do usuário:", error);
+      }
+    };
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data: Log[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Log, "id">),
-      }));
-      setLogs(data);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    carregarNome();
   }, []);
 
-  const filteredLogs = logs.filter((log) =>
-    log.email.toLowerCase().includes(searchEmail.toLowerCase())
-  );
+  useEffect(() => {
+    const carregarLogs = async () => {
+      try {
+        const logsSnapshot = await getDocs(query(collection(db, "logs_acesso"), orderBy("timestamp", "desc")));
+        const data: Log[] = logsSnapshot.docs.map((doc) => {
+          const logData = doc.data() as Omit<Log, "id">;
+          return {
+            id: doc.id,
+            ...logData,
+          };
+        });
+        setLogs(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao carregar logs:", error);
+      }
+    };
+
+    carregarLogs();
+  }, []);
+
+  const filtrarPorCategoria = (log: Log) => {
+    const acao = log.acao.toLowerCase();
+
+    if (categoria === "Todas") return true;
+    if (categoria === "Hoje") {
+      const hoje = new Date();
+      const dataLog = log.timestamp.toDate();
+      return (
+        dataLog.getDate() === hoje.getDate() &&
+        dataLog.getMonth() === hoje.getMonth() &&
+        dataLog.getFullYear() === hoje.getFullYear()
+      );
+    }
+    if (categoria === "Ontem") {
+      const hoje = new Date();
+      const ontem = new Date();
+      ontem.setDate(hoje.getDate() - 1);
+      const dataLog = log.timestamp.toDate();
+      return (
+        dataLog.getDate() === ontem.getDate() &&
+        dataLog.getMonth() === ontem.getMonth() &&
+        dataLog.getFullYear() === ontem.getFullYear()
+      );
+    }
+
+    return acao.includes(categoria.toLowerCase());
+  };
+
+  const filteredLogs = logs.filter((log) => {
+    const termo = busca.toLowerCase();
+    const nomeCompleto = `${log.nome || ""} ${log.sobrenome || ""}`.toLowerCase();
+    return (
+      filtrarPorCategoria(log) &&
+      (log.email.toLowerCase().includes(termo) || nomeCompleto.includes(termo))
+    );
+  });
 
   const renderItem = ({ item }: { item: Log }) => {
     const data = item.timestamp.toDate().toLocaleString("pt-BR");
+    const nomeCompleto = [item.nome, item.sobrenome].filter(Boolean).join(" ");
+
     return (
       <View style={styles.card}>
-        <Text style={styles.email}>{item.email}</Text>
+        <Text style={styles.email}>
+          {nomeCompleto ? `${nomeCompleto}` : ""} - {item.email}
+        </Text>
         <Text style={styles.acao}>{item.acao}</Text>
         <Text style={styles.timestamp}>{data}</Text>
       </View>
@@ -62,14 +148,39 @@ const LogsScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Logs de Acesso ADM</Text>
+      {nomeUsuario ? (
+        <Text style={styles.usuarioInfo}>Visualizando como: {nomeUsuario}</Text>
+      ) : null}
 
       <TextInput
         style={styles.search}
-        placeholder="Buscar por email..."
-        value={searchEmail}
-        onChangeText={setSearchEmail}
+        placeholder="Buscar por email ou nome..."
+        value={busca}
+        onChangeText={setBusca}
         placeholderTextColor="#999"
       />
+
+      <View style={styles.chipContainer}>
+        {categorias.map((cat) => (
+          <TouchableOpacity
+            key={cat}
+            onPress={() => setCategoria(cat)}
+            style={[
+              styles.chip,
+              categoria === cat && styles.chipSelecionado,
+            ]}
+          >
+            <Text
+              style={[
+                styles.chipText,
+                categoria === cat && styles.chipTextSelecionado,
+              ]}
+            >
+              {cat}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
       {loading ? (
         <ActivityIndicator size="large" color="#000" />
@@ -97,6 +208,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  usuarioInfo: {
+    fontSize: 14,
+    color: "#666",
     marginBottom: 16,
     textAlign: "center",
   },
@@ -107,6 +224,30 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     color: "#000",
+  },
+  chipContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 16,
+  },
+  chip: {
+    backgroundColor: "#eee",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  chipSelecionado: {
+    backgroundColor: "#000",
+  },
+  chipText: {
+    color: "#333",
+    fontWeight: "500",
+  },
+  chipTextSelecionado: {
+    color: "#fff",
   },
   card: {
     backgroundColor: "#f2f2f2",

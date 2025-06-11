@@ -47,6 +47,7 @@ const SendNotificationScreen = () => {
       <Text style={styles.cardText}>{label}</Text>
     </TouchableOpacity>
   );
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

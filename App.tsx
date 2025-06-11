@@ -194,7 +194,7 @@ useEffect(() => {
 
       if (res.ok) {
         const data = await res.json();
-        console.log("✅ API OpenAI online. Resposta:", data);
+        console.log("✅ API OpenAI online");
       } else {
         console.warn("⚠️ API respondeu com erro:", res.status);
       }

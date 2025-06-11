@@ -110,7 +110,7 @@ const UsuariosScreen = () => {
       if (user?.email) {
       await registrarAcaoADM(
         user.email,
-        `Enviou NOTIF para: ${usuarioSelecionado.nome?.trim()} ${usuarioSelecionado.sobrenome?.trim()}`
+        `Enviou Notificação para: ${usuarioSelecionado.nome?.trim()} ${usuarioSelecionado.sobrenome?.trim()}`
       );
     }
       setModalVisible(false);
@@ -218,7 +218,7 @@ const salvarGrupos = async () => {
       if (user?.email && grupoFiltro) {
         await registrarAcaoADM(
           user.email,
-          `Enviou uma NOTIF para o grupo "${grupoFiltro}" : "${mensagemGrupo}"`
+          `Enviou uma Notificação para o grupo "${grupoFiltro}" : "${mensagemGrupo}"`
         );
       }
       setModalGrupoVisible(false);

@@ -93,7 +93,7 @@ const SendNotificationForm = () => {
         if (user?.email && message.trim()) {
           await registrarAcaoADM(
             user.email,
-            `Enviou uma NOTIF Geral: "${message.trim()}"`
+            `Enviou uma Notificação Geral: "${message.trim()}"`
           );
         }
       } else {
