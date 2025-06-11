@@ -182,6 +182,20 @@ const AppNavigator = () => {
     }
   };
 
+  useEffect(() => {
+    fetch("https://seu-backend.com/api/versiculo-dia")
+      .then((res) => {
+        if (res.ok) {
+          console.log("✅ API está online.");
+        } else {
+          console.warn("⚠️ API respondeu com erro:", res.status);
+        }
+      })
+      .catch((err) => {
+        console.error("❌ API OFFLINE ou erro de rede:", err.message);
+      });
+  }, []);
+
   if (showQuestionario === null) return null;
 
   return (
@@ -300,7 +314,7 @@ const AppNavigator = () => {
                   component={RankingScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}
                 />
-                  <Stack.Screen
+                <Stack.Screen
                   name="AdmAvisos"
                   component={AdmAvisosScreen}
                   options={{ title: "", headerShown: Platform.OS === "ios" }}

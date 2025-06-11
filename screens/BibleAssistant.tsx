@@ -93,78 +93,87 @@ const BibleAssistant = () => {
     return mensagem;
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || loading) return;
+const handleSend = async () => {
+  if (!input.trim() || loading) return;
 
-    const userMessage = {
-      text: input,
-      user: true,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    setLoading(true);
+  console.log("📝 Usuário digitou:", input);
 
-    const perguntaSobreCultos =
-      input.toLowerCase().includes("culto") ||
-      input.toLowerCase().includes("evento") ||
-      input.toLowerCase().includes("programação") ||
-      input.toLowerCase().includes("agenda");
+  const userMessage = {
+    text: input,
+    user: true,
+    time: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  };
+  setMessages((prev) => [...prev, userMessage]);
+  setInput("");
+  setLoading(true);
 
-    if (perguntaSobreCultos) {
-      setTimeout(() => {
-        const respostaCultos = {
-          text: formatarCultos(),
-          user: false,
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        };
-        setMessages((prev) => [...prev, respostaCultos]);
-        setLoading(false);
-      }, 1000);
-      return;
-    }
+  const perguntaSobreCultos =
+    input.toLowerCase().includes("culto") ||
+    input.toLowerCase().includes("evento") ||
+    input.toLowerCase().includes("programação") ||
+    input.toLowerCase().includes("agenda");
 
-    try {
-      const response = await fetch("https://mndd-backend.onrender.com/api/openai/ask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt: input }),
-      });
-
-      const data = await response.json();
-      const aiMessage = {
-        text: data.result || "Não entendi sua pergunta. Poderia reformular?",
+  if (perguntaSobreCultos) {
+    console.log("📅 Pergunta relacionada a cultos detectada.");
+    setTimeout(() => {
+      const respostaCultos = {
+        text: formatarCultos(),
         user: false,
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
         }),
       };
-      setMessages((prev) => [...prev, aiMessage]);
-    } catch (error) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: `Houve um erro ao conectar. Por favor, tente novamente mais tarde.`,
-          user: false,
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
-    } finally {
+      setMessages((prev) => [...prev, respostaCultos]);
       setLoading(false);
-    }
-  };
+    }, 1000);
+    return;
+  }
+
+  try {
+    console.log("🔄 Enviando requisição para a API OpenAI...");
+    const response = await fetch("https://mndd-backend.onrender.com/api/openai/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt: input }),
+    });
+
+    const data = await response.json();
+    console.log("✅ Resposta recebida da API:", data);
+
+    const aiMessage = {
+      text: data.result || "Não entendi sua pergunta. Poderia reformular?",
+      user: false,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    setMessages((prev) => [...prev, aiMessage]);
+  } catch (error) {
+    console.error("❌ Erro ao se comunicar com a API:", error);
+    setMessages((prev) => [
+      ...prev,
+      {
+        text: `Houve um erro ao conectar. Por favor, tente novamente mais tarde.`,
+        user: false,
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      },
+    ]);
+  } finally {
+    console.log("⏹️ Finalizando requisição.");
+    setLoading(false);
+  }
+};
+
 
   const avatar1 = require("../assets/avatarpastor.png");
   const avatar2 = require("../assets/avatarpastor2.png");
