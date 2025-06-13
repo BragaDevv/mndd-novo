@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
      paddingBottom: Platform.select({
-          android: 60,
+          android: 10,
           ios: 10,
         }),
   },
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     height: 60,
     marginRight: width * 0.03,
     marginTop: Platform.select({
-      android: 25,
+      android: 0,
       ios: 0,
     }),
   },

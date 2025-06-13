@@ -9,7 +9,7 @@ const FavoritosScreen = () => {
   return (
     <View style={{ flex: 1, padding: 20 }}>
       <Text style={{ fontSize: 22, fontFamily: "Montserrat_500Medium", fontWeight: 'bold', marginBottom: 10, marginTop: Platform.select({
-            android: 50,
+            android: 0,
             ios: 0,
           }),  }}>Versículos Favoritos</Text>
 

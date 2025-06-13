@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
      paddingBottom: Platform.select({
-          android: 50,
+          android: 10,
           ios: 10,
         }),
     

@@ -209,149 +209,75 @@ useEffect(() => {
 
   if (showQuestionario === null) return null;
 
-  return (
-    <AppLoadProvider>
-      <AuthProvider>
-        <NavigationContainer ref={navigationRef}>
-          <Stack.Navigator
-            screenOptions={{
-              headerTitleAlign: "center",
-              headerTintColor: "#000",
-              headerStyle: { backgroundColor: "#fff" },
-              headerBackTitle: "Voltar", //
-            }}
-          >
-            {showQuestionario ? (
+return (
+  <AppLoadProvider>
+    <AuthProvider>
+      <NavigationContainer ref={navigationRef}>
+        <Stack.Navigator
+          screenOptions={{
+            headerTitleAlign: "center",
+            headerTintColor: "#000",
+            headerStyle: { backgroundColor: "#fff" },
+            headerBackTitle: "Voltar",
+            gestureEnabled: true,
+          }}
+        >
+          {showQuestionario ? (
+            <Stack.Screen
+              name="Questionario"
+              children={() => (
+                <QuestionarioScreen onComplete={handleQuestionarioComplete} />
+              )}
+              options={{ headerShown: false }}
+            />
+          ) : (
+            <>
               <Stack.Screen
-                name="Questionario"
-                children={() => (
-                  <QuestionarioScreen onComplete={handleQuestionarioComplete} />
-                )}
+                name="MNDD"
+                component={MNDDScreen}
                 options={{ headerShown: false }}
               />
-            ) : (
-              <>
-                <Stack.Screen
-                  name="MNDD"
-                  component={MNDDScreen}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="Livros"
-                  component={LivrosScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="Capitulos"
-                  component={CapitulosScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="Versiculos"
-                  component={VersiculosScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="Versiculo"
-                  component={VersiculoScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="Igreja"
-                  component={IgrejaScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="AdmUsuarios"
-                  component={AdmUsuariosScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="AdmImagens"
-                  component={AdmImagensScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="AdmCultos"
-                  component={AdmCultosScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="AdmNotificacao"
-                  component={AdmNotificacaoScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="AreaAdm"
-                  options={{
-                    title: "",
-                    headerLeft: () => null,
-                    headerShown: Platform.OS === "ios",
-                  }}
-                >
-                  {() => (
-                    <ProtectedRoute>
-                      <AreaAdmScreen />
-                    </ProtectedRoute>
-                  )}
-                </Stack.Screen>
-                <Stack.Screen
-                  name="Login"
-                  component={LoginScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="Favoritos"
-                  component={FavoritosScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="BibleAssistant"
-                  component={BibleAssistant}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="HarpaScreen"
-                  component={HarpaScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="Quiz"
-                  component={QuizScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="Ranking"
-                  component={RankingScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="AdmAvisos"
-                  component={AdmAvisosScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="AdmDevocional"
-                  component={AdmDevocionalScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="Devocional"
-                  component={DevocionalScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-                <Stack.Screen
-                  name="AdmLogsScreen"
-                  component={AdmLogsScreen}
-                  options={{ title: "", headerShown: Platform.OS === "ios" }}
-                />
-              </>
-            )}
-          </Stack.Navigator>
-        </NavigationContainer>
-      </AuthProvider>
-    </AppLoadProvider>
-  );
+              <Stack.Screen name="Livros" component={LivrosScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="Capitulos" component={CapitulosScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="Versiculos" component={VersiculosScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="Versiculo" component={VersiculoScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="Igreja" component={IgrejaScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="AdmUsuarios" component={AdmUsuariosScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="AdmImagens" component={AdmImagensScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="AdmCultos" component={AdmCultosScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="AdmNotificacao" component={AdmNotificacaoScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen
+                name="AreaAdm"
+                options={{
+                  title: "",
+                  headerLeft: () => null,
+                  headerShown: true,
+                }}
+              >
+                {() => (
+                  <ProtectedRoute>
+                    <AreaAdmScreen />
+                  </ProtectedRoute>
+                )}
+              </Stack.Screen>
+              <Stack.Screen name="Login" component={LoginScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="Favoritos" component={FavoritosScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="BibleAssistant" component={BibleAssistant} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="HarpaScreen" component={HarpaScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="Quiz" component={QuizScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="Ranking" component={RankingScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="AdmAvisos" component={AdmAvisosScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="AdmDevocional" component={AdmDevocionalScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="Devocional" component={DevocionalScreen} options={{ title: "", headerShown: true }} />
+              <Stack.Screen name="AdmLogsScreen" component={AdmLogsScreen} options={{ title: "", headerShown: true }} />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
+  </AppLoadProvider>
+);
+
 };
 
 export default AppNavigator;

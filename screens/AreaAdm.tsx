@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 30,
     marginTop: Platform.select({
-      android: 25,
+      android: 0,
       ios: 0,
     }),
     fontFamily: "Montserrat_500Medium",

@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 5,
     marginTop: Platform.select({
-      android: 50,
+      android: 0,
       ios: 0,
     }),
   },
