@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -14,8 +14,9 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getDocs, collection, query, orderBy } from "firebase/firestore";
+import { db } from "../firebaseConfig"; // ajuste o caminho se necessário
 
-// Avatares (substitua pelos seus caminhos de imagem)
 const assistantAvatar = require("../assets/logo.png");
 const userAvatar = require("../assets/avatarpastorrosto.png");
 
@@ -38,42 +39,35 @@ const BibleAssistant = () => {
       }),
     },
   ]);
-
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [cultos, setCultos] = useState<Culto[]>([]);
+  const scrollViewRef = useRef<ScrollView>(null);
+
+useEffect(() => {
+  const carregarCultos = async () => {
+    try {
+      const cultosRef = collection(db, "cultos");
+      const q = query(cultosRef, orderBy("data", "asc")); // opcional: ordena por data
+      const snapshot = await getDocs(q);
+      const cultosList = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Culto[];
+      setCultos(cultosList);
+      console.log("✅ Cultos carregados do Firestore:", cultosList);
+    } catch (error) {
+      console.error("❌ Erro ao buscar cultos no Firestore:", error);
+    }
+  };
+
+  carregarCultos();
+}, []);
 
   useEffect(() => {
-    const carregarCultos = async () => {
-      try {
-        const savedCultos = await AsyncStorage.getItem("@MNDD:cultos");
-        if (savedCultos) {
-          setCultos(JSON.parse(savedCultos));
-        }
-      } catch (error) {
-        console.error("Erro ao carregar cultos:", error);
-      }
-    };
-
-    carregarCultos();
-  }, []);
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => setKeyboardVisible(true)
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => setKeyboardVisible(false)
-    );
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
 
   const formatarCultos = () => {
     if (cultos.length === 0) {
@@ -93,87 +87,80 @@ const BibleAssistant = () => {
     return mensagem;
   };
 
-const handleSend = async () => {
-  if (!input.trim() || loading) return;
+  const handleSend = async () => {
+    if (!input.trim() || loading) return;
 
-  console.log("📝 Usuário digitou:", input);
+    const userMessage = {
+      text: input,
+      user: true,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setLoading(true);
 
-  const userMessage = {
-    text: input,
-    user: true,
-    time: new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-  };
-  setMessages((prev) => [...prev, userMessage]);
-  setInput("");
-  setLoading(true);
+    const perguntaSobreCultos =
+      input.toLowerCase().includes("culto") ||
+      input.toLowerCase().includes("evento") ||
+      input.toLowerCase().includes("programação") ||
+      input.toLowerCase().includes("agenda");
 
-  const perguntaSobreCultos =
-    input.toLowerCase().includes("culto") ||
-    input.toLowerCase().includes("evento") ||
-    input.toLowerCase().includes("programação") ||
-    input.toLowerCase().includes("agenda");
+    if (perguntaSobreCultos) {
+      setTimeout(() => {
+        const respostaCultos = {
+          text: formatarCultos(),
+          user: false,
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+        setMessages((prev) => [...prev, respostaCultos]);
+        setLoading(false);
+      }, 1000);
+      return;
+    }
 
-  if (perguntaSobreCultos) {
-    console.log("📅 Pergunta relacionada a cultos detectada.");
-    setTimeout(() => {
-      const respostaCultos = {
-        text: formatarCultos(),
+    try {
+      const response = await fetch(
+        "https://mndd-backend.onrender.com/api/openai/ask",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: input }),
+        }
+      );
+
+      const data = await response.json();
+      const aiMessage = {
+        text: data.result || "Não entendi sua pergunta. Poderia reformular?",
         user: false,
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
         }),
       };
-      setMessages((prev) => [...prev, respostaCultos]);
+      setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      console.error("Erro na API:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: "Houve um erro ao conectar. Por favor, tente novamente mais tarde.",
+          user: false,
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ]);
+    } finally {
       setLoading(false);
-    }, 1000);
-    return;
-  }
-
-  try {
-    console.log("🔄 Enviando requisição para a API OpenAI...");
-    const response = await fetch("https://mndd-backend.onrender.com/api/openai/ask", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt: input }),
-    });
-
-    const data = await response.json();
-    console.log("✅ Resposta recebida da API:", data);
-
-    const aiMessage = {
-      text: data.result || "Não entendi sua pergunta. Poderia reformular?",
-      user: false,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-    setMessages((prev) => [...prev, aiMessage]);
-  } catch (error) {
-    console.error("❌ Erro ao se comunicar com a API:", error);
-    setMessages((prev) => [
-      ...prev,
-      {
-        text: `Houve um erro ao conectar. Por favor, tente novamente mais tarde.`,
-        user: false,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      },
-    ]);
-  } finally {
-    console.log("⏹️ Finalizando requisição.");
-    setLoading(false);
-  }
-};
-
+    }
+  };
 
   const avatar1 = require("../assets/avatarpastor.png");
   const avatar2 = require("../assets/avatarpastor2.png");
@@ -182,13 +169,9 @@ const handleSend = async () => {
   const handlePress = () => {
     setAvatar((prev: any) => (prev === avatar1 ? avatar2 : avatar1));
   };
-  return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
-    >
+
+  const conteudo = (
+    <>
       {/* Cabeçalho */}
       <View style={styles.header}>
         <Image source={assistantAvatar} style={styles.avatar} />
@@ -198,12 +181,15 @@ const handleSend = async () => {
         </View>
       </View>
 
-      {/* Área de mensagens */}
+      {/* Mensagens */}
       <ScrollView
-        contentContainerStyle={styles.messagesContainer}
-        ref={(ref) => ref?.scrollToEnd({ animated: true })}
+        ref={scrollViewRef}
+        contentContainerStyle={[styles.messagesContainer, { flexGrow: 1 }]}
         keyboardDismissMode="interactive"
-        
+        persistentScrollbar={true}
+        showsVerticalScrollIndicator={true}
+        keyboardShouldPersistTaps="handled"
+        style={{ flex: 1 }}
       >
         {messages.map((msg, index) => (
           <View
@@ -229,12 +215,7 @@ const handleSend = async () => {
               <Text style={styles.timeText}>{msg.time}</Text>
             </View>
 
-            {msg.user && (
-              <Image
-                // source={userAvatar}
-                style={styles.messageAvatar}
-              />
-            )}
+            {msg.user && <Image style={styles.messageAvatar} />}
           </View>
         ))}
 
@@ -248,18 +229,16 @@ const handleSend = async () => {
         )}
       </ScrollView>
 
-      {/* Avatar flutuante no canto inferior direito */}
-      <TouchableOpacity onPress={handlePress} style={styles.avatarFloating} activeOpacity={1}>
-        <Image source={avatar} style={styles.avatarFloating} />
+      {/* Avatar flutuante */}
+      <TouchableOpacity onPress={handlePress} style={styles.avatarFloating}>
+        <Image
+          source={avatar}
+          style={{ width: 80, height: 100}}
+        />
       </TouchableOpacity>
 
-      {/* Área de input */}
-      <View
-        style={[
-          styles.inputContainer,
-          keyboardVisible && styles.inputContainerKeyboardActive,
-        ]}
-      >
+      {/* Input */}
+      <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           value={input}
@@ -281,12 +260,22 @@ const handleSend = async () => {
           />
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </>
+  );
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 85}
+      >
+        {conteudo}
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
 
-// Estilos permanecem exatamente os mesmos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -309,11 +298,16 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   avatarFloating: {
-    position: "relative",
-    left: '62%',
-    width: 80,
-    height: 120,
-    backgroundColor: "tranparent",
+    position: "absolute",
+     bottom: Platform.select({
+      android: 148,
+      ios: 125,
+    }),
+    right: 20,
+    width: 60,
+    height: 60,
+    backgroundColor: "transparent",
+    zIndex: 0,
   },
   headerTitle: {
     color: "white",
@@ -384,21 +378,13 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderTopWidth: 1,
     borderTopColor: "#ddd",
-     paddingTop: Platform.select({
-      android: 20,
-      ios: 20,
-    }),
     paddingBottom: Platform.select({
-      android: 30,
-      ios: 30,
+      android: 45,
+      ios: 25,
     }),
-  },
-  inputContainerKeyboardActive: {
-    paddingBottom: 35,
   },
   input: {
     flex: 1,
-    marginBottom: 10,
     minHeight: 40,
     maxHeight: 100,
     paddingHorizontal: 15,
@@ -415,7 +401,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#25D366",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
   },
 });
 

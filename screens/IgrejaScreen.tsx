@@ -592,7 +592,6 @@ const styles = StyleSheet.create({
   },
 
   quizButton: {
-    marginVertical: 20,
     alignSelf: "center",
     width: "90%",
     borderRadius: 12,
@@ -612,7 +611,7 @@ const styles = StyleSheet.create({
   },
 
   quizButtonText: {
-    fontSize: 18,
+    fontSize: 22,
     color: "#fff",
     fontWeight: "bold",
     fontFamily: "Montserrat_600SemiBold",

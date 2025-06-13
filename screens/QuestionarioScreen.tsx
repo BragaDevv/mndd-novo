@@ -229,7 +229,7 @@ const QuestionarioScreen: React.FC<Props> = ({ onComplete }) => {
 
       <SuccessMessageLottie
         visible={showSuccess}
-        message="Cadastro salvo com sucesso! Bem vindo ao app MNDD"
+        message={"Cadastro salvo com sucesso!\nBem-vindo ao app MNDD"}
         onFinish={() => {
           setShowSuccess(false);
         }}
